@@ -1,0 +1,47 @@
+// =====================================================
+// FEATURE CARD STYLES
+// =====================================================
+
+.feature-card {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border-color: #D6FC45;
+    transform: translateY(-4px);
+  }
+
+  .feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #D6FC45;
+
+    svg {
+      width: 48px;
+      height: 48px;
+      stroke-width: 1.5;
+    }
+  }
+
+  .feature-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #173036;
+    margin-bottom: 0.75rem;
+  }
+
+  .feature-description {
+    font-size: 0.95rem;
+    color: #6c757d;
+    line-height: 1.6;
+    margin: 0;
+  }
+}

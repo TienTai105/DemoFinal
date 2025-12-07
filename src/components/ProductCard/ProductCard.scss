@@ -1,0 +1,244 @@
+// =====================================================
+// PRODUCT CARD STYLES
+// =====================================================
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+  }
+
+  // ===== PRODUCT IMAGE SECTION =====
+  .product-card-image {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    background-color: #f5f5f5;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+
+    // Add to Cart Button - Circular
+    .add-to-cart-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 3;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: #173036;
+      border: none;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+      &:hover:not(:disabled) {
+        background-color: #D6FC45;
+        color: #173036;
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(214, 252, 69, 0.4);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    // Discount badge in top left (moved from top right)
+    .discount-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
+    }
+
+    // Out of stock overlay
+    .out-of-stock-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(23, 48, 54, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-align: center;
+    }
+  }
+
+  // ===== PRODUCT INFO SECTION =====
+  .product-card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    flex: 1;
+    gap: 0.5rem;
+  }
+
+  .product-category {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .product-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #173036;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  // Product Name with Wishlist Row
+  .product-name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+
+    .product-name {
+      margin: 0;
+      flex: 1;
+    }
+  }
+
+  .product-description {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // ===== RATING SECTION =====
+  .product-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+
+    .stars {
+      display: flex;
+      gap: 2px;
+
+      svg {
+        width: 14px;
+        height: 14px;
+
+        &.star-filled {
+          color: #ffc107;
+          fill: #ffc107;
+        }
+
+        &.star-empty {
+          color: #e0e0e0;
+          fill: #e0e0e0;
+        }
+      }
+    }
+
+    .rating-count {
+      font-size: 0.8rem;
+      color: #999999;
+      margin-left: 0.25rem;
+    }
+  }
+
+  // ===== PRICE SECTION =====
+  .product-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+
+    .current-price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .original-price {
+      font-size: 0.85rem;
+      color: #999999;
+      text-decoration: line-through;
+    }
+  }
+
+  // Wishlist Heart Button
+  .wishlist-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ccc;
+    transition: all 0.3s ease;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: #c41e3a;
+      transform: scale(1);
+
+      svg {
+        fill: #c41e3a;
+      }
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: #ccc;
+    }
+  }
+
+  // ===== STOCK WARNING =====
+  
+
+  // ===== RESPONSIVE =====
+  @media (max-width: 768px) {
+    .product-card-image {
+      height: 200px;
+    }
+  }
+}
+

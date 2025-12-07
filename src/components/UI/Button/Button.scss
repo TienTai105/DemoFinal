@@ -1,0 +1,118 @@
+// =====================================================
+// BUTTON STYLES
+// =====================================================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+  white-space: nowrap;
+
+  // ===== SIZE VARIANTS =====
+  &-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  &-md {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  &-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  // ===== COLOR VARIANTS =====
+  &-primary {
+    background-color: #173036;
+    color: #ffffff;
+
+    &:hover:not(.btn-disabled) {
+      background-color: #0f1f24;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(23, 48, 54, 0.3);
+    }
+
+    &:active:not(.btn-disabled) {
+      transform: translateY(0);
+    }
+  }
+
+  &-accent {
+    background-color: #D6FC45;
+    color: #173036;
+    font-weight: 700;
+
+    &:hover:not(.btn-disabled) {
+      background-color: #c9f434;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(214, 252, 69, 0.4);
+    }
+
+    &:active:not(.btn-disabled) {
+      transform: translateY(0);
+    }
+  }
+
+  &-secondary {
+    background-color: #f2f2f2;
+    color: #173036;
+    border: 2px solid #173036;
+
+    &:hover:not(.btn-disabled) {
+      background-color: #e8e8e8;
+    }
+  }
+
+  &-outline {
+    background-color: transparent;
+    color: #173036;
+    border: 2px solid #173036;
+
+    &:hover:not(.btn-disabled) {
+      background-color: #173036;
+      color: #ffffff;
+    }
+  }
+
+  // ===== FULL WIDTH =====
+  &-full-width {
+    width: 100%;
+  }
+
+  // ===== DISABLED STATE =====
+  &-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  // ===== LOADING STATE =====
+  &-loading {
+    pointer-events: none;
+  }
+
+  .btn-spinner {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "E-Commerce App",
+  "version": "1.0.0",
+  "description": "A modern e-commerce application with React 18, TypeScript, and advanced tooling",
+  "private": true
+}

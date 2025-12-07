@@ -1,0 +1,21 @@
+.product-list {
+  padding: 2rem 0;
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #212529;
+  }
+
+  .no-products {
+    text-align: center;
+    padding: 3rem 0;
+    color: #6c757d;
+
+    p {
+      font-size: 1.1rem;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+// =====================================================
+// BADGE STYLES
+// =====================================================
+
+.badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+
+  // ===== VARIANTS =====
+  &-primary {
+    background-color: #173036;
+    color: #ffffff;
+  }
+
+  &-accent {
+    background-color: #D6FC45 !important;
+    color: #173036 !important;
+  }
+
+  &-secondary {
+    background-color: #f2f2f2;
+    color: #173036;
+  }
+
+  &-success {
+    background-color: #28a745;
+    color: #ffffff;
+  }
+
+  &-danger {
+    background-color: #dc3545;
+    color: #ffffff;
+  }
+}
