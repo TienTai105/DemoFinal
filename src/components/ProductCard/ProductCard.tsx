@@ -46,13 +46,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
     <div className="product-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
       {/* Product Image Container */}
       <div className="product-card-image">
-        <img src={product.image} alt={product.name} />
+        <img src={productImage} alt={product.name} />
 
         {/* Add to Cart Button - Circular */}
         <button
           className="add-to-cart-btn"
           onClick={handleAddToCart}
-          disabled={product.stock === 0}
+          disabled={product.stock !== undefined && product.stock === 0}
           title="Add to Cart"
         >
           <Plus size={24} />
@@ -78,22 +78,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         {/* Product Category */}
         <span className="product-category">{product.category}</span>
 
-        {/* Product Name with Wishlist Button */}
-        <div className="product-name-row">
+        {/* Product Name with Wishlist Button and Price */}
+        <div className="product-info-row">
           <h3 className="product-name">{product.name}</h3>
-          <button className="wishlist-btn" title="Add to Wishlist">
-            <Heart size={20} />
-          </button>
+          <div className="product-right">
+            <button className="wishlist-btn" title="Add to Wishlist">
+              <Heart size={20} />
+            </button>
+            <div className="product-price">
+              <span className="current-price">{product.price.toLocaleString('vi-VN')}.000đ</span>
+              {product.originalPrice && (
+                <span className="original-price">{product.originalPrice.toLocaleString('vi-VN')}.000đ</span>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Product Description */}
-        
-        <div className="product-price">
-          <span className="current-price">${product.price.toFixed(2)}</span>
-          {product.originalPrice && (
-            <span className="original-price">${product.originalPrice.toFixed(2)}</span>
-          )}
-        </div>
       </div>
     </div>
   );
