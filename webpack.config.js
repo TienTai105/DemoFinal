@@ -1,6 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const PORT = process.env.PORT || 3000;
+
 module.exports = {
   entry: './src/index.tsx',
   output: {
@@ -61,7 +63,7 @@ module.exports = {
     }),
   ],
   devServer: {
-    port: 3000,
+    port: PORT,
     hot: true,
     historyApiFallback: true,
     compress: true,

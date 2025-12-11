@@ -1,0 +1,657 @@
+// =====================================================
+// CAROUSEL STYLES
+// =====================================================
+
+.carousel-container {
+  width: 100%;
+  margin-bottom: 3rem;
+
+  .slick-slider {
+    margin: 0;
+    padding: 0;
+  }
+
+  .slick-track {
+    display: flex;
+    gap: 0;
+  }
+
+  .slick-slide {
+    outline: none;
+    margin: 0;
+    padding: 0 0.5rem;
+    display: flex !important;
+
+    > div {
+      width: 100%;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+// ===== CAROUSEL ARROWS =====
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  background-color: rgba(23, 48, 54, 0.8);
+  border: none;
+  border-radius: 50%;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 5;
+
+  &:hover {
+    background-color: #D6FC45;
+    color: #173036;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.carousel-arrow-prev {
+  left: 20px;
+}
+
+.carousel-arrow-next {
+  right: 20px;
+}
+
+.carousel-slide {
+  position: relative;
+  width: 100% !important;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f2f2f2;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 1;
+  }
+
+  // Overlay content
+  .carousel-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    z-index: 2;
+  }
+
+  .carousel-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 0.8rem 0;
+    letter-spacing: -0.02em;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    max-width: 90%;
+  }
+
+  .carousel-subtitle {
+    font-size: 0.9rem;
+    margin: 0 0 1.5rem 0;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    max-width: 85%;
+    line-height: 1.5;
+  }
+
+  .carousel-cta {
+    display: inline-block;
+    padding: 12px 36px;
+    background-color: #D6FC45;
+    color: #173036;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(214, 252, 69, 0.3);
+    border: 2px solid #D6FC45;
+    cursor: pointer;
+
+    &:hover {
+      background-color: transparent;
+      color: #D6FC45;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(214, 252, 69, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 1024px) {
+    height: 350px;
+
+    .carousel-title {
+      font-size: 2rem;
+    }
+
+    .carousel-subtitle {
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    height: 300px;
+
+    .carousel-title {
+      font-size: 1.75rem;
+    }
+
+    .carousel-subtitle {
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    height: 250px;
+
+    .carousel-title {
+      font-size: 1.25rem;
+    }
+
+    .carousel-subtitle {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// ===== HERO CAROUSEL VARIANT =====
+.carousel-slide-hero {
+  height: 690px;
+  background-color: #f2f2f2;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .carousel-content {
+    gap: 0;
+  }
+
+  .carousel-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin: 0 0 1rem 0;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .carousel-subtitle {
+    font-size: 1.1rem;
+    margin: 0 0 2rem 0;
+    max-width: 80%;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  .carousel-cta {
+    font-size: 1rem;
+    padding: 14px 44px;
+  }
+
+  @media (max-width: 1024px) {
+    height: 480px;
+
+    .carousel-title {
+      font-size: 2.5rem;
+      margin: 0 0 0.75rem 0;
+    }
+
+    .carousel-subtitle {
+      font-size: 0.95rem;
+      margin: 0 0 1.5rem 0;
+    }
+
+    .carousel-cta {
+      font-size: 0.9rem;
+      padding: 12px 36px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    height: 420px;
+
+    .carousel-title {
+      font-size: 2rem;
+      margin: 0 0 0.6rem 0;
+    }
+
+    .carousel-subtitle {
+      font-size: 0.9rem;
+      margin: 0 0 1.2rem 0;
+      max-width: 90%;
+    }
+
+    .carousel-cta {
+      font-size: 0.85rem;
+      padding: 11px 32px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    height: 300px;
+
+    .carousel-title {
+      font-size: 1.4rem;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .carousel-subtitle {
+      font-size: 0.75rem;
+      margin: 0 0 1rem 0;
+      max-width: 95%;
+    }
+
+    .carousel-cta {
+      font-size: 0.75rem;
+      padding: 10px 24px;
+    }
+  }
+}
+
+// ===== PRODUCT CAROUSEL VARIANT =====
+.carousel-slide-product {
+  height: 400px;
+
+  @media (max-width: 1024px) {
+    height: 350px;
+  }
+
+  @media (max-width: 768px) {
+    height: 300px;
+  }
+
+  @media (max-width: 480px) {
+    height: 250px;
+  }
+}
+
+// Carousel Navigation Dots
+.carousel-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex !important;
+  justify-content: center;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 10;
+
+  li {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 0;
+    border: none;
+
+    &.slick-active {
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    }
+
+    button {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      margin: 0;
+      z-index: 1;
+    }
+  }
+}
+
+.dot {
+  display: none;
+}
+
+// ===== GLASSMORPHISM LAYOUT =====
+.carousel-layout-glassmorphism {
+  .carousel-content-glassmorphism {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    color: white;
+    text-align: left;
+    padding: 2rem;
+    padding-left: 4rem;
+    border-radius: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    box-shadow: none;
+
+    .carousel-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      margin: 0 0 1rem 0;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      filter: drop-shadow(0 0 20px rgba(214, 252, 69, 0.4));
+      max-width: 60%;
+    }
+
+    .carousel-subtitle {
+      font-size: 1.1rem;
+      margin: 0 0 2rem 0;
+      max-width: 50%;
+      font-weight: 500;
+      line-height: 1.6;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .carousel-cta {
+      font-size: 1rem;
+      padding: 14px 44px;
+      background: #D6FC45;
+      color: #173036;
+      border: none;
+      box-shadow: 0 6px 20px rgba(214, 252, 69, 0.4);
+
+      &:hover {
+        background: #c5e63a;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(214, 252, 69, 0.6);
+      }
+    }
+  }
+}
+
+// ===== FLOATING ELEMENTS =====
+.floating-elements {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .floating-element {
+    position: absolute;
+    font-weight: 700;
+    animation: float 3s ease-in-out infinite;
+    pointer-events: auto;
+  }
+
+  // Position variations
+  .floating-top-left {
+    top: 40px;
+    left: 40px;
+  }
+
+  .floating-top-right {
+    top: 40px;
+    right: 40px;
+  }
+
+  .floating-bottom-left {
+    bottom: 40px;
+    left: 40px;
+  }
+
+  .floating-bottom-right {
+    bottom: 40px;
+    right: 40px;
+  }
+
+  // Badge style
+  .floating-badge {
+    .badge-text {
+      display: inline-block;
+      background: linear-gradient(135deg, #D6FC45 0%, #FFD700 100%);
+      color: #173036;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 15px rgba(214, 252, 69, 0.3);
+      transform: rotate(-15deg);
+    }
+  }
+
+  // Star style
+  .floating-star {
+    .star-icon {
+      font-size: 2.5rem;
+      color: #FFD700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+      animation: star-glow 2s ease-in-out infinite;
+    }
+  }
+
+  // Sale/Flash style
+  .floating-sale {
+    .sale-icon {
+      font-size: 2rem;
+      color: #FF6B6B;
+      animation: pulse-icon 1.5s ease-in-out infinite;
+    }
+  }
+
+  // Tag style
+  .floating-tag {
+    .tag-text {
+      display: inline-block;
+      background: rgba(255, 107, 107, 0.9);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+      transform: rotate(12deg);
+    }
+  }
+}
+
+// ===== ANIMATIONS =====
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes star-glow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 1);
+  }
+}
+
+@keyframes pulse-icon {
+  0%, 100% {
+    transform: scale(1);
+    text-shadow: 0 0 0px rgba(255, 107, 107, 0.5);
+  }
+  50% {
+    transform: scale(1.1);
+    text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+  }
+}
+
+// Glassmorphism responsive
+@media (max-width: 1024px) {
+  .carousel-layout-glassmorphism {
+    .carousel-content-glassmorphism {
+      width: 100%;
+      padding: 1.5rem;
+      padding-left: 3rem;
+
+      .carousel-title {
+        font-size: 2.5rem;
+        max-width: 70%;
+      }
+
+      .carousel-subtitle {
+        font-size: 0.95rem;
+        max-width: 60%;
+      }
+    }
+
+    .floating-elements {
+      .floating-top-left,
+      .floating-top-right,
+      .floating-bottom-left,
+      .floating-bottom-right {
+        top: 30px;
+        left: 30px;
+      }
+
+      .floating-badge .badge-text {
+        padding: 7px 14px;
+        font-size: 0.75rem;
+      }
+
+      .floating-star .star-icon {
+        font-size: 2rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-layout-glassmorphism {
+    .carousel-content-glassmorphism {
+      width: 100%;
+      padding: 1.25rem;
+      padding-left: 2rem;
+
+      .carousel-title {
+        font-size: 2rem;
+        max-width: 80%;
+      }
+
+      .carousel-subtitle {
+        font-size: 0.9rem;
+        max-width: 75%;
+      }
+
+      .carousel-cta {
+        font-size: 0.9rem;
+        padding: 11px 32px;
+      }
+    }
+
+    .floating-elements {
+      .floating-top-left,
+      .floating-top-right,
+      .floating-bottom-left,
+      .floating-bottom-right {
+        top: 20px;
+        left: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-layout-glassmorphism {
+    .carousel-content-glassmorphism {
+      width: 100%;
+      padding: 1rem;
+      padding-left: 1.5rem;
+
+      .carousel-title {
+        font-size: 1.4rem;
+        max-width: 90%;
+      }
+
+      .carousel-subtitle {
+        font-size: 0.8rem;
+        margin: 0 0 1.5rem 0;
+        max-width: 90%;
+      }
+
+      .carousel-cta {
+        font-size: 0.8rem;
+        padding: 10px 24px;
+      }
+    }
+
+    .floating-elements {
+      .floating-top-left,
+      .floating-top-right,
+      .floating-bottom-left,
+      .floating-bottom-right {
+        top: 15px;
+        left: 15px;
+      }
+
+      .floating-badge .badge-text {
+        padding: 6px 12px;
+        font-size: 0.7rem;
+      }
+
+      .floating-star .star-icon {
+        font-size: 1.5rem;
+      }
+
+      .floating-sale .sale-icon {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}

@@ -6,7 +6,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
-import { Search, ShoppingCart, Heart, ChevronDown } from 'lucide-react';
+import { Search, ShoppingCart, Heart, ChevronDown, User } from 'lucide-react';
 import './Header.scss';
 
 interface HeaderProps {
@@ -67,6 +67,9 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
           </button>
           <button className="icon-btn wishlist-btn" title="Wishlist">
             <Heart size={20} />
+          </button>
+          <button className="icon-btn user-btn" title="User Account">
+            <User size={20} />
           </button>
         </div>
       </div>
