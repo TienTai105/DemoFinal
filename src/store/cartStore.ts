@@ -1,10 +1,10 @@
-import { create } from 'zustand';
-import type { CartItem, Product } from '../types';
+import { create } from "zustand";
+import type { CartItem } from "../types";
 
 interface CartStore {
   items: CartItem[];
   total: number;
-  addItem: (product: Product) => void;
+  addItem: (item: any) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -15,23 +15,22 @@ export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
   total: 0,
 
-  addItem: (product: Product) => {
+  addItem: (item: any) => {
     set((state: CartStore) => {
-      const existingItem = state.items.find((item: CartItem) => item.id === product.id);
+      const existing = state.items.find((x) => x.id === item.id);
 
-      if (existingItem) {
-        const updatedItems = state.items.map((item: CartItem) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+      if (existing) {
+        const updated = state.items.map((x) =>
+          x.id === item.id
+            ? { ...x, quantity: x.quantity + (item.quantity || 1) }
+            : x
         );
-        return {
-          items: updatedItems,
-          total: get().getTotal(),
-        };
+
+        return { items: updated, total: get().getTotal() };
       }
 
-      const newItems: CartItem[] = [...state.items, { ...product, quantity: 1 }];
       return {
-        items: newItems,
+        items: [...state.items, { ...item }],
         total: get().getTotal(),
       };
     });
@@ -39,32 +38,23 @@ export const useCartStore = create<CartStore>((set, get) => ({
 
   removeItem: (productId: string) => {
     set((state: CartStore) => {
-      const updatedItems = state.items.filter((item: CartItem) => item.id !== productId);
-      return {
-        items: updatedItems,
-        total: get().getTotal(),
-      };
+      const updated = state.items.filter((x) => x.id !== productId);
+      return { items: updated, total: get().getTotal() };
     });
   },
 
   updateQuantity: (productId: string, quantity: number) => {
     set((state: CartStore) => {
       if (quantity <= 0) {
-        const updatedItems = state.items.filter((item: CartItem) => item.id !== productId);
-        return {
-          items: updatedItems,
-          total: get().getTotal(),
-        };
+        const removed = state.items.filter((x) => x.id !== productId);
+        return { items: removed, total: get().getTotal() };
       }
 
-      const updatedItems = state.items.map((item: CartItem) =>
-        item.id === productId ? { ...item, quantity } : item
+      const updated = state.items.map((x) =>
+        x.id === productId ? { ...x, quantity } : x
       );
 
-      return {
-        items: updatedItems,
-        total: get().getTotal(),
-      };
+      return { items: updated, total: get().getTotal() };
     });
   },
 
@@ -74,6 +64,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
 
   getTotal: () => {
     const state = get();
-    return state.items.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0);
+    return state.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
   },
 }));

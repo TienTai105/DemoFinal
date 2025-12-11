@@ -1,173 +1,181 @@
-import React from 'react';
-import { useCartStore } from '../store/cartStore';
-import { Container, Row, Col, Button } from 'reactstrap';
-import { Star, ShoppingCart } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import "./ProductDetailPage.scss";
 
-// Mock product data
+// ⭐ THÊM IMPORT ZUSTAND
+import { useCartStore } from "../store/cartStore";
+
 const mockProduct = {
-  id: '1',
-  name: 'Premium Wireless Headphones',
-  description: 'High-quality sound with noise cancellation and long battery life',
-  fullDescription: `Our Premium Wireless Headphones deliver exceptional audio quality with active noise cancellation technology. Perfect for music enthusiasts, professionals, and casual listeners alike.
+  id: "1",
+  name: "Base Crop",
+  price: 50,
+  description: "A minimal essential designed for movement and ease...",
+  colors: ["Black", "White", "Gray"],
+  sizes: ["XXXL", "XXS", "XS", "S", "O", "L", "XL"],
 
-Features:
-- Active Noise Cancellation (ANC)
-- 30-hour battery life
-- Wireless Bluetooth connectivity
-- Comfortable over-ear design
-- Built-in microphone for calls
-- Premium materials and construction
-
-Specifications:
-- Driver Size: 40mm
-- Frequency Response: 20Hz - 20kHz
-- Impedance: 32 Ohms
-- Weight: 250g`,
-  price: 129.99,
-  originalPrice: 199.99,
-  image: 'https://via.placeholder.com/500x500?text=Headphones',
-  category: 'Electronics',
-  rating: 5,
-  reviews: 234,
-  stock: 15,
+  images: [
+    "/images/p_img2_1.png",
+    "/images/p_img2_2.png",
+    "/images/p_img2_3.png",
+    "/images/p_img2_4.png",
+  ],
 };
 
-export const ProductDetailPage: React.FC = () => {
-  const { addItem } = useCartStore();
-  const [quantity, setQuantity] = React.useState(1);
+const related = [
+  {
+    id: 2,
+    name: "Mono Tee",
+    subtitle: "White / Black",
+    price: 39,
+    img: "/images/p_img2_1.png",
+  },
+  {
+    id: 3,
+    name: "Urban Sole",
+    subtitle: "Black / White",
+    price: 69,
+    img: "/images/p_img2_2.png",
+  },
+  {
+    id: 4,
+    name: "Pure Joggers",
+    subtitle: "White",
+    price: 59,
+    img: "/images/p_img2_3.png",
+  },
+  {
+    id: 5,
+    name: "Contrast Tee",
+    subtitle: "Black/White",
+    price: 49,
+    img: "/images/p_img2_3.png",
+  },
+];
 
-  const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addItem(mockProduct);
-    }
-    alert('Product added to cart!');
+const ProductDetailPage: React.FC = () => {
+  useParams();
+
+  // ⭐ Auto scroll khi vào trang
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const p = mockProduct;
+
+  // ⭐ LẤY HÀM addItem TỪ ZUSTAND
+  const addItem = useCartStore((state) => state.addItem);
+
+  const [mainImg, setMainImg] = useState(p.images[0]);
+  const [color, setColor] = useState(p.colors[0]);
+  const [size, setSize] = useState(p.sizes[0]);
+  const [qty, setQty] = useState(1);
+
+  // ⭐ ADD TO CART GỬI VÀO ZUSTAND
+  const handleAdd = () => {
+    const item = {
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      quantity: qty, 
+      color,
+      size,
+    };
+
+    addItem(item);
+
+    console.log("ZUSTAND CART:", item);
+    alert("Đã thêm vào giỏ hàng!");
   };
 
   return (
-    <Container className="product-detail-page py-5">
-      <Row>
-        <Col lg={6} className="mb-4">
-          <div className="product-image-container">
-            <img
-              src={mockProduct.image}
-              alt={mockProduct.name}
-              style={{ width: '100%', borderRadius: '8px' }}
-            />
+    <div className="pdp">
+      <div className="pdp-wrapper">
+        {/* LEFT GALLERY */}
+        <div className="pdp-gallery">
+          <div className="gallery-list">
+            {p.images.map((img, i) => (
+              <img
+                key={i}
+                className={`thumb ${mainImg === img ? "active" : ""}`}
+                src={img}
+                alt=""
+                onClick={() => setMainImg(img)}
+              />
+            ))}
           </div>
-        </Col>
-        <Col lg={6}>
-          <div className="product-info">
-            <h1 style={{ marginBottom: '1rem', fontSize: '2rem', fontWeight: 'bold' }}>
-              {mockProduct.name}
-            </h1>
 
-            <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  size={20}
-                  style={{
-                    color: i < Math.floor(mockProduct.rating) ? '#ffc107' : '#dee2e6',
-                    fill: i < Math.floor(mockProduct.rating) ? '#ffc107' : 'none',
-                  }}
-                />
-              ))}
-              <span style={{ marginLeft: '0.5rem', color: '#6c757d' }}>
-                {mockProduct.rating} stars ({mockProduct.reviews} reviews)
-              </span>
-            </div>
-
-            <div style={{ marginBottom: '2rem' }}>
-              <span style={{ fontSize: '2rem', fontWeight: 'bold', color: '#007bff' }}>
-                ${mockProduct.price.toFixed(2)}
-              </span>
-              {mockProduct.originalPrice && (
-                <span
-                  style={{
-                    marginLeft: '1rem',
-                    fontSize: '1.1rem',
-                    textDecoration: 'line-through',
-                    color: '#6c757d',
-                  }}
-                >
-                  ${mockProduct.originalPrice.toFixed(2)}
-                </span>
-              )}
-            </div>
-
-            <div style={{ marginBottom: '2rem', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
-              {mockProduct.fullDescription}
-            </div>
-
-            <div style={{ marginBottom: '2rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                Quantity:
-              </label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    border: '1px solid #dee2e6',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  -
-                </button>
-                <input
-                  type="number"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  style={{
-                    width: '60px',
-                    padding: '0.5rem',
-                    border: '1px solid #dee2e6',
-                    borderRadius: '4px',
-                    textAlign: 'center',
-                  }}
-                />
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    border: '1px solid #dee2e6',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            <Button
-              color="primary"
-              size="lg"
-              onClick={handleAddToCart}
-              style={{ width: '100%', marginBottom: '1rem' }}
-            >
-              <ShoppingCart size={20} style={{ marginRight: '0.5rem' }} />
-              Add to Cart
-            </Button>
-
-            <div style={{ padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Stock:</strong> {mockProduct.stock > 0 ? `${mockProduct.stock} in stock` : 'Out of stock'}
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Category:</strong> {mockProduct.category}
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Free Shipping:</strong> On orders over $50
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>30-Day Return:</strong> Money-back guarantee
-              </p>
-            </div>
+          <div className="gallery-main">
+            <img src={mainImg} alt="" />
           </div>
-        </Col>
-      </Row>
-    </Container>
+        </div>
+
+        {/* RIGHT INFO */}
+        <div className="pdp-info">
+          <div className="breadcrumb">Home Page / Catalog / Base Crop</div>
+
+          <h1 className="title">{p.name}</h1>
+          <div className="price">€{p.price.toFixed(2)}</div>
+
+          <div className="label">Description:</div>
+          <p className="desc">{p.description}</p>
+
+          <div className="label">Color:</div>
+          <div className="color-list">
+            {p.colors.map((c) => (
+              <button
+                key={c}
+                className={`pill ${color === c ? "active" : ""}`}
+                onClick={() => setColor(c)}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+
+          <div className="label">Size:</div>
+          <div className="size-list">
+            {p.sizes.map((s) => (
+              <button
+                key={s}
+                className={`pill ${size === s ? "active" : ""}`}
+                onClick={() => setSize(s)}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+
+          <div className="actions">
+            <div className="qty-box">
+              <button onClick={() => setQty(Math.max(1, qty - 1))}>-</button>
+              <div className="qty">{qty}</div>
+              <button onClick={() => setQty(qty + 1)}>+</button>
+            </div>
+
+            <button className="btn-add" onClick={handleAdd}>
+              Add To Cart – €{(p.price * qty).toFixed(2)}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* RELATED PRODUCT */}
+      <div className="related">
+        <h2>Related Product</h2>
+
+        <div className="related-grid">
+          {related.map((item) => (
+            <div key={item.id} className="rel-card">
+              <img src={item.img} alt="" />
+              <div className="rel-name">{item.name}</div>
+              <div className="rel-sub">{item.subtitle}</div>
+              <div className="rel-price">€{item.price}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
+
+export default ProductDetailPage;

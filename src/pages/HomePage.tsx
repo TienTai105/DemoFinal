@@ -1,8 +1,3 @@
-// =====================================================
-// HOME PAGE
-// =====================================================
-// Main landing page with hero, category filters, and 4-column product grid
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Carousel } from '../components/Carousel/Carousel';
@@ -189,6 +184,7 @@ export const HomePage: React.FC = () => {
   const categories = Array.from(new Set(allProducts.map((product) => product.category)));
   const displayCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES;
 
+  // 👉 Hàm chuyển sang trang chi tiết
   const handleViewDetails = (id: string) => {
     navigate(`/product/${id}`);
   };
@@ -279,12 +275,13 @@ export const HomePage: React.FC = () => {
           <div className="section-header-row">
             <h2 className="section-title">New Arrivals</h2>
 
-            {/* Category Filter Tabs */}
             <div className="category-tabs">
               {displayCategories.map((category: string) => (
                 <button
                   key={category}
-                  className={`category-tab ${activeCategory === category ? 'active' : ''}`}
+                  className={`category-tab ${
+                    activeCategory === category ? 'active' : ''
+                  }`}
                   onClick={() => setActiveCategory(category)}
                 >
                   {category}
@@ -297,7 +294,6 @@ export const HomePage: React.FC = () => {
             </a>
           </div>
 
-          {/* 4-Column Products Grid */}
           <div className="products-grid">
             {paginatedProducts.map((product, index) => (
               <div key={product.id} data-aos="fade-up" data-aos-delay={`${50 + index * 50}`}>

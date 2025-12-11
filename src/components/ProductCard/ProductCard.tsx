@@ -26,17 +26,16 @@ interface ProductCardProps {
  * 
  * Design from component wireframe with Electric Lime accents
  */
-export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
   const { addItem } = useCartStore();
 
   const handleAddToCart = () => {
     addItem(product);
   };
 
-  // Handle image - support both string and array
-  const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
-  // Support both absolute URLs and relative paths
-  const productImage = rawImage?.startsWith('http') ? rawImage : `/images${rawImage}`;
+  const handleCardClick = () => {
+    onViewDetails?.(product.id);
+  };
 
   // Calculate discount percentage if on sale
   const discountPercent = product.originalPrice
@@ -44,7 +43,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     : 0;
 
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
       {/* Product Image Container */}
       <div className="product-card-image">
         <img src={productImage} alt={product.name} />
