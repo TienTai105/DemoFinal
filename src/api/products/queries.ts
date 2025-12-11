@@ -41,14 +41,16 @@ const fetchProductById = async (id: string): Promise<Product> => {
 /**
  * Hook to fetch single product by ID
  */
-export const useProductById = (id: string | undefined) => {
+export const useProductById = (id?: string) => {
   return useQuery({
-    queryKey: ['products', id],
+    queryKey: ['product', id],
     queryFn: () => fetchProductById(id!),
     enabled: !!id,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
     gcTime: 1000 * 60 * 10,
-    retry: 2,
+    retry: 3,
+    refetchOnWindowFocus: true, // Refetch when window regains focus
+    refetchOnReconnect: true,
   });
 };
 

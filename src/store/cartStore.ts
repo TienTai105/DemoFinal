@@ -5,8 +5,8 @@ interface CartStore {
   items: CartItem[];
   total: number;
   addItem: (item: any) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeItem: (itemKey: string) => void;
+  updateQuantity: (itemKey: string, quantity: number) => void;
   clearCart: () => void;
   getTotal: () => number;
 }
@@ -17,11 +17,17 @@ export const useCartStore = create<CartStore>((set, get) => ({
 
   addItem: (item: any) => {
     set((state: CartStore) => {
-      const existing = state.items.find((x) => x.id === item.id);
+      // Create unique key based on id + size + color
+      const itemKey = `${item.id}-${item.size || 'default'}-${item.color || 'default'}`;
+      
+      const existing = state.items.find(
+        (x) => `${x.id}-${x.size || 'default'}-${x.color || 'default'}` === itemKey
+      );
 
       if (existing) {
+        // Same product, size, and color -> increase quantity
         const updated = state.items.map((x) =>
-          x.id === item.id
+          `${x.id}-${x.size || 'default'}-${x.color || 'default'}` === itemKey
             ? { ...x, quantity: x.quantity + (item.quantity || 1) }
             : x
         );
@@ -29,6 +35,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
         return { items: updated, total: get().getTotal() };
       }
 
+      // Different size or color -> add as new line item
       return {
         items: [...state.items, { ...item }],
         total: get().getTotal(),
@@ -36,22 +43,28 @@ export const useCartStore = create<CartStore>((set, get) => ({
     });
   },
 
-  removeItem: (productId: string) => {
+  removeItem: (itemKey: string) => {
     set((state: CartStore) => {
-      const updated = state.items.filter((x) => x.id !== productId);
+      const updated = state.items.filter(
+        (x) => `${x.id}-${x.size || 'default'}-${x.color || 'default'}` !== itemKey
+      );
       return { items: updated, total: get().getTotal() };
     });
   },
 
-  updateQuantity: (productId: string, quantity: number) => {
+  updateQuantity: (itemKey: string, quantity: number) => {
     set((state: CartStore) => {
       if (quantity <= 0) {
-        const removed = state.items.filter((x) => x.id !== productId);
+        const removed = state.items.filter(
+          (x) => `${x.id}-${x.size || 'default'}-${x.color || 'default'}` !== itemKey
+        );
         return { items: removed, total: get().getTotal() };
       }
 
       const updated = state.items.map((x) =>
-        x.id === productId ? { ...x, quantity } : x
+        `${x.id}-${x.size || 'default'}-${x.color || 'default'}` === itemKey
+          ? { ...x, quantity }
+          : x
       );
 
       return { items: updated, total: get().getTotal() };

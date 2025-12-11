@@ -126,38 +126,6 @@ const IMAGE_GRID_ITEMS = [
   },
 ];
 
-// Category grid items - 4 category cards
-const CATEGORY_ITEMS = [
-  {
-    id: 'cat-1',
-    image: '/images/p_img1.png',
-    title: 'Men',
-    count: 45,
-    link: '/category/men',
-  },
-  {
-    id: 'cat-2',
-    image: '/images/p_img2.png',
-    title: 'Women',
-    count: 58,
-    link: '/category/women',
-  },
-  {
-    id: 'cat-3',
-    image: '/images/p_img3.png',
-    title: 'Accessories',
-    count: 32,
-    link: '/category/accessories',
-  },
-  {
-    id: 'cat-4',
-    image: '/images/p_img4.png',
-    title: 'Shoes',
-    count: 28,
-    link: '/category/shoes',
-  },
-];
-
 /**
  * HomePage Component
  * Displays:
@@ -175,7 +143,7 @@ export const HomePage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState("Men");
   const [currentPageNewArrivals, setCurrentPageNewArrivals] = useState(1);
   const [currentPageBestSellers, setCurrentPageBestSellers] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 5;
 
   // Fetch products from API
   const { data: allProducts = [], isLoading, error } = useProducts();
@@ -183,6 +151,25 @@ export const HomePage: React.FC = () => {
   // Extract unique categories from products
   const categories = Array.from(new Set(allProducts.map((product) => product.category)));
   const displayCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES;
+
+  // Generate dynamic category items with product count
+  const dynamicCategoryItems = displayCategories.map((category, index) => {
+    const count = allProducts.filter((p) => p.category === category).length;
+    const categoryImages = [
+      '/images/p_img1.png',
+      '/images/p_img2.png',
+      '/images/p_img3.png',
+      '/images/p_img4.png',
+    ];
+    
+    return {
+      id: `cat-${index}`,
+      image: categoryImages[index % categoryImages.length],
+      title: category,
+      count,
+      link: `/category/${category.toLowerCase()}`,
+    };
+  });
 
   // 👉 Hàm chuyển sang trang chi tiết
   const handleViewDetails = (id: string) => {
@@ -265,7 +252,7 @@ export const HomePage: React.FC = () => {
       <section className="category-grid-section" data-aos="fade-up" data-aos-delay="200">
         <div className="category-grid-container">
           <h2 className="section-title">Shop by Category</h2>
-          <CategoryGrid items={CATEGORY_ITEMS} />
+          <CategoryGrid items={dynamicCategoryItems} />
         </div>
       </section>
 

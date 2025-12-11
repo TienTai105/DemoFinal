@@ -1,103 +1,122 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import "./ProductDetailPage.scss";
 
-// ⭐ THÊM IMPORT ZUSTAND
+// ⭐ IMPORT HOOKS
 import { useCartStore } from "../store/cartStore";
-
-const mockProduct = {
-  id: "1",
-  name: "Base Crop",
-  price: 50,
-  description: "A minimal essential designed for movement and ease...",
-  colors: ["Black", "White", "Gray"],
-  sizes: ["XXXL", "XXS", "XS", "S", "O", "L", "XL"],
-
-  images: [
-    "/images/p_img2_1.png",
-    "/images/p_img2_2.png",
-    "/images/p_img2_3.png",
-    "/images/p_img2_4.png",
-  ],
-};
-
-const related = [
-  {
-    id: 2,
-    name: "Mono Tee",
-    subtitle: "White / Black",
-    price: 39,
-    img: "/images/p_img2_1.png",
-  },
-  {
-    id: 3,
-    name: "Urban Sole",
-    subtitle: "Black / White",
-    price: 69,
-    img: "/images/p_img2_2.png",
-  },
-  {
-    id: 4,
-    name: "Pure Joggers",
-    subtitle: "White",
-    price: 59,
-    img: "/images/p_img2_3.png",
-  },
-  {
-    id: 5,
-    name: "Contrast Tee",
-    subtitle: "Black/White",
-    price: 49,
-    img: "/images/p_img2_3.png",
-  },
-];
+import { useProductById, useProducts } from "../api/products/queries";
+import { ProductCard } from "../components/ProductCard/ProductCard";
 
 const ProductDetailPage: React.FC = () => {
-  useParams();
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  // ⭐ Fetch product detail từ API
+  const { data: product, isLoading, error } = useProductById(id);
+  
+  // Debug log
+  console.log('ProductDetailPage Debug:', { id, isLoading, error, product });
+
+  // ⭐ Fetch all products để lấy related products
+  const { data: allProducts = [] } = useProducts();
 
   // ⭐ Auto scroll khi vào trang
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
-
-  const p = mockProduct;
+  }, [id]);
 
   // ⭐ LẤY HÀM addItem TỪ ZUSTAND
-  const addItem = useCartStore((state) => state.addItem);
+  const { addItem } = useCartStore();
 
-  const [mainImg, setMainImg] = useState(p.images[0]);
-  const [color, setColor] = useState(p.colors[0]);
-  const [size, setSize] = useState(p.sizes[0]);
+  const [mainImg, setMainImg] = useState<string>("");
+  const [color, setColor] = useState("Black");
+  const [size, setSize] = useState("M");
   const [qty, setQty] = useState(1);
+
+  // Set default image khi product load
+  useEffect(() => {
+    if (product) {
+      const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
+      const productImage = rawImage?.startsWith("http")
+        ? rawImage
+        : `/images${rawImage}`;
+      setMainImg(productImage);
+    }
+  }, [product]);
+
+  // ⭐ GET RELATED PRODUCTS - cùng category, exclude product hiện tại
+  const relatedProducts = allProducts
+    .filter((p) => p.category === product?.category && p.id !== product?.id)
+    .slice(0, 4);
 
   // ⭐ ADD TO CART GỬI VÀO ZUSTAND
   const handleAdd = () => {
+    if (!product) return;
+
     const item = {
-      id: p.id,
-      name: p.name,
-      price: p.price,
-      quantity: qty, 
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: qty,
+      image: product.image,
       color,
       size,
     };
 
     addItem(item);
-
-    console.log("ZUSTAND CART:", item);
-    alert("Đã thêm vào giỏ hàng!");
+    toast.success(`Đã thêm ${qty} ${product.name} vào giỏ hàng!`);
   };
+
+  // ⭐ LOADING STATE
+  if (!id) {
+    return <div className="pdp"><p>Invalid product ID</p></div>;
+  }
+
+  if (isLoading) {
+    return <div className="pdp"><p>Loading...</p></div>;
+  }
+
+  // ⭐ ERROR STATE
+  if (error || !product) {
+    return (
+      <div className="pdp">
+        <p>Product not found</p>
+        <button onClick={() => navigate("/")} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}>
+          Back to Home
+        </button>
+      </div>
+    );
+  }
+
+  // Handle image
+  const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
+  const images = [rawImage]; // API chỉ trả 1 ảnh, sử dụng làm gallery main
 
   return (
     <div className="pdp">
+      {/* Breadcrumb */}
+      <div className="breadcrumb-top">
+        <button className="breadcrumb-link" onClick={() => navigate("/")}>
+          Home
+        </button>
+        <span className="breadcrumb-sep">/</span>
+        <button className="breadcrumb-link" onClick={() => navigate(`/?category=${product.category}`)}>
+          {product.category}
+        </button>
+        <span className="breadcrumb-sep">/</span>
+        <span className="breadcrumb-current">{product.name}</span>
+      </div>
+
       <div className="pdp-wrapper">
         {/* LEFT GALLERY */}
         <div className="pdp-gallery">
           <div className="gallery-list">
-            {p.images.map((img, i) => (
+            {images.map((img, i) => (
               <img
                 key={i}
                 className={`thumb ${mainImg === img ? "active" : ""}`}
-                src={img}
+                src={img?.startsWith("http") ? img : `/images${img}`}
                 alt=""
                 onClick={() => setMainImg(img)}
               />
@@ -105,44 +124,50 @@ const ProductDetailPage: React.FC = () => {
           </div>
 
           <div className="gallery-main">
-            <img src={mainImg} alt="" />
+            <img src={mainImg} alt={product.name} />
           </div>
         </div>
 
         {/* RIGHT INFO */}
         <div className="pdp-info">
-          <div className="breadcrumb">Home Page / Catalog / Base Crop</div>
 
-          <h1 className="title">{p.name}</h1>
-          <div className="price">€{p.price.toFixed(2)}</div>
+          <h1 className="title">{product.name}</h1>
+          
+          <div className="price">{product.price.toLocaleString("vi-VN")}.000đ</div>
 
-          <div className="label">Description:</div>
-          <p className="desc">{p.description}</p>
-
-          <div className="label">Color:</div>
-          <div className="color-list">
-            {p.colors.map((c) => (
-              <button
-                key={c}
-                className={`pill ${color === c ? "active" : ""}`}
-                onClick={() => setColor(c)}
-              >
-                {c}
-              </button>
-            ))}
+          <div className="section">
+            <div className="label">Description:</div>
+            <p className="desc">{product.description}</p>
           </div>
 
-          <div className="label">Size:</div>
-          <div className="size-list">
-            {p.sizes.map((s) => (
-              <button
-                key={s}
-                className={`pill ${size === s ? "active" : ""}`}
-                onClick={() => setSize(s)}
-              >
-                {s}
-              </button>
-            ))}
+          <div className="section">
+            <div className="label">Color:</div>
+            <div className="color-list">
+              {["Black", "White", "Gray"].map((c) => (
+                <button
+                  key={c}
+                  className={`pill ${color === c ? "active" : ""}`}
+                  onClick={() => setColor(c)}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="section">
+            <div className="label">Size:</div>
+            <div className="size-list">
+              {["XS", "S", "M", "L", "XL"].map((s: string) => (
+                <button
+                  key={s}
+                  className={`pill ${size === s ? "active" : ""}`}
+                  onClick={() => setSize(s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="actions">
@@ -153,7 +178,7 @@ const ProductDetailPage: React.FC = () => {
             </div>
 
             <button className="btn-add" onClick={handleAdd}>
-              Add To Cart – €{(p.price * qty).toFixed(2)}
+              Add To Cart – {(product.price * qty).toLocaleString("vi-VN")}.000đ
             </button>
           </div>
         </div>
@@ -164,14 +189,17 @@ const ProductDetailPage: React.FC = () => {
         <h2>Related Product</h2>
 
         <div className="related-grid">
-          {related.map((item) => (
-            <div key={item.id} className="rel-card">
-              <img src={item.img} alt="" />
-              <div className="rel-name">{item.name}</div>
-              <div className="rel-sub">{item.subtitle}</div>
-              <div className="rel-price">€{item.price}</div>
-            </div>
-          ))}
+          {relatedProducts.length > 0 ? (
+            relatedProducts.map((item) => (
+              <ProductCard
+                key={item.id}
+                product={item}
+                onViewDetails={(productId) => navigate(`/product/${productId}`)}
+              />
+            ))
+          ) : (
+            <p>No related products found</p>
+          )}
         </div>
       </div>
     </div>

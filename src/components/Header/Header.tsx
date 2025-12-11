@@ -3,8 +3,8 @@
 // =====================================================
 // Main navigation header with logo, menu, and action icons
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 import { Search, ShoppingCart, Heart, ChevronDown, User } from 'lucide-react';
 import './Header.scss';
@@ -13,29 +13,67 @@ interface HeaderProps {
   onCartClick?: () => void;
 }
 
+// Main categories
+const MAIN_CATEGORIES = [
+  { name: 'Men', icon: '👔' },
+  { name: 'Women', icon: '👗' },
+  { name: 'Kids', icon: '👶' },
+  { name: 'Baby', icon: '🍼' },
+];
+
 /**
  * Header Component
  * Main navigation with:
  * - Logo/Brand name
- * - Navigation menu (Shop, Collections, About, Contacts)
+ * - Navigation menu (Shop with dropdown, Collections, About, Contacts)
  * - Search, cart, and wishlist icons
  * - Auth links (Login/Register or user menu)
  */
 export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
+  const navigate = useNavigate();
   const { items } = useCartStore();
-  // TODO: Auth functionality to be implemented
-  // const { user, logout } = useAuthStore();
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const cartCount = items.length;
+
+  const handleCategoryClick = (category: string) => {
+    setShowDropdown(false);
+    navigate(`/?category=${category}`);
+  };
 
   return (
     <header className="header">
       <div className="header-container">
         {/* Left Section - Navigation Menu */}
         <nav className="header-nav-left">
-          <Link to="/products" className="nav-item">
-            <span className="nav-text">Shop</span>
-            <ChevronDown size={16} className="nav-arrow" />
-          </Link>
+          {/* Shop Dropdown */}
+          <div className="nav-dropdown">
+            <button 
+              className="nav-item shop-btn"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              <span className="nav-text">Shop</span>
+              <ChevronDown size={16} className="nav-arrow" />
+            </button>
+
+            {/* Dropdown Menu */}
+            {showDropdown && (
+              <div className="dropdown-menu-portal">
+                <div className="dropdown-content">
+                  {MAIN_CATEGORIES.map((category) => (
+                    <button
+                      key={category.name}
+                      className="dropdown-item"
+                      onClick={() => handleCategoryClick(category.name)}
+                    >
+                      <span className="dropdown-item-title">{category.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           <Link to="/products" className="nav-item">
             Collections
           </Link>

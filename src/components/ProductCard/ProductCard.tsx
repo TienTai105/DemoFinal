@@ -5,7 +5,6 @@
 
 import React from 'react';
 import type { Product } from '../../types';
-import { useCartStore } from '../../store/cartStore';
 import { Badge } from '../UI/Badge/Badge';
 import { Plus, Heart } from 'lucide-react';
 import './ProductCard.scss';
@@ -27,15 +26,17 @@ interface ProductCardProps {
  * Design from component wireframe with Electric Lime accents
  */
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
-  const { addItem } = useCartStore();
+  
 
-  const handleAddToCart = () => {
-    addItem(product);
-  };
 
   const handleCardClick = () => {
     onViewDetails?.(product.id);
   };
+
+  // Handle image - support both string and array
+  const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
+  // Support both absolute URLs and relative paths
+  const productImage = rawImage?.startsWith('http') ? rawImage : `/images${rawImage}`;
 
   // Calculate discount percentage if on sale
   const discountPercent = product.originalPrice
@@ -51,7 +52,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         {/* Add to Cart Button - Circular */}
         <button
           className="add-to-cart-btn"
-          onClick={handleAddToCart}
           disabled={product.stock !== undefined && product.stock === 0}
           title="Add to Cart"
         >

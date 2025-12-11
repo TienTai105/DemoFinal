@@ -1,13 +1,33 @@
 // =====================================================
 // HOME PAGE STYLES
 // =====================================================
-// Styles for hero section, category tabs, and 4-column product grid
+// Styles for hero section, category tabs, and 5-column product grid
 
 .home-page {
   display: flex;
   flex-direction: column;
   width: 100%;
   background-color: #ffffff;
+}
+
+// Global container - unified max-width
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+
+  @media (max-width: 1024px) {
+    padding: 0 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 1rem;
+  }
 }
 
 // ===== HERO CAROUSEL SECTION =====
@@ -19,21 +39,20 @@
 }
 
 .hero-carousel-container {
-  max-width: 1450px;
+  width: 100%;
   margin: 0 auto;
   padding: 0 2rem;
-  width: 100%;
 
   @media (max-width: 1024px) {
-    padding: 0 1.5rem;
+    padding: 0 2rem;
   }
 
   @media (max-width: 768px) {
-    padding: 0 1rem;
+    padding: 0 2rem;
   }
 
   @media (max-width: 480px) {
-    padding: 0 0.75rem;
+    padding: 0 1rem;
   }
 }
 
@@ -41,33 +60,37 @@
 .carousel-section {
   width: 100%;
   background-color: #ffffff;
-  padding: 2rem 0 2rem 0;
+  padding: 2.5rem 0;
   overflow: visible;
 
   @media (max-width: 1024px) {
-    padding: 1.75rem 0 1.75rem 0;
+    padding: 2rem 0;
   }
 
   @media (max-width: 768px) {
-    padding: 1.5rem 0 1.5rem 0;
+    padding: 1.5rem 0;
   }
 
   @media (max-width: 480px) {
-    padding: 1rem 0 1rem 0;
+    padding: 1rem 0;
   }
 }
 
 .carousel-container-wrapper {
-  max-width: 1370px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 0 2rem;
+  }
 
   @media (max-width: 768px) {
-    padding: 0 1rem;
+    padding: 0 2rem;
   }
 
   @media (max-width: 480px) {
-    padding: 0 0.75rem;
+    padding: 0 1rem;
   }
 }
 
@@ -79,16 +102,20 @@
 }
 
 .shipping-banner-container {
-  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 0 2rem;
+  }
 
   @media (max-width: 768px) {
-    padding: 0 1rem;
+    padding: 0 2rem;
   }
 
   @media (max-width: 480px) {
-    padding: 0 0.75rem;
+    padding: 0 1rem;
   }
 }
 
@@ -96,41 +123,39 @@
 .products-section {
   width: 100%;
   background-color: #ffffff;
-  padding: 2rem 0 2rem 0;
+  padding: 2.5rem 0;
   overflow: visible;
 
   @media (max-width: 1024px) {
-    padding: 1.75rem 0 1.75rem 0;
+    padding: 2rem 0;
   }
 
   @media (max-width: 768px) {
-    padding: 1.5rem 0 1.5rem 0;
+    padding: 1.5rem 0;
   }
 
   @media (max-width: 480px) {
-    padding: 1rem 0 1rem 0;
+    padding: 1rem 0;
   }
 }
 
 // ===== PRODUCTS CONTAINER =====
 .products-container {
-  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   padding: 0 2rem;
   overflow: visible;
 
   @media (max-width: 1024px) {
-    max-width: 1200px;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
   }
 
   @media (max-width: 768px) {
-    max-width: 100%;
-    padding: 0 1rem;
+    padding: 0 2rem;
   }
 
   @media (max-width: 480px) {
-    padding: 0 0.75rem;
+    padding: 0 1rem;
   }
 }
 
@@ -281,22 +306,37 @@
 .image-grid-section {
   width: 100%;
   background-color: #ffffff;
-  padding: 0;
+  padding: 2.5rem 0;
   overflow: visible;
-}
-
-.image-grid-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
-  width: 100%;
 
   @media (max-width: 1024px) {
-    padding: 1.5rem;
+    padding: 2rem 0;
   }
 
   @media (max-width: 768px) {
-    padding: 1rem;
+    padding: 1.5rem 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0;
+  }
+}
+
+.image-grid-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 1rem;
   }
 
   @media (max-width: 480px) {
@@ -326,14 +366,14 @@
   }
 }
 
-// ===== PRODUCTS GRID - 4 COLUMNS =====
+// ===== PRODUCTS GRID - 5 COLUMNS =====
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.5rem;
   width: 100%;
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1440px) {
     grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
   }
@@ -388,26 +428,37 @@
 .category-grid-section {
   width: 100%;
   background-color: #ffffff;
-  padding: 0;
+  padding: 2.5rem 0;
   overflow: visible;
-}
-
-.category-grid-container {
-  max-width: 1450px;
-  margin: 0 auto;
-  width: 100%;
-  padding: 2rem;
 
   @media (max-width: 1024px) {
-    padding: 1.5rem;
+    padding: 2rem 0;
   }
 
   @media (max-width: 768px) {
-    padding: 1rem;
+    padding: 1.5rem 0;
   }
 
   @media (max-width: 480px) {
-    padding: 0.75rem;
+    padding: 1rem 0;
+  }
+}
+
+.category-grid-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 1rem;
   }
 
   .section-title {

@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { Toaster } from 'react-hot-toast';
 import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer/Footer';
 import { Cart } from './components/Cart/Cart';
@@ -66,6 +67,27 @@ function App() {
 
           {/* Footer */}
           <Footer />
+
+          {/* Toast Notifications */}
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#173036',
+                color: '#fff',
+                fontSize: '14px',
+                borderRadius: '8px',
+                padding: '16px',
+              },
+              success: {
+                style: {
+                  background: '#173036',
+                },
+                icon: '✓',
+              },
+            }}
+          />
         </div>
       </Router>
     </QueryClientProvider>

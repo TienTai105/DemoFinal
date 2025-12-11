@@ -190,7 +190,7 @@
 
 // ===== HERO CAROUSEL VARIANT =====
 .carousel-slide-hero {
-  height: 690px;
+  height: 800px;
   background-color: #f2f2f2;
 
   img {
@@ -226,7 +226,7 @@
   }
 
   @media (max-width: 1024px) {
-    height: 480px;
+    height: 550px;
 
     .carousel-title {
       font-size: 2.5rem;
@@ -245,7 +245,7 @@
   }
 
   @media (max-width: 768px) {
-    height: 420px;
+    height: 480px;
 
     .carousel-title {
       font-size: 2rem;
@@ -265,7 +265,7 @@
   }
 
   @media (max-width: 480px) {
-    height: 300px;
+    height: 380px;
 
     .carousel-title {
       font-size: 1.4rem;
