@@ -4,7 +4,7 @@ import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer/Footer';
 import { Cart } from './components/Cart/Cart';
 import { HomePage } from './pages/HomePage';
-import { ProductDetailPage } from './pages/ProductDetailPage';
+import ProductDetailPage  from './pages/ProductDetailPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import './App.scss';
 

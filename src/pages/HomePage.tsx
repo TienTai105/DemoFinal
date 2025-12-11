@@ -1,18 +1,11 @@
-// =====================================================
-// HOME PAGE
-// =====================================================
-// Main landing page with hero, category filters, and 4-column product grid
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Hero } from '../components/Hero/Hero';
 import { ProductCard } from '../components/ProductCard/ProductCard';
 import './HomePage.scss';
 
-// Category options for filter tabs
 const CATEGORIES = ['Men', 'Women', 'Bags', 'Shoes', 'Accessories'];
 
-// Mock product data - clothing and accessories
 const ALL_PRODUCTS = [
   {
     id: '1',
@@ -112,49 +105,40 @@ const ALL_PRODUCTS = [
   },
 ];
 
-/**
- * HomePage Component
- * Main landing page with:
- * - Full-width hero section with title and badge
- * - Category filter tabs (Men, Women, Bags, Shoes, Accessories)
- * - 4-column product grid
- * - Fully responsive design
- */
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('Women');
 
+  // 👉 Hàm chuyển sang trang chi tiết
   const handleViewDetails = (id: string) => {
     navigate(`/product/${id}`);
   };
 
-  // Filter products by active category
   const filteredProducts = ALL_PRODUCTS.filter(
     (product) => product.category === activeCategory
   );
 
   return (
     <div className="home-page">
-      {/* ===== HERO SECTION ===== */}
       <Hero
         title="Define Your Base"
         badgeText="Timeless essentials designed to adapt, layer, and last"
         backgroundImage="/images/banner4.jpg"
       />
 
-      {/* ===== PRODUCTS SECTION ===== */}
       <section className="products-section">
         <div className="products-container">
-          {/* Section Header with Category Tabs and Show More - ALL ON ONE LINE */}
+
           <div className="section-header-row">
             <h2 className="section-title">New Arrivals</h2>
 
-            {/* Category Filter Tabs */}
             <div className="category-tabs">
               {CATEGORIES.map((category) => (
                 <button
                   key={category}
-                  className={`category-tab ${activeCategory === category ? 'active' : ''}`}
+                  className={`category-tab ${
+                    activeCategory === category ? 'active' : ''
+                  }`}
                   onClick={() => setActiveCategory(category)}
                 >
                   {category}
@@ -167,13 +151,12 @@ export const HomePage: React.FC = () => {
             </a>
           </div>
 
-          {/* 4-Column Products Grid */}
           <div className="products-grid">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
-                onViewDetails={handleViewDetails}
+                onViewDetails={handleViewDetails}  // 👉 CHỖ QUAN TRỌNG NHẤT
               />
             ))}
           </div>
