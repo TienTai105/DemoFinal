@@ -6,6 +6,8 @@ import { Cart } from './components/Cart/Cart';
 import { HomePage } from './pages/HomePage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { CheckoutPage } from './pages/CheckoutPage';
+import About from './components/Aboutpage/AboutPage';
+
 import './App.scss';
 
 // Create a client for React Query
@@ -36,16 +38,19 @@ function App() {
             <Routes>
               {/* Home / Landing Page */}
               <Route path="/" element={<HomePage />} />
-              
+
               {/* Products Listing */}
               <Route path="/products" element={<HomePage />} />
-              
+
               {/* Product Detail */}
               <Route path="/product/:id" element={<ProductDetailPage />} />
-              
+
               {/* Shopping Cart */}
               <Route path="/cart" element={<Cart />} />
-              
+
+              {/* About Page */}
+              <Route path="/about" element={<About />} />
+
               {/* Checkout */}
               <Route path="/checkout" element={<CheckoutPage />} />
             </Routes>

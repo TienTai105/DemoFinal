@@ -70,7 +70,7 @@ export const Footer: React.FC = () => {
           <div className="footer-column">
             <h5 className="footer-column-title">Brand</h5>
             <ul className="footer-links">
-              <li><a href="#about">About Us</a></li>
+              <li><a href="about">About Us</a></li>
               <li><a href="#sustainability">Sustainability</a></li>
               <li><a href="#careers">Careers</a></li>
               <li><a href="#press">Press</a></li>
