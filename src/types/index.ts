@@ -12,6 +12,8 @@ export interface Product {
   stock: number;
   inCart?: boolean;
   quantity?: number;
+  size?: string;
+  color?: string;
 }
 
 // Cart types

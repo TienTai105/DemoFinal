@@ -3,8 +3,8 @@
 // =====================================================
 // Main navigation header with logo, menu, and action icons
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import type { FC } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 import { Search, ShoppingCart, Heart, ChevronDown } from 'lucide-react';
 import './Header.scss';
@@ -21,8 +21,9 @@ interface HeaderProps {
  * - Search, cart, and wishlist icons
  * - Auth links (Login/Register or user menu)
  */
-export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
+export const Header: FC<HeaderProps> = ({ onCartClick }) => {
   const { items } = useCartStore();
+  const navigate = useNavigate();
   // TODO: Auth functionality to be implemented
   // const { user, logout } = useAuthStore();
   const cartCount = items.length;
@@ -49,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
 
         {/* Center - Logo/Brand */}
         <Link to="/" className="header-logo">
-          <span className="logo-text">drop.code</span>
+          <span className="logo-text">NHOM_7</span>
         </Link>
 
         {/* Right Section - Action Icons */}
@@ -59,7 +60,13 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
           </button>
           <button
             className="icon-btn cart-btn"
-            onClick={onCartClick}
+            onClick={() => {
+              if (onCartClick) {
+                onCartClick();
+              } else {
+                navigate('/checkout');
+              }
+            }}
             title="Shopping Cart"
           >
             <ShoppingCart size={20} />

@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer/Footer';
-import { Cart } from './components/Cart/Cart';
+import CartDrawer from './components/CartDrawer/CartDrawer';
 import { HomePage } from './pages/HomePage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { CheckoutPage } from './pages/CheckoutPage';
@@ -24,12 +25,16 @@ const queryClient = new QueryClient({
  * Provides QueryClient context for data fetching
  */
 function App() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <div className="app-container">
           {/* Header Navigation */}
-          <Header />
+          <Header onCartClick={() => setDrawerOpen(true)} />
+
+          {/* Global Cart Drawer */}
+          <CartDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
           {/* Main Content Area */}
           <main className="main-content">
@@ -42,9 +47,6 @@ function App() {
               
               {/* Product Detail */}
               <Route path="/product/:id" element={<ProductDetailPage />} />
-              
-              {/* Shopping Cart */}
-              <Route path="/cart" element={<Cart />} />
               
               {/* Checkout */}
               <Route path="/checkout" element={<CheckoutPage />} />
