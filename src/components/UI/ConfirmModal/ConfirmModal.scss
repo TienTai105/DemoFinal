@@ -1,0 +1,31 @@
+/* ConfirmModal overlay and modal styling */
+.modal {
+  &.confirm-modal {
+    z-index: 2000 !important;
+  }
+
+  &.show .modal-dialog {
+    z-index: 2000 !important;
+  }
+}
+
+/* Ensure backdrop is also high enough */
+.modal-backdrop {
+  z-index: 1999 !important;
+}
+
+/* Make modal content a light yellow to stand out from page background */
+.confirm-modal .modal-content {
+  background-color: #ffffe6; /* pale yellow */
+}
+
+.confirm-modal .modal-header,
+.confirm-modal .modal-footer {
+  background-color: transparent;
+  border-color: rgba(0,0,0,0.06);
+}
+
+.confirm-modal .modal-body {
+  padding: 1rem 1.25rem;
+}
+
