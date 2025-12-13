@@ -46,10 +46,10 @@ export const useProductById = (id?: string) => {
     queryKey: ['product', id],
     queryFn: () => fetchProductById(id!),
     enabled: !!id,
-    staleTime: 0,
+    staleTime: 1000 * 60 * 5, // 5 minutes - cache for better reload experience
     gcTime: 1000 * 60 * 10,
     retry: 3,
-    refetchOnWindowFocus: true, // Refetch when window regains focus
+    refetchOnWindowFocus: false, // Don't refetch on window focus
     refetchOnReconnect: true,
   });
 };

@@ -31,7 +31,7 @@ const ProductDetailPage: React.FC = () => {
 
   const [mainImg, setMainImg] = useState<string>("");
   const [color, setColor] = useState("Black");
-  const [size, setSize] = useState("M");
+  const [size, setSize] = useState("S");
   const [qty, setQty] = useState(1);
 
   // Set default image khi product load
@@ -48,7 +48,7 @@ const ProductDetailPage: React.FC = () => {
   // ⭐ GET RELATED PRODUCTS - cùng category, exclude product hiện tại
   const relatedProducts = allProducts
     .filter((p) => p.category === product?.category && p.id !== product?.id)
-    .slice(0, 4);
+    .slice(0, 10);
 
   // ⭐ ADD TO CART GỬI VÀO ZUSTAND
   const handleAdd = () => {
@@ -70,19 +70,28 @@ const ProductDetailPage: React.FC = () => {
 
   // ⭐ LOADING STATE
   if (!id) {
-    return <div className="pdp"><p>Invalid product ID</p></div>;
+    return (
+      <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
+        <p>Invalid product ID</p>
+      </div>
+    );
   }
 
   if (isLoading) {
-    return <div className="pdp"><p>Loading...</p></div>;
+    return (
+      <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
+        <p>Loading product...</p>
+      </div>
+    );
   }
 
   // ⭐ ERROR STATE
   if (error || !product) {
+    console.error('Product fetch error:', error);
     return (
-      <div className="pdp">
+      <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
         <p>Product not found</p>
-        <button onClick={() => navigate("/")} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}>
+        <button onClick={() => navigate("/")} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer", backgroundColor: '#173036', color: '#fff', border: 'none', borderRadius: '6px' }}>
           Back to Home
         </button>
       </div>
@@ -143,7 +152,7 @@ const ProductDetailPage: React.FC = () => {
           <div className="section">
             <div className="label">Color:</div>
             <div className="color-list">
-              {["Black", "White", "Gray"].map((c) => (
+              {(product.colors || ["Black", "White", "Gray"]).map((c) => (
                 <button
                   key={c}
                   className={`pill ${color === c ? "active" : ""}`}
@@ -158,7 +167,7 @@ const ProductDetailPage: React.FC = () => {
           <div className="section">
             <div className="label">Size:</div>
             <div className="size-list">
-              {["XS", "S", "M", "L", "XL"].map((s: string) => (
+              {(product.sizes || ["XS", "S", "M", "L", "XL"]).map((s: string) => (
                 <button
                   key={s}
                   className={`pill ${size === s ? "active" : ""}`}
