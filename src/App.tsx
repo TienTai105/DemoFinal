@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { Toaster } from 'react-hot-toast';
 import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer/Footer';
 import CartDrawer from './components/CartDrawer/CartDrawer';
 import { HomePage } from './pages/HomePage';
-import { ProductDetailPage } from './pages/ProductDetailPage';
+import ProductDetailPage  from './pages/ProductDetailPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import './App.scss';
 
@@ -26,6 +30,16 @@ const queryClient = new QueryClient({
  */
 function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Initialize AOS animations on mount
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: false,
+      easing: 'ease-in-out',
+      offset: 0, // Animations trigger immediately when elements are visible
+    });
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
@@ -55,6 +69,27 @@ function App() {
 
           {/* Footer */}
           <Footer />
+
+          {/* Toast Notifications */}
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#173036',
+                color: '#fff',
+                fontSize: '14px',
+                borderRadius: '8px',
+                padding: '16px',
+              },
+              success: {
+                style: {
+                  background: '#173036',
+                },
+                icon: '✓',
+              },
+            }}
+          />
         </div>
       </Router>
     </QueryClientProvider>

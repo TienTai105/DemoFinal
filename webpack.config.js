@@ -1,12 +1,15 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const PORT = process.env.PORT || 3000;
+
 module.exports = {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
+    publicPath: '/',
     clean: true,
   },
   module: {
@@ -61,7 +64,7 @@ module.exports = {
     }),
   ],
   devServer: {
-    port: 3000,
+    port: PORT,
     hot: true,
     historyApiFallback: true,
     compress: true,

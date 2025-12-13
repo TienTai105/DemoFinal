@@ -1,12 +1,12 @@
-import { create } from 'zustand';
-import type { CartItem, Product } from '../types';
+import { create } from "zustand";
+import type { CartItem } from "../types";
 
 interface CartStore {
   items: CartItem[];
   total: number;
-  addItem: (product: Product) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (item: any) => void;
+  removeItem: (itemKey: string) => void;
+  updateQuantity: (itemKey: string, quantity: number) => void;
   clearCart: () => void;
   getTotal: () => number;
 }
@@ -15,56 +15,59 @@ export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
   total: 0,
 
-  addItem: (product: Product) => {
+  addItem: (item: any) => {
     set((state: CartStore) => {
-      const existingItem = state.items.find((item: CartItem) => item.id === product.id);
-
-      if (existingItem) {
-        const updatedItems = state.items.map((item: CartItem) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-        return {
-          items: updatedItems,
-          total: get().getTotal(),
-        };
-      }
-
-      const newItems: CartItem[] = [...state.items, { ...product, quantity: 1 }];
-      return {
-        items: newItems,
-        total: get().getTotal(),
-      };
-    });
-  },
-
-  removeItem: (productId: string) => {
-    set((state: CartStore) => {
-      const updatedItems = state.items.filter((item: CartItem) => item.id !== productId);
-      return {
-        items: updatedItems,
-        total: get().getTotal(),
-      };
-    });
-  },
-
-  updateQuantity: (productId: string, quantity: number) => {
-    set((state: CartStore) => {
-      if (quantity <= 0) {
-        const updatedItems = state.items.filter((item: CartItem) => item.id !== productId);
-        return {
-          items: updatedItems,
-          total: get().getTotal(),
-        };
-      }
-
-      const updatedItems = state.items.map((item: CartItem) =>
-        item.id === productId ? { ...item, quantity } : item
+      // Create unique key based on id + size + color
+      const itemKey = `${item.id}-${item.size || 'default'}-${item.color || 'default'}`;
+      
+      const existing = state.items.find(
+        (x) => `${x.id}-${x.size || 'default'}-${x.color || 'default'}` === itemKey
       );
 
+      if (existing) {
+        // Same product, size, and color -> increase quantity
+        const updated = state.items.map((x) =>
+          `${x.id}-${x.size || 'default'}-${x.color || 'default'}` === itemKey
+            ? { ...x, quantity: x.quantity + (item.quantity || 1) }
+            : x
+        );
+
+        return { items: updated, total: get().getTotal() };
+      }
+
+      // Different size or color -> add as new line item
       return {
-        items: updatedItems,
+        items: [...state.items, { ...item }],
         total: get().getTotal(),
       };
+    });
+  },
+
+  removeItem: (itemKey: string) => {
+    set((state: CartStore) => {
+      const updated = state.items.filter(
+        (x) => `${x.id}-${x.size || 'default'}-${x.color || 'default'}` !== itemKey
+      );
+      return { items: updated, total: get().getTotal() };
+    });
+  },
+
+  updateQuantity: (itemKey: string, quantity: number) => {
+    set((state: CartStore) => {
+      if (quantity <= 0) {
+        const removed = state.items.filter(
+          (x) => `${x.id}-${x.size || 'default'}-${x.color || 'default'}` !== itemKey
+        );
+        return { items: removed, total: get().getTotal() };
+      }
+
+      const updated = state.items.map((x) =>
+        `${x.id}-${x.size || 'default'}-${x.color || 'default'}` === itemKey
+          ? { ...x, quantity }
+          : x
+      );
+
+      return { items: updated, total: get().getTotal() };
     });
   },
 
@@ -74,6 +77,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
 
   getTotal: () => {
     const state = get();
-    return state.items.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0);
+    return state.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
   },
 }));

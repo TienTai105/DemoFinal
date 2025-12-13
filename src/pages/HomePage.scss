@@ -1,7 +1,7 @@
 // =====================================================
 // HOME PAGE STYLES
 // =====================================================
-// Styles for hero section, category tabs, and 4-column product grid
+// Styles for hero section, category tabs, and 5-column product grid
 
 .home-page {
   display: flex;
@@ -10,41 +10,152 @@
   background-color: #ffffff;
 }
 
+// Global container - unified max-width
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+
+  @media (max-width: 1024px) {
+    padding: 0 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 1rem;
+  }
+}
+
+// ===== HERO CAROUSEL SECTION =====
+.hero-carousel-section {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 0;
+  overflow: visible;
+}
+
+.hero-carousel-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 1rem;
+  }
+}
+
+// ===== CAROUSEL SECTION =====
+.carousel-section {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 2.5rem 0;
+  overflow: visible;
+
+  @media (max-width: 1024px) {
+    padding: 2rem 0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0;
+  }
+}
+
+.carousel-container-wrapper {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 1rem;
+  }
+}
+
+// ===== SHIPPING BANNER SECTION =====
+.shipping-banner-section {
+  width: 100%;
+  padding: 0;
+  overflow: visible;
+}
+
+.shipping-banner-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 1rem;
+  }
+}
+
 // ===== PRODUCTS SECTION =====
 .products-section {
   width: 100%;
   background-color: #ffffff;
-  padding: 3rem 0 4rem 0;
+  padding: 2.5rem 0;
   overflow: visible;
 
+  @media (max-width: 1024px) {
+    padding: 2rem 0;
+  }
+
   @media (max-width: 768px) {
-    padding: 2rem 0 3rem 0;
+    padding: 1.5rem 0;
   }
 
   @media (max-width: 480px) {
-    padding: 1.5rem 0 2.5rem 0;
+    padding: 1rem 0;
   }
 }
 
 // ===== PRODUCTS CONTAINER =====
 .products-container {
-  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   padding: 0 2rem;
   overflow: visible;
 
   @media (max-width: 1024px) {
-    max-width: 1200px;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
   }
 
   @media (max-width: 768px) {
-    max-width: 100%;
-    padding: 0 1rem;
+    padding: 0 2rem;
   }
 
   @media (max-width: 480px) {
-    padding: 0 0.75rem;
+    padding: 0 1rem;
   }
 }
 
@@ -73,21 +184,25 @@
   }
 
   .section-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #173036;
     margin: 0;
     white-space: nowrap;
     flex-shrink: 0;
 
+    @media (max-width: 1024px) {
+      font-size: 1.375rem;
+    }
+
     @media (max-width: 768px) {
-      font-size: 1.75rem;
+      font-size: 1.25rem;
       order: 1;
       width: 100%;
     }
 
     @media (max-width: 480px) {
-      font-size: 1.5rem;
+      font-size: 1rem;
     }
   }
 
@@ -187,14 +302,78 @@
   }
 }
 
-// ===== PRODUCTS GRID - 4 COLUMNS =====
+// ===== IMAGE GRID SECTION =====
+.image-grid-section {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 2.5rem 0;
+  overflow: visible;
+
+  @media (max-width: 1024px) {
+    padding: 2rem 0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0;
+  }
+}
+
+.image-grid-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.75rem;
+  }
+
+  .section-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #173036;
+
+    @media (max-width: 1024px) {
+      font-size: 1.375rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+  }
+}
+
+// ===== PRODUCTS GRID - 5 COLUMNS =====
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.5rem;
   width: 100%;
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1440px) {
     grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
   }
@@ -212,5 +391,96 @@
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+}
+
+// ===== IMAGE GRID SECTION =====
+.image-grid-section {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 4rem 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 3rem 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.5rem 0.75rem;
+  }
+}
+
+.image-grid-container {
+  max-width: 1450px;
+  margin: 0 auto;
+  width: 100%;
+
+  .section-title {
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+}
+
+// ===== CATEGORY GRID SECTION =====
+.category-grid-section {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 2.5rem 0;
+  overflow: visible;
+
+  @media (max-width: 1024px) {
+    padding: 2rem 0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0;
+  }
+}
+
+.category-grid-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 1rem;
+  }
+
+  .section-title {
+    margin-bottom: 1.5rem;
+    text-align: start;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #173036;
+
+    @media (max-width: 1024px) {
+      font-size: 1.375rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
   }
 }
