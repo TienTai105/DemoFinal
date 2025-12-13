@@ -6,7 +6,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
-import { Search, ShoppingCart, Heart, ChevronDown } from 'lucide-react';
+import {
+  Search,
+  ShoppingCart,
+  Heart,
+  ChevronDown,
+  Truck
+} from 'lucide-react';
 import './Header.scss';
 
 interface HeaderProps {
@@ -18,13 +24,10 @@ interface HeaderProps {
  * Main navigation with:
  * - Logo/Brand name
  * - Navigation menu (Shop, Collections, About, Contacts)
- * - Search, cart, and wishlist icons
- * - Auth links (Login/Register or user menu)
+ * - Search, cart, wishlist, and shipping icons
  */
 export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
   const { items } = useCartStore();
-  // TODO: Auth functionality to be implemented
-  // const { user, logout } = useAuthStore();
   const cartCount = items.length;
 
   return (
@@ -57,6 +60,16 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
           <button className="icon-btn search-btn" title="Search">
             <Search size={20} />
           </button>
+
+          {/* Shipping button */}
+          <Link
+            to="/shipping"
+            className="icon-btn shipping-btn"
+            title="Shipping & Delivery"
+          >
+            <Truck size={20} />
+          </Link>
+
           <button
             className="icon-btn cart-btn"
             onClick={onCartClick}
@@ -65,6 +78,7 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
             <ShoppingCart size={20} />
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
+
           <button className="icon-btn wishlist-btn" title="Wishlist">
             <Heart size={20} />
           </button>
