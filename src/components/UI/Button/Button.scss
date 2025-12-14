@@ -49,8 +49,8 @@
   }
 
   &-accent {
-    background-color: #D6FC45;
-    color: #173036;
+    background-color: #D6FC45 !important;
+    color: #173036 !important;
     font-weight: 700;
 
     &:hover:not(.btn-disabled) {

@@ -1,0 +1,120 @@
+.quantity-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  border: none;
+  border-radius: 28px;
+  overflow: hidden;
+  width: fit-content;
+  background: #f2f2f2;
+  padding: 0;
+  height: fit-content;
+
+  &--small {
+    .qty-btn {
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      padding: 0;
+      min-width: 30px;
+    }
+
+    .qty-input {
+      width: 36px;
+      height: 30px;
+      font-size: 13px;
+      padding: 0 6px;
+      line-height: 30px;
+    }
+  }
+
+  &--medium {
+    .qty-btn {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+      padding: 0;
+      min-width: 40px;
+    }
+
+    .qty-input {
+      width: 44px;
+      height: 40px;
+      font-size: 14px;
+      padding: 0 8px;
+      line-height: 40px;
+    }
+  }
+
+  &--large {
+    .qty-btn {
+      width: 48px;
+      height: 48px;
+      font-size: 18px;
+      padding: 0;
+      min-width: 48px;
+    }
+
+    .qty-input {
+      width: 52px;
+      height: 48px;
+      font-size: 15px;
+      padding: 0 10px;
+      line-height: 48px;
+    }
+  }
+
+  .qty-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #999;
+    font-weight: 700;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &:hover:not(:disabled) {
+      color: #173036;
+    }
+
+    &:active:not(:disabled) {
+      color: #173036;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .qty-input {
+    border: none;
+    text-align: center;
+    background: transparent;
+    outline: none;
+    font-weight: 600;
+    color: #173036;
+    font-family: inherit;
+
+    /* Remove number input spinner */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+

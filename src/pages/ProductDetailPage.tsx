@@ -7,6 +7,8 @@ import "./ProductDetailPage.scss";
 import { useCartStore } from "../store/cartStore";
 import { useProductById, useProducts } from "../api/products/queries";
 import { ProductCard } from "../components/ProductCard/ProductCard";
+import { QuantityControl } from "../components/UI/QuantityControl/QuantityControl";
+import { ChevronRightIcon } from "lucide-react";
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -109,11 +111,11 @@ const ProductDetailPage: React.FC = () => {
         <button className="breadcrumb-link" onClick={() => navigate("/")}>
           Home
         </button>
-        <span className="breadcrumb-sep">/</span>
+        <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
         <button className="breadcrumb-link" onClick={() => navigate(`/?category=${product.category}`)}>
           {product.category}
         </button>
-        <span className="breadcrumb-sep">/</span>
+        <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
         <span className="breadcrumb-current">{product.name}</span>
       </div>
 
@@ -180,11 +182,15 @@ const ProductDetailPage: React.FC = () => {
           </div>
 
           <div className="actions">
-            <div className="qty-box">
-              <button onClick={() => setQty(Math.max(1, qty - 1))}>-</button>
-              <div className="qty">{qty}</div>
-              <button onClick={() => setQty(qty + 1)}>+</button>
-            </div>
+            <QuantityControl
+              quantity={qty}
+              onDecrease={() => setQty(Math.max(1, qty - 1))}
+              onIncrease={() => setQty(qty + 1)}
+              onChange={(v) => {
+                if (v >= 1) setQty(v);
+              }}
+              size="medium"
+            />
 
             <button className="btn-add" onClick={handleAdd}>
               Add To Cart – {(product.price * qty).toLocaleString("vi-VN")}.000đ

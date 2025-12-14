@@ -87,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
 
         {/* Center - Logo/Brand */}
         <Link to="/" className="header-logo">
-          <span className="logo-text">drop.code</span>
+          <span className="logo-text">NHOM_7</span>
         </Link>
 
         {/* Right Section - Action Icons */}
@@ -97,7 +97,13 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
           </button>
           <button
             className="icon-btn cart-btn"
-            onClick={onCartClick}
+            onClick={() => {
+              if (onCartClick) {
+                onCartClick();
+              } else {
+                navigate('/checkout');
+              }
+            }}
             title="Shopping Cart"
           >
             <ShoppingCart size={20} />
