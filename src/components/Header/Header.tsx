@@ -6,39 +6,38 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
-import { Search, ShoppingCart, Heart, ChevronDown, User, Truck } from 'lucide-react';
+import { useWishlistStore } from '../../store/wishlistStore';
+import { Search, ShoppingCart, Heart, User, Truck, X } from 'lucide-react';
+import { Wishlist } from '../Wishlist/Wishlist';
 import './Header.scss';
 
 interface HeaderProps {
   onCartClick?: () => void;
 }
 
-// Main categories
-const MAIN_CATEGORIES = [
-  { name: 'Men', icon: '👔' },
-  { name: 'Women', icon: '👗' },
-  { name: 'Kids', icon: '👶' },
-  { name: 'Baby', icon: '🍼' },
-];
-
 /**
  * Header Component
  * Main navigation with:
  * - Logo/Brand name
- * - Navigation menu (Shop with dropdown, Collections, About, Contacts)
+ * - Navigation menu (Collections, About, Contacts, Shop)
  * - Search, cart, and wishlist icons
  * - Auth links (Login/Register or user menu)
  */
 export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
   const navigate = useNavigate();
   const { items } = useCartStore();
-  const [showDropdown, setShowDropdown] = useState(false);
+  const { items: wishlistItems, removeItem } = useWishlistStore();
+  const [showWishlist, setShowWishlist] = useState(false);
 
   const cartCount = items.length;
 
-  const handleCategoryClick = (category: string) => {
-    setShowDropdown(false);
-    navigate(`/?category=${category}`);
+  const handleWishlistRemove = (id: string) => {
+    removeItem(id);
+  };
+
+  const handleAddToCart = (id: string) => {
+    // TODO: Implement add to cart from wishlist
+    navigate(`/product/${id}`);
   };
 
   return (
@@ -46,48 +45,23 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
       <div className="header-container">
         {/* Left Section - Navigation Menu */}
         <nav className="header-nav-left">
-          {/* Shop Dropdown */}
-          <div className="nav-dropdown">
-            <button 
-              className="nav-item shop-btn"
-              onClick={() => setShowDropdown(!showDropdown)}
-            >
-              <span className="nav-text">Shop</span>
-              <ChevronDown size={16} className="nav-arrow" />
-            </button>
-
-            {/* Dropdown Menu */}
-            {showDropdown && (
-              <div className="dropdown-menu-portal">
-                <div className="dropdown-content">
-                  {MAIN_CATEGORIES.map((category) => (
-                    <button
-                      key={category.name}
-                      className="dropdown-item"
-                      onClick={() => handleCategoryClick(category.name)}
-                    >
-                      <span className="dropdown-item-title">{category.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
+          <Link to="/" className="nav-item">
+            Shop
+          </Link>
           <Link to="/products" className="nav-item">
             Collections
           </Link>
           <Link to="/about" className="nav-item">
             About
           </Link>
-          <Link to="/" className="nav-item">
+          <Link to="/contact" className="nav-item">
             Contacts
           </Link>
         </nav>
 
         {/* Center - Logo/Brand */}
         <Link to="/" className="header-logo">
-          <span className="logo-text">NHOM_7</span>
+          <span className="logo-text">E-Shop</span>
         </Link>
 
         {/* Right Section - Action Icons */}
@@ -97,13 +71,13 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
           </button>
 
           {/* Shipping button */}
-          <Link
-            to="/shipping"
+          <button
             className="icon-btn shipping-btn"
+            onClick={() => navigate('/shipping')}
             title="Shipping & Delivery"
           >
             <Truck size={20} />
-          </Link>
+          </button>
 
           <button
             className="icon-btn cart-btn"
@@ -120,14 +94,35 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
 
-          <button className="icon-btn wishlist-btn" title="Wishlist">
-            <Heart size={20} />
+          <button className="icon-btn wishlist-btn" onClick={() => setShowWishlist(!showWishlist)} title="Wishlist">
+            <Heart size={20} fill={wishlistItems.length > 0 ? "currentColor" : "none"} />
+            {wishlistItems.length > 0 && <span className="wishlist-badge">{wishlistItems.length}</span>}
           </button>
           <button className="icon-btn user-btn" title="User Account">
             <User size={20} />
           </button>
         </div>
       </div>
+
+      {/* Wishlist Modal */}
+      {showWishlist && (
+        <div className="wishlist-modal-overlay" onClick={() => setShowWishlist(false)}>
+          <div className="wishlist-modal" onClick={(e) => e.stopPropagation()}>
+            <button 
+              className="wishlist-close-btn" 
+              onClick={() => setShowWishlist(false)}
+              title="Close"
+            >
+              <X size={24} />
+            </button>
+            <Wishlist 
+              items={wishlistItems}
+              onRemove={handleWishlistRemove}
+              onAddToCart={handleAddToCart}
+            />
+          </div>
+        </div>
+      )}
     </header>
   );
 };

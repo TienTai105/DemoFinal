@@ -4,6 +4,7 @@
 // Main footer with links, info, and social media
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
 import './Footer.scss';
 
@@ -46,11 +47,11 @@ export const Footer: React.FC = () => {
           <div className="footer-column">
             <h5 className="footer-column-title">Shop</h5>
             <ul className="footer-links">
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/products">Collections</Link></li>
               <li><a href="#new-arrivals">New Arrivals</a></li>
-              <li><a href="#men">Men</a></li>
-              <li><a href="#women">Women</a></li>
-              <li><a href="#accessories">Accessories</a></li>
-              <li><a href="#collections">Collections</a></li>
+              <li><a href="#sale">Sale</a></li>
+              <li><a href="#gift-cards">Gift Cards</a></li>
             </ul>
           </div>
 
@@ -58,19 +59,19 @@ export const Footer: React.FC = () => {
           <div className="footer-column">
             <h5 className="footer-column-title">Customer Care</h5>
             <ul className="footer-links">
-              <li><a href="#contact">Contact Us</a></li>
-              <li><a href="#shipping">Shipping & Returns</a></li>
+              <li><Link to="/contact">Contact Us</Link></li>
+              <li><Link to="/shipping">Shipping & Delivery</Link></li>
               <li><a href="#faq">FAQ</a></li>
               <li><a href="#size-guide">Size Guide</a></li>
-              <li><a href="#returns">Returns</a></li>
+              <li><a href="#returns">Returns & Exchange</a></li>
             </ul>
           </div>
 
           {/* Brand Column */}
           <div className="footer-column">
-            <h5 className="footer-column-title">Brand</h5>
+            <h5 className="footer-column-title">About</h5>
             <ul className="footer-links">
-              <li><a href="about">About Us</a></li>
+              <li><Link to="/about">About Us</Link></li>
               <li><a href="#sustainability">Sustainability</a></li>
               <li><a href="#careers">Careers</a></li>
               <li><a href="#press">Press</a></li>

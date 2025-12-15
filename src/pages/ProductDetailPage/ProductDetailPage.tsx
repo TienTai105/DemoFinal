@@ -4,10 +4,10 @@ import toast from "react-hot-toast";
 import "./ProductDetailPage.scss";
 
 // ⭐ IMPORT HOOKS
-import { useCartStore } from "../store/cartStore";
-import { useProductById, useProducts } from "../api/products/queries";
-import { ProductCard } from "../components/ProductCard/ProductCard";
-import { QuantityControl } from "../components/UI/QuantityControl/QuantityControl";
+import { useCartStore } from "../../store/cartStore";
+import { useProductById, useProducts } from "../../api/products/queries";
+import { ProductCard } from "../../components/ProductCard/ProductCard";
+import { QuantityControl } from "../../components/UI/QuantityControl/QuantityControl";
 import { ChevronRightIcon } from "lucide-react";
 
 const ProductDetailPage: React.FC = () => {

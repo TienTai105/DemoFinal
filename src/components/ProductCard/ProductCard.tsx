@@ -7,6 +7,7 @@ import React from 'react';
 import type { Product } from '../../types';
 import { Badge } from '../UI/Badge/Badge';
 import { Plus, Heart } from 'lucide-react';
+import { useWishlistStore } from '../../store/wishlistStore';
 import './ProductCard.scss';
 
 interface ProductCardProps {
@@ -26,11 +27,28 @@ interface ProductCardProps {
  * Design from component wireframe with Electric Lime accents
  */
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
-  
-
+  const { addItem, removeItem, isInWishlist } = useWishlistStore();
+  const inWishlist = isInWishlist(product.id);
 
   const handleCardClick = () => {
     onViewDetails?.(product.id);
+  };
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering card click
+    const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
+    const imageUrl = rawImage?.startsWith('http') ? rawImage : `/images${rawImage}`;
+    
+    if (inWishlist) {
+      removeItem(product.id);
+    } else {
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: imageUrl,
+      });
+    }
   };
 
   // Handle image - support both string and array
@@ -82,8 +100,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         <div className="product-info-row">
           <h3 className="product-name">{product.name}</h3>
           <div className="product-right">
-            <button className="wishlist-btn" title="Add to Wishlist">
-              <Heart size={20} />
+            <button 
+              className={`wishlist-btn ${inWishlist ? 'active' : ''}`} 
+              onClick={handleWishlistClick}
+              title={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+            >
+              <Heart size={20} fill={inWishlist ? 'currentColor' : 'none'} />
             </button>
             <div className="product-price">
               <span className="current-price">{product.price.toLocaleString('vi-VN')}.000đ</span>

@@ -47,11 +47,12 @@
      font-weight: 700;
      margin-bottom: 10px;
 
-     background: linear-gradient(135deg, #fff, #d0d0d0);
+    background: linear-gradient(135deg, #fff, #d0d0d0);
      -webkit-background-clip: text;
-     -webkit-text-fill-color: transparent;
+     background-clip: text;
+    -webkit-text-fill-color: transparent;
 
-     animation: fadeUp 0.8s ease-out forwards;
+    animation: fadeUp 0.8s ease-out forwards;
    }
 
    .hero-text {

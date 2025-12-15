@@ -8,13 +8,13 @@ import { Toaster } from 'react-hot-toast';
 import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer/Footer';
 import CartDrawer from './components/CartDrawer/CartDrawer';
-import { HomePage } from './pages/HomePage';
-import ProductDetailPage  from './pages/ProductDetailPage';
-import { CheckoutPage } from './pages/CheckoutPage';
-import About from './components/Aboutpage/AboutPage';
-
-import ProductListPage  from './pages/ProductListPage';
-import ShippingPage  from './pages/ShippingPage';  
+import { HomePage } from './pages/HomePage/HomePage';
+import ProductDetailPage  from './pages/ProductDetailPage/ProductDetailPage';
+import { CheckoutPage } from './pages/CheckoutPage/CheckoutPage';
+import About from './pages/Aboutpage/AboutPage';
+import { ContactPage } from './pages/ContactPage/ContactPage';
+import ProductListPage  from './pages/ProductList/ProductListPage';
+import ShippingPage  from './pages/ShippingPage/ShippingPage';  
 import './App.scss';
 
 // Create a client for React Query
@@ -71,6 +71,10 @@ function App() {
 
               {/* ✅ SHIPPING & DELIVERY – PHẦN CỦA BẠN */}
               <Route path="/shipping" element={<ShippingPage />} />
+              <Route path="/about" element={<About />} />
+              
+              {/* Contact Us */}
+              <Route path="/contact" element={<ContactPage />} />
             </Routes>
           </main>
 

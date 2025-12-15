@@ -229,6 +229,15 @@
       }
     }
 
+    &.active {
+      color: #c41e3a;
+      fill: #c41e3a;
+
+      svg {
+        fill: #c41e3a;
+      }
+    }
+
     svg {
       width: 20px;
       height: 20px;

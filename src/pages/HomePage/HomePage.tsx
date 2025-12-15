@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Carousel } from '../components/Carousel/Carousel';
-import { ShippingBanner } from '../components/ShippingBanner/ShippingBanner';
-import { ProductCard } from '../components/ProductCard/ProductCard';
-import { ImageGrid } from '../components/ImageGrid/ImageGrid';
-import { CategoryGrid } from '../components/CategoryGrid/CategoryGrid';
-import { Pagination } from '../components/Pagination/Pagination';
-import { Newsletter } from '../components/Newsletter/Newsletter';
-import { useProducts } from '../api/products';
+import { Carousel } from '../../components/Carousel/Carousel';
+import { ShippingBanner } from '../../components/ShippingBanner/ShippingBanner';
+import { ProductCard } from '../../components/ProductCard/ProductCard';
+import { ImageGrid } from '../../components/ImageGrid/ImageGrid';
+import { CategoryGrid } from '../../components/CategoryGrid/CategoryGrid';
+import { Pagination } from '../../components/Pagination/Pagination';
+import { Newsletter } from '../../components/Newsletter/Newsletter';
+import { useProducts } from '../../api/products';
 import './HomePage.scss';
 
 // Default categories fallback (will be replaced by dynamic categories from API)

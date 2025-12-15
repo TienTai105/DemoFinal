@@ -56,7 +56,7 @@
   gap: 0.3rem;
   color: #333333;
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 500;
   transition: color 0.2s ease;
   white-space: nowrap;
@@ -80,6 +80,10 @@
     align-items: center;
     justify-content: center;
     transition: transform 0.2s ease;
+
+    &.rotate {
+      transform: rotate(180deg);
+    }
   }
 
   @media (max-width: 768px) {
@@ -91,105 +95,7 @@
   }
 }
 
-// Shop Dropdown
-.nav-dropdown {
-  position: relative;
-  overflow: visible;
 
-  .shop-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    background: none;
-    border: none;
-    color: #333333;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 0;
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: #173036;
-    }
-
-    .nav-arrow {
-      transition: transform 0.3s ease;
-    }
-  }
-}
-
-// Dropdown Menu
-.dropdown-menu {
-  position: absolute;
-  top: calc(100% + 0.8rem);
-  left: 0;
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  min-width: 220px;
-  animation: slideDown 0.2s ease;
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-.dropdown-content {
-  display: flex;
-  flex-direction: column;
-  padding: 8px 0;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 18px 22px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-  color: #333333;
-  font-size: 0.97rem;
-  font-weight: 500;
-
-  &:hover {
-    background-color: #f0f8f9;
-    color: #173036;
-
-    .dropdown-item-title {
-      font-weight: 600;
-      color: #173036;
-    }
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-
-  .dropdown-item-title {
-    font-size: 0.97rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    padding: 0;
-  }
-
-  .dropdown-item-count {
-    font-size: 0.8rem;
-    color: #999999;
-  }
-}
 
 // Center Logo Section
 .header-logo {
@@ -262,6 +168,13 @@
   }
 }
 
+.shipping-btn {
+  &:hover {
+    background-color: #f2f2f2;
+    color: #173036;
+  }
+}
+
 .cart-btn {
   position: relative;
 
@@ -301,26 +214,107 @@
 // Portal Dropdown Menu
 .dropdown-menu-portal {
   position: absolute;
-  top: calc(100% + 0.8rem);
+  top: calc(100% + 0.5rem);
   left: 0;
   right: auto;
   background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(23, 48, 54, 0.15);
+  box-shadow: 0 8px 32px rgba(23, 48, 54, 0.12), 0 0 0 1px rgba(214, 252, 69, 0.2);
   z-index: 1000;
-  min-width: 320px;
+  min-width: 240px;
   overflow: hidden;
-  animation: slideDown 0.2s ease;
+  animation: slideDown 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 
   @keyframes slideDown {
     from {
       opacity: 0;
-      transform: translateY(-10px);
+      transform: translateY(-15px);
     }
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
+}
+
+// Wishlist Modal
+.wishlist-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  display: flex;
+  justify-content: flex-end;
+  animation: fadeIn 0.2s ease;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+.wishlist-modal {
+  background: #ffffff;
+  width: 100%;
+  max-width: 500px;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15);
+  position: relative;
+  animation: slideInRight 0.3s ease;
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @media (max-width: 640px) {
+    max-width: 100%;
+  }
+}
+
+.wishlist-close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #D6FC45;
+  }
+}
+
+.wishlist-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px !important;
+  right: auto !important;
+  background: #D6FC45;
+  color: #173036;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
 }

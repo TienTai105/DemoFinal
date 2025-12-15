@@ -6,10 +6,10 @@ import { Row, Col, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import {useLocation} from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import './CheckoutPage.scss';
-import { useCartStore } from '../store/cartStore';
-import { useCreateOrder } from '../api/orders/queries';
-import { CheckoutCart } from '../components/Cart/CheckoutCart';
-import { Button } from '../components/UI/Button/Button';
+import { useCartStore } from '../../store/cartStore';
+import { useCreateOrder } from '../../api/orders/queries';
+import { CheckoutCart } from '../../components/Cart/CheckoutCart';
+import { Button } from '../../components/UI/Button/Button';
 import { useNavigate } from 'react-router-dom';
 
 
