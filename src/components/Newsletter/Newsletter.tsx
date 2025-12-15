@@ -4,9 +4,7 @@
 // Email subscription section with form
 
 import React from 'react';
-import { Input } from '../UI/Input/Input';
-import { Button } from '../UI/Button/Button';
-import { Mail } from 'lucide-react';
+import { Mail, ArrowRight, Sparkles } from 'lucide-react';
 import './Newsletter.scss';
 
 interface NewsletterProps {
@@ -40,7 +38,7 @@ export const Newsletter: React.FC<NewsletterProps> = ({ onSubscribe }) => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       onSubscribe?.(email);
-      setMessage({ type: 'success', text: 'Thanks for subscribing!' });
+      setMessage({ type: 'success', text: '✓ Thanks for subscribing!' });
       setEmail('');
     } catch {
       setMessage({ type: 'error', text: 'Failed to subscribe. Try again.' });
@@ -51,40 +49,55 @@ export const Newsletter: React.FC<NewsletterProps> = ({ onSubscribe }) => {
   };
 
   return (
-    <section className="newsletter">
+    <section className="newsletter" data-aos="zoom-in">
       <div className="newsletter-container">
         <div className="newsletter-content">
-          <h2 className="newsletter-title">Join our community</h2>
-          <p className="newsletter-description">
-            Get exclusive offers, new arrivals, and style tips delivered to your inbox.
-          </p>
-        </div>
-
-        <form className="newsletter-form" onSubmit={handleSubmit}>
-          <Input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            icon={<Mail size={18} />}
-            disabled={isLoading}
-          />
-          <Button
-            variant="accent"
-            size="md"
-            type="submit"
-            loading={isLoading}
-            disabled={isLoading}
-          >
-            Subscribe
-          </Button>
-        </form>
-
-        {message && (
-          <div className={`newsletter-message newsletter-message-${message.type}`}>
-            {message.text}
+          {/* Left Section */}
+          <div className="newsletter-text">
+            <div className="newsletter-badge">
+              <Sparkles size={16} />
+              <span>Exclusive Perks</span>
+            </div>
+            <h2 className="newsletter-headline">Stay in the Loop</h2>
+            <p className="newsletter-description">
+              Get exclusive drops, early access to new collections, insider style tips, and special discounts delivered straight to your inbox.
+            </p>
+            <ul className="newsletter-benefits">
+              <li>Early access to new drops</li>
+              <li>Exclusive member-only discounts</li>
+              <li>Curated style tips & trends</li>
+            </ul>
           </div>
-        )}
+
+          {/* Right Section */}
+          <div className="newsletter-form-wrapper">
+            <form className="newsletter-form" onSubmit={handleSubmit}>
+              <div className="email-input-wrapper">
+                <Mail size={20} />
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+              <button type="submit" disabled={isLoading}>
+                {isLoading ? 'Subscribing...' : 'Subscribe'}
+                <ArrowRight size={18} />
+              </button>
+              <div className="newsletter-form-footer">
+                {isLoading && <div className="newsletter-loading">Processing your request...</div>}
+                {message && (
+                  <div className={`newsletter-message newsletter-message-${message.type}`}>
+                    {message.text}
+                  </div>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </section>
   );

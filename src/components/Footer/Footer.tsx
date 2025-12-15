@@ -7,22 +7,28 @@ import React from 'react';
 import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
 import './Footer.scss';
 
+type FooterVariant = 'default' | 'dark' | 'light' | 'accent';
+
+interface FooterProps {
+  variant?: FooterVariant;
+}
+
 /**
  * Footer Component
  * Displays company info, links, and social media
- * Consistent with design color scheme (Ocean Shadow background)
+ * Supports multiple color variants: default (light gray), dark (dark teal), accent (lime)
  */
-export const Footer: React.FC = () => {
+export const Footer: React.FC<FooterProps> = ({ variant = 'default' }) => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="footer">
+    <footer className={`footer footer--${variant}`}>
       <div className="footer-container">
         {/* Footer Grid */}
         <div className="footer-grid">
           {/* Brand Column */}
           <div className="footer-column">
-            <h4 className="footer-brand">E-Shop</h4>
+            <h4 className="footer-brand">NHOM_7</h4>
             <p className="footer-description">
               Discover timeless essentials that move with you. Quality, style, and sustainability in every piece.
             </p>
@@ -96,7 +102,7 @@ export const Footer: React.FC = () => {
         {/* Footer Bottom */}
         <div className="footer-bottom">
           <p className="footer-copyright">
-            © {currentYear} E-Shop. All rights reserved.
+            © {currentYear} NHOM_7. All rights reserved.
           </p>
           <div className="payment-methods">
             <span>Payment Methods:</span>

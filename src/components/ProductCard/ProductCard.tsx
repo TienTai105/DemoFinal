@@ -5,7 +5,6 @@
 
 import React from 'react';
 import type { Product } from '../../types';
-import { useCartStore } from '../../store/cartStore';
 import { Badge } from '../UI/Badge/Badge';
 import { Plus, Heart } from 'lucide-react';
 import './ProductCard.scss';
@@ -26,12 +25,18 @@ interface ProductCardProps {
  * 
  * Design from component wireframe with Electric Lime accents
  */
-export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { addItem } = useCartStore();
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
+  
 
-  const handleAddToCart = () => {
-    addItem(product);
+
+  const handleCardClick = () => {
+    onViewDetails?.(product.id);
   };
+
+  // Handle image - support both string and array
+  const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
+  // Support both absolute URLs and relative paths
+  const productImage = rawImage?.startsWith('http') ? rawImage : `/images${rawImage}`;
 
   // Calculate discount percentage if on sale
   const discountPercent = product.originalPrice
@@ -39,16 +44,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     : 0;
 
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
       {/* Product Image Container */}
       <div className="product-card-image">
-        <img src={product.image} alt={product.name} />
+        <img src={productImage} alt={product.name} />
 
         {/* Add to Cart Button - Circular */}
         <button
           className="add-to-cart-btn"
-          onClick={handleAddToCart}
-          disabled={product.stock === 0}
+          disabled={product.stock !== undefined && product.stock === 0}
           title="Add to Cart"
         >
           <Plus size={24} />
@@ -74,22 +78,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Product Category */}
         <span className="product-category">{product.category}</span>
 
-        {/* Product Name with Wishlist Button */}
-        <div className="product-name-row">
+        {/* Product Name with Wishlist Button and Price */}
+        <div className="product-info-row">
           <h3 className="product-name">{product.name}</h3>
-          <button className="wishlist-btn" title="Add to Wishlist">
-            <Heart size={20} />
-          </button>
+          <div className="product-right">
+            <button className="wishlist-btn" title="Add to Wishlist">
+              <Heart size={20} />
+            </button>
+            <div className="product-price">
+              <span className="current-price">{product.price.toLocaleString('vi-VN')}.000đ</span>
+              {product.originalPrice && (
+                <span className="original-price">{product.originalPrice.toLocaleString('vi-VN')}.000đ</span>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Product Description */}
-        
-        <div className="product-price">
-          <span className="current-price">${product.price.toFixed(2)}</span>
-          {product.originalPrice && (
-            <span className="original-price">${product.originalPrice.toFixed(2)}</span>
-          )}
-        </div>
       </div>
     </div>
   );
