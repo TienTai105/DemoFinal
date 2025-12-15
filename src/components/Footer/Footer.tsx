@@ -7,22 +7,16 @@ import React from 'react';
 import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
 import './Footer.scss';
 
-type FooterVariant = 'default' | 'dark' | 'light' | 'accent';
-
-interface FooterProps {
-  variant?: FooterVariant;
-}
-
 /**
  * Footer Component
  * Displays company info, links, and social media
- * Supports multiple color variants: default (light gray), dark (dark teal), accent (lime)
+ * Consistent with design color scheme (Ocean Shadow background)
  */
-export const Footer: React.FC<FooterProps> = ({ variant = 'default' }) => {
+export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className={`footer footer--${variant}`}>
+    <footer className="footer">
       <div className="footer-container">
         {/* Footer Grid */}
         <div className="footer-grid">

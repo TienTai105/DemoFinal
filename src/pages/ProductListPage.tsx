@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./ProductListPage.scss";
 import { ProductCard } from "@/components/ProductCard/ProductCard";
+import { FilterSidebar } from "@/components/UI/FilterSidebar";
+import { Pagination } from "@/components/Pagination/Pagination";
+import { ChevronRight } from "lucide-react";
 
 interface Product {
   id: string;
@@ -16,15 +19,28 @@ interface Product {
 const PRODUCTS_PER_PAGE = 9;
 
 const ProductListPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const getPreviousPage = () => {
+    const state = location.state as any;
+    if (state?.from) return state.from;
+    const prevPage = sessionStorage.getItem('previousPage');
+    if (prevPage) return JSON.parse(prevPage);
+    return { name: 'Home', path: '/' };
+  };
+
+  const previousPage = getPreviousPage();
+
   // ===== FILTER STATES =====
-  const [maxPrice, setMaxPrice] = useState(500);
+  const [maxPrice, setMaxPrice] = useState(1000);
   const [categories, setCategories] = useState<string[]>([]);
   const [productTypes, setProductTypes] = useState<string[]>([]);
   const [sizes, setSizes] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
+  
 
   // ===== FETCH PRODUCTS =====
   useEffect(() => {
@@ -40,17 +56,6 @@ const ProductListPage = () => {
       });
   }, []);
 
-  // ===== TOGGLE HELPER =====
-  const toggle = (
-    value: string,
-    setList: React.Dispatch<React.SetStateAction<string[]>>
-  ) => {
-    setCurrentPage(1);
-    setList((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-  };
-
   // ===== FILTER LOGIC =====
   const filteredProducts = products.filter((item) => {
     const matchPrice = item.price <= maxPrice;
@@ -61,17 +66,26 @@ const ProductListPage = () => {
     const matchProduct =
       productTypes.length === 0 ||
       productTypes.some((type) =>
-        item.name.toLowerCase().includes(type.toLowerCase())
+        item.name.toLowerCase().includes(type.toLowerCase()) ||
+        (item.name.toLowerCase().includes("hoodie") && type.toLowerCase().includes("hoodies")) ||
+        (item.name.toLowerCase().includes("t-shirt") && type.toLowerCase().includes("t-shirts")) ||
+        (item.name.toLowerCase().includes("tank") && type.toLowerCase().includes("tanks")) ||
+        (item.name.toLowerCase().includes("sweatshirt") && type.toLowerCase().includes("sweatshirts"))
       );
 
-    const matchSize = sizes.length === 0 || sizes.includes(item.size || "");
+    const matchSize = sizes.length === 0 || (item.size && sizes.includes(item.size));
 
-    const matchColor = colors.length === 0 || colors.includes(item.color || "");
+    const matchColor = colors.length === 0 || (item.color && colors.includes(item.color));
 
     return (
       matchPrice && matchCategory && matchProduct && matchSize && matchColor
     );
   });
+
+  // ===== HANDLE VIEW DETAILS =====
+  const handleViewDetails = (id: string) => {
+    navigate(`/product/${id}`);
+  };
 
   // ===== PAGINATION =====
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
@@ -86,11 +100,16 @@ const ProductListPage = () => {
       <div className="catalog-container">
         {/* ===== HEADER ===== */}
         <div className="catalog-header">
-          <p className="breadcrumb">
-            <Link to="/">Home Page</Link>
-            <span> › </span>
-            <span>Catalog</span>
-          </p>
+          <div className="breadcrumb-top">
+            <button 
+              className="breadcrumb-link"
+              onClick={() => navigate(previousPage.path === '/' ? '/' : previousPage.path, { state: { from: null } })}
+            >
+              {previousPage.name}
+            </button>
+            <span className="breadcrumb-sep"><ChevronRight size={18} /></span>
+            <span className="breadcrumb-current">Collection</span>
+          </div>
 
           <div className="header-row">
             <h1>Explore All Product</h1>
@@ -103,92 +122,19 @@ const ProductListPage = () => {
 
         <div className="catalog-layout">
           {/* ===== FILTER ===== */}
-          <aside className="filter">
-            <div className="filter-group">
-              <h4>Category</h4>
-              <div className="pill-filter">
-                {["Women", "Men", "Unisex"].map((c) => (
-                  <span
-                    key={c}
-                    className={`pill ${categories.includes(c) ? "active" : ""}`}
-                    onClick={() => toggle(c, setCategories)}
-                  >
-                    {c}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h4>Products</h4>
-              <div className="pill-filter">
-                {["Hoodie", "T-shirt", "Accessories"].map((p) => (
-                  <span
-                    key={p}
-                    className={`pill ${
-                      productTypes.includes(p) ? "active" : ""
-                    }`}
-                    onClick={() => toggle(p, setProductTypes)}
-                  >
-                    {p}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h4>Color</h4>
-
-              <div className="color-filter">
-                {[
-                  { key: "black", label: "Black" },
-                  { key: "white", label: "White" },
-                  { key: "gray", label: "Gray" },
-                ].map((c) => (
-                  <div
-                    key={c.key}
-                    className={`color-option ${
-                      colors.includes(c.key) ? "active" : ""
-                    }`}
-                    onClick={() => toggle(c.key, setColors)}
-                  >
-                    <span className={`color-dot ${c.key}`} />
-                    <span className="color-name">{c.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h4>Size</h4>
-              <div className="sizes">
-                {["S", "M", "L", "XL"].map((s) => (
-                  <span
-                    key={s}
-                    className={sizes.includes(s) ? "active" : ""}
-                    onClick={() => toggle(s, setSizes)}
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h4>Price</h4>
-              <input
-                type="range"
-                min={0}
-                max={500}
-                value={maxPrice}
-                onChange={(e) => {
-                  setMaxPrice(+e.target.value);
-                  setCurrentPage(1);
-                }}
-              />
-              <p className="price-value">Up to ${maxPrice}</p>
-            </div>
-          </aside>
+          <FilterSidebar
+            maxPrice={maxPrice}
+            setMaxPrice={setMaxPrice}
+            categories={categories}
+            setCategories={setCategories}
+            productTypes={productTypes}
+            setProductTypes={setProductTypes}
+            sizes={sizes}
+            setSizes={setSizes}
+            colors={colors}
+            setColors={setColors}
+            onFilterChange={() => setCurrentPage(1)}
+          />
 
           {/* ===== PRODUCTS ===== */}
           <section className="products">
@@ -208,20 +154,19 @@ const ProductListPage = () => {
                     rating: 5,
                     reviews: 120,
                   }}
+                  onViewDetails={handleViewDetails}
                 />
               ))}
             </div>
 
             <div className="pagination">
-              {Array.from({ length: totalPages }).map((_, i) => (
-                <button
-                  key={i}
-                  className={currentPage === i + 1 ? "active" : ""}
-                  onClick={() => setCurrentPage(i + 1)}
-                >
-                  {i + 1}
-                </button>
-              ))}
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              )}
             </div>
           </section>
         </div>

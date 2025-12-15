@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
-import { Search, ShoppingCart, Heart, ChevronDown, User } from 'lucide-react';
+import { Search, ShoppingCart, Heart, ChevronDown, User, Truck } from 'lucide-react';
 import './Header.scss';
 
 interface HeaderProps {

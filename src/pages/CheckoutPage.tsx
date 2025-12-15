@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Row, Col, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import './CheckoutPage.scss';
 import { useCartStore } from '../store/cartStore';
@@ -44,7 +44,26 @@ const checkoutSchema = yup.object().shape({
 });
 
 export const CheckoutPage: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const getPreviousPage = () => {
+    const state = location.state as any;
+    if (state?.from) return state.from;
+    const prevPage = sessionStorage.getItem('previousPage');
+    if (prevPage) return JSON.parse(prevPage);
+    return { name: 'Cart', path: '/cart' };
+  };
+
+  const previousPage = getPreviousPage();
+
+  React.useEffect(() => {
+    return () => {
+      sessionStorage.setItem('previousPage', JSON.stringify({ name: 'Checkout', path: '/checkout' }));
+    };
+  }, []);
+
   const {
     control,
     handleSubmit,
@@ -55,7 +74,6 @@ export const CheckoutPage: React.FC = () => {
   });
 
   const [showSuccess, setShowSuccess] = React.useState(false);
-  const navigate = useNavigate();
   const { items: cartItems, getTotal: getSubtotal, clearCart: getClearCart } = useCartStore();
   const { mutate: createOrder } = useCreateOrder();
 
@@ -108,12 +126,15 @@ export const CheckoutPage: React.FC = () => {
 
   return (
     <div className="checkout-page">
-      <div className="checkout-breadcrumb-wrapper">
-        <div className="checkout-breadcrumb">
-          <Link to="/">Home Page</Link>
-          <ChevronRight size={18} />
-          <span>Check Out</span>
-        </div>
+      <div className="breadcrumb-top">
+        <button 
+          className="breadcrumb-link"
+          onClick={() => navigate(previousPage.path === '/' ? '/' : previousPage.path, { state: { from: null } })}
+        >
+          {previousPage.name}
+        </button>
+        <span className="breadcrumb-sep"><ChevronRight size={18} /></span>
+        <span className="breadcrumb-current">Check Out</span>
       </div>
       <div className="checkout-container">
         <h2 className="checkout-title">Checkout</h2>
@@ -125,7 +146,7 @@ export const CheckoutPage: React.FC = () => {
             <CheckoutCart />
           </div>
 
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form onSubmit={handleSubmit(onSubmit)} id="checkoutForm">
               <div className="checkout-section">
                 <h4 className="section-header">Shipping Information</h4>
               <Row>
@@ -360,19 +381,7 @@ export const CheckoutPage: React.FC = () => {
                     {errors.cardExpiry && <span className="error-text">{errors.cardExpiry.message}</span>}
                   </FormGroup>
                 </Col>
-                
               </Row>
-
-                <Button
-                  variant="accent"
-                  size="lg"
-                  fullWidth
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="mt-4"
-                >
-                  {isSubmitting ? 'Processing...' : 'Place Order'} <ChevronRight size={20} />
-                </Button>
               </div>
             </Form>
         </Col>
@@ -401,7 +410,19 @@ export const CheckoutPage: React.FC = () => {
             <Alert color="info" className="mt-4">
               <small>Your order will be delivered within 5-7 business days.</small>
             </Alert>
+            <Button
+                  variant="accent"
+                  size="lg"
+                  fullWidth
+                  type="submit"
+                  form="checkoutForm"
+                  disabled={isSubmitting}
+                  className="mt-4"
+                >
+                  {isSubmitting ? 'Processing...' : 'Place Order'} <ChevronRight size={20} />
+                </Button>
           </div>
+          
           {showSuccess && (
             <div className="success-overlay">
               <div className="success-modal">

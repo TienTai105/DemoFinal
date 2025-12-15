@@ -203,6 +203,11 @@ export const HomePage: React.FC = () => {
     setCurrentPageBestSellers(1);
   }, [activeCategory]);
 
+  // ===== SET HOME AS PREVIOUS PAGE =====
+  React.useEffect(() => {
+    sessionStorage.setItem('previousPage', JSON.stringify({ name: 'Home', path: '/' }));
+  }, []);
+
   // Show loading state
   if (isLoading) {
     return (

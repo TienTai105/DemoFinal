@@ -1,25 +1,68 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
 
 .shipping-page {
   width: 100%;
 }
 
 .shipping-container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 60px 20px 120px;
+  padding: 60px 160px 100px;
+
+  @media (max-width: 1024px) {
+    padding: 60px 120px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 40px 20px 80px;
+  }
 }
 
 /* ===== HEADER ===== */
 .shipping-header {
-  margin-bottom: 80px;
+  margin-bottom: 3rem;
+
+  .breadcrumb-top {
+    width: 100%;
+    margin: 0 0 1.5rem 0;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .breadcrumb-link {
+      background: none;
+      border: none;
+      color: #173036;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 0;
+      transition: all 0.2s;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover {
+        color: #D6FC45;
+        font-weight: 700;
+      }
+    }
+
+    .breadcrumb-sep {
+      color: #999;
+      margin: 0 4px;
+    }
+
+    .breadcrumb-current {
+      color: #173036;
+      font-weight: 400;
+    }
+  }
 }
 
 .breadcrumb {
-  font-size: 13px;
+  font-size: 18px;
   margin-bottom: 16px;
   display: flex;
-  gap: 6px;
+  gap: 8px;
 
   a {
     color: #000;
@@ -39,29 +82,32 @@
 .page-title {
   font-size: 36px;
   font-weight: 500;
+  margin: 0 0 2rem 0;
 }
 
 
 /* ===== BODY ===== */
 .shipping-body {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 120px;
-  row-gap: 80px;
-}
+  grid-template-columns: 1fr;
+  gap: 2rem;
 
-.shipping-body section {
-  max-width: 420px;
-}
+  section {
+    margin: 0;
+    padding: 0;
+  }
 
-.shipping-body h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
+  h3 {
+    font-size: 25px;
+    font-weight: 600;
+    color: #173036;
+    margin: 0 0 0.75rem 0;
+  }
 
-.shipping-body p {
-  font-size: 14px;
-  line-height: 1.8;
-  color: #666;
+  p {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #666;
+    margin: 0;
+  }
 }

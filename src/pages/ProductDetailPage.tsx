@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import "./ProductDetailPage.scss";
 
@@ -13,6 +13,7 @@ import { ChevronRightIcon } from "lucide-react";
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // ⭐ Fetch product detail từ API
   const { data: product, isLoading, error } = useProductById(id);
@@ -22,6 +23,41 @@ const ProductDetailPage: React.FC = () => {
 
   // ⭐ Fetch all products để lấy related products
   const { data: allProducts = [] } = useProducts();
+
+  // ⭐ GET PREVIOUS PAGE FROM NAVIGATION STATE OR HISTORY
+  const getPreviousPage = () => {
+    const state = location.state as any;
+    if (state?.from) {
+      return state.from;
+    }
+    
+    // Check browser history
+    if (window.history.length > 1) {
+      // Kiểm tra localStorage để lấy trang trước
+      const prevPage = sessionStorage.getItem('previousPage');
+      if (prevPage) {
+        return JSON.parse(prevPage);
+      }
+      return null;
+    }
+    return null;
+  };
+
+  const previousPage = getPreviousPage();
+
+  // ⭐ SAVE PRODUCT DETAIL PAGE TO SESSION STORAGE WHEN LEAVING
+  useEffect(() => {
+    if (!product) return;
+    return () => {
+      sessionStorage.setItem(
+        'previousPage',
+        JSON.stringify({
+          name: product.name,
+          path: `/product/${id}`,
+        })
+      );
+    };
+  }, [id, product]);
 
   // ⭐ Auto scroll khi vào trang
   useEffect(() => {
@@ -108,14 +144,24 @@ const ProductDetailPage: React.FC = () => {
     <div className="pdp">
       {/* Breadcrumb */}
       <div className="breadcrumb-top">
-        <button className="breadcrumb-link" onClick={() => navigate("/")}>
-          Home
-        </button>
-        <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
-        <button className="breadcrumb-link" onClick={() => navigate(`/?category=${product.category}`)}>
-          {product.category}
-        </button>
-        <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
+        {previousPage ? (
+          <>
+            <button 
+              className="breadcrumb-link" 
+              onClick={() => navigate(previousPage.path === "/" ? "/" : previousPage.path, { state: { from: null } })}
+            >
+              {previousPage.name}
+            </button>
+            <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
+          </>
+        ) : (
+          <>
+            <button className="breadcrumb-link" onClick={() => navigate("/")}>
+              Home
+            </button>
+            <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
+          </>
+        )}
         <span className="breadcrumb-current">{product.name}</span>
       </div>
 
