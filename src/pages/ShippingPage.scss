@@ -1,0 +1,67 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+
+.shipping-page {
+  width: 100%;
+}
+
+.shipping-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px 120px;
+}
+
+/* ===== HEADER ===== */
+.shipping-header {
+  margin-bottom: 80px;
+}
+
+.breadcrumb {
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 6px;
+
+  a {
+    color: #000;
+    text-decoration: none;
+
+    &:hover {
+      color: #d6ff00;
+    }
+  }
+
+  .sep,
+  .current {
+    color: #000;
+  }
+}
+
+.page-title {
+  font-size: 36px;
+  font-weight: 500;
+}
+
+
+/* ===== BODY ===== */
+.shipping-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 120px;
+  row-gap: 80px;
+}
+
+.shipping-body section {
+  max-width: 420px;
+}
+
+.shipping-body h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.shipping-body p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #666;
+}

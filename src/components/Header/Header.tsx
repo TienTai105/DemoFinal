@@ -95,6 +95,16 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
           <button className="icon-btn search-btn" title="Search">
             <Search size={20} />
           </button>
+
+          {/* Shipping button */}
+          <Link
+            to="/shipping"
+            className="icon-btn shipping-btn"
+            title="Shipping & Delivery"
+          >
+            <Truck size={20} />
+          </Link>
+
           <button
             className="icon-btn cart-btn"
             onClick={() => {
@@ -109,6 +119,7 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
             <ShoppingCart size={20} />
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
+
           <button className="icon-btn wishlist-btn" title="Wishlist">
             <Heart size={20} />
           </button>

@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
-      gcTime: 1000 * 60 * 10, // 10 minutes (formerly cacheTime)
+      gcTime: 1000 * 60 * 10, // 10 minutes
     },
   },
 });
@@ -50,20 +50,23 @@ function App() {
           {/* Global Cart Drawer */}
           <CartDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
-          {/* Main Content Area */}
+          {/* Main Content */}
           <main className="main-content">
             <Routes>
-              {/* Home / Landing Page */}
+              {/* Home */}
               <Route path="/" element={<HomePage />} />
-              
-              {/* Products Listing */}
-              <Route path="/products" element={<HomePage />} />
-              
+
+              {/* ✅ PRODUCT LIST – PHẦN CỦA BẠN */}
+              <Route path="/products" element={<ProductListPage />} />
+
               {/* Product Detail */}
               <Route path="/product/:id" element={<ProductDetailPage />} />
               
               {/* Checkout */}
               <Route path="/checkout" element={<CheckoutPage />} />
+
+              {/* ✅ SHIPPING & DELIVERY – PHẦN CỦA BẠN */}
+              <Route path="/shipping" element={<ShippingPage />} />
             </Routes>
           </main>
 
