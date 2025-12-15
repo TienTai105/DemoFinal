@@ -77,7 +77,7 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
           <Link to="/products" className="nav-item">
             Collections
           </Link>
-          <Link to="/" className="nav-item">
+          <Link to="/about" className="nav-item">
             About
           </Link>
           <Link to="/" className="nav-item">

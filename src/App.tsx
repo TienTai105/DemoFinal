@@ -11,6 +11,8 @@ import CartDrawer from './components/CartDrawer/CartDrawer';
 import { HomePage } from './pages/HomePage';
 import ProductDetailPage  from './pages/ProductDetailPage';
 import { CheckoutPage } from './pages/CheckoutPage';
+import About from './components/Aboutpage/AboutPage';
+
 import ProductListPage  from './pages/ProductListPage';
 import ShippingPage  from './pages/ShippingPage';  
 import './App.scss';
