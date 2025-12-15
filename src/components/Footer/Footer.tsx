@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
         <div className="footer-grid">
           {/* Brand Column */}
           <div className="footer-column">
-            <h4 className="footer-brand">E-Shop</h4>
+            <h4 className="footer-brand">NHOM_7</h4>
             <p className="footer-description">
               Discover timeless essentials that move with you. Quality, style, and sustainability in every piece.
             </p>
@@ -96,7 +96,7 @@ export const Footer: React.FC = () => {
         {/* Footer Bottom */}
         <div className="footer-bottom">
           <p className="footer-copyright">
-            © {currentYear} E-Shop. All rights reserved.
+            © {currentYear} NHOM_7. All rights reserved.
           </p>
           <div className="payment-methods">
             <span>Payment Methods:</span>

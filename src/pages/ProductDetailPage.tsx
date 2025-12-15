@@ -1,173 +1,270 @@
-import React from 'react';
-import { useCartStore } from '../store/cartStore';
-import { Container, Row, Col, Button } from 'reactstrap';
-import { Star, ShoppingCart } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
+import "./ProductDetailPage.scss";
 
-// Mock product data
-const mockProduct = {
-  id: '1',
-  name: 'Premium Wireless Headphones',
-  description: 'High-quality sound with noise cancellation and long battery life',
-  fullDescription: `Our Premium Wireless Headphones deliver exceptional audio quality with active noise cancellation technology. Perfect for music enthusiasts, professionals, and casual listeners alike.
+// ⭐ IMPORT HOOKS
+import { useCartStore } from "../store/cartStore";
+import { useProductById, useProducts } from "../api/products/queries";
+import { ProductCard } from "../components/ProductCard/ProductCard";
+import { QuantityControl } from "../components/UI/QuantityControl/QuantityControl";
+import { ChevronRightIcon } from "lucide-react";
 
-Features:
-- Active Noise Cancellation (ANC)
-- 30-hour battery life
-- Wireless Bluetooth connectivity
-- Comfortable over-ear design
-- Built-in microphone for calls
-- Premium materials and construction
+const ProductDetailPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-Specifications:
-- Driver Size: 40mm
-- Frequency Response: 20Hz - 20kHz
-- Impedance: 32 Ohms
-- Weight: 250g`,
-  price: 129.99,
-  originalPrice: 199.99,
-  image: 'https://via.placeholder.com/500x500?text=Headphones',
-  category: 'Electronics',
-  rating: 5,
-  reviews: 234,
-  stock: 15,
-};
+  // ⭐ Fetch product detail từ API
+  const { data: product, isLoading, error } = useProductById(id);
+  
+  // Debug log
+  console.log('ProductDetailPage Debug:', { id, isLoading, error, product });
 
-export const ProductDetailPage: React.FC = () => {
-  const { addItem } = useCartStore();
-  const [quantity, setQuantity] = React.useState(1);
+  // ⭐ Fetch all products để lấy related products
+  const { data: allProducts = [] } = useProducts();
 
-  const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addItem(mockProduct);
+  // ⭐ GET PREVIOUS PAGE FROM NAVIGATION STATE OR HISTORY
+  const getPreviousPage = () => {
+    const state = location.state as any;
+    if (state?.from) {
+      return state.from;
     }
-    alert('Product added to cart!');
+    
+    // Check browser history
+    if (window.history.length > 1) {
+      // Kiểm tra localStorage để lấy trang trước
+      const prevPage = sessionStorage.getItem('previousPage');
+      if (prevPage) {
+        return JSON.parse(prevPage);
+      }
+      return null;
+    }
+    return null;
   };
 
+  const previousPage = getPreviousPage();
+
+  // ⭐ SAVE PRODUCT DETAIL PAGE TO SESSION STORAGE WHEN LEAVING
+  useEffect(() => {
+    if (!product) return;
+    return () => {
+      sessionStorage.setItem(
+        'previousPage',
+        JSON.stringify({
+          name: product.name,
+          path: `/product/${id}`,
+        })
+      );
+    };
+  }, [id, product]);
+
+  // ⭐ Auto scroll khi vào trang
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
+  // ⭐ LẤY HÀM addItem TỪ ZUSTAND
+  const { addItem } = useCartStore();
+
+  const [mainImg, setMainImg] = useState<string>("");
+  const [color, setColor] = useState("Black");
+  const [size, setSize] = useState("S");
+  const [qty, setQty] = useState(1);
+
+  // Set default image khi product load
+  useEffect(() => {
+    if (product) {
+      const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
+      const productImage = rawImage?.startsWith("http")
+        ? rawImage
+        : `/images${rawImage}`;
+      setMainImg(productImage);
+    }
+  }, [product]);
+
+  // ⭐ GET RELATED PRODUCTS - cùng category, exclude product hiện tại
+  const relatedProducts = allProducts
+    .filter((p) => p.category === product?.category && p.id !== product?.id)
+    .slice(0, 10);
+
+  // ⭐ ADD TO CART GỬI VÀO ZUSTAND
+  const handleAdd = () => {
+    if (!product) return;
+
+    const item = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: qty,
+      image: product.image,
+      color,
+      size,
+    };
+
+    addItem(item);
+    toast.success(`Đã thêm ${qty} ${product.name} vào giỏ hàng!`);
+  };
+
+  // ⭐ LOADING STATE
+  if (!id) {
+    return (
+      <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
+        <p>Invalid product ID</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
+        <p>Loading product...</p>
+      </div>
+    );
+  }
+
+  // ⭐ ERROR STATE
+  if (error || !product) {
+    console.error('Product fetch error:', error);
+    return (
+      <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
+        <p>Product not found</p>
+        <button onClick={() => navigate("/")} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer", backgroundColor: '#173036', color: '#fff', border: 'none', borderRadius: '6px' }}>
+          Back to Home
+        </button>
+      </div>
+    );
+  }
+
+  // Handle image
+  const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
+  const images = [rawImage]; // API chỉ trả 1 ảnh, sử dụng làm gallery main
+
   return (
-    <Container className="product-detail-page py-5">
-      <Row>
-        <Col lg={6} className="mb-4">
-          <div className="product-image-container">
-            <img
-              src={mockProduct.image}
-              alt={mockProduct.name}
-              style={{ width: '100%', borderRadius: '8px' }}
-            />
-          </div>
-        </Col>
-        <Col lg={6}>
-          <div className="product-info">
-            <h1 style={{ marginBottom: '1rem', fontSize: '2rem', fontWeight: 'bold' }}>
-              {mockProduct.name}
-            </h1>
-
-            <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  size={20}
-                  style={{
-                    color: i < Math.floor(mockProduct.rating) ? '#ffc107' : '#dee2e6',
-                    fill: i < Math.floor(mockProduct.rating) ? '#ffc107' : 'none',
-                  }}
-                />
-              ))}
-              <span style={{ marginLeft: '0.5rem', color: '#6c757d' }}>
-                {mockProduct.rating} stars ({mockProduct.reviews} reviews)
-              </span>
-            </div>
-
-            <div style={{ marginBottom: '2rem' }}>
-              <span style={{ fontSize: '2rem', fontWeight: 'bold', color: '#007bff' }}>
-                ${mockProduct.price.toFixed(2)}
-              </span>
-              {mockProduct.originalPrice && (
-                <span
-                  style={{
-                    marginLeft: '1rem',
-                    fontSize: '1.1rem',
-                    textDecoration: 'line-through',
-                    color: '#6c757d',
-                  }}
-                >
-                  ${mockProduct.originalPrice.toFixed(2)}
-                </span>
-              )}
-            </div>
-
-            <div style={{ marginBottom: '2rem', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
-              {mockProduct.fullDescription}
-            </div>
-
-            <div style={{ marginBottom: '2rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
-                Quantity:
-              </label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    border: '1px solid #dee2e6',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  -
-                </button>
-                <input
-                  type="number"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  style={{
-                    width: '60px',
-                    padding: '0.5rem',
-                    border: '1px solid #dee2e6',
-                    borderRadius: '4px',
-                    textAlign: 'center',
-                  }}
-                />
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    border: '1px solid #dee2e6',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            <Button
-              color="primary"
-              size="lg"
-              onClick={handleAddToCart}
-              style={{ width: '100%', marginBottom: '1rem' }}
+    <div className="pdp">
+      {/* Breadcrumb */}
+      <div className="breadcrumb-top">
+        {previousPage ? (
+          <>
+            <button 
+              className="breadcrumb-link" 
+              onClick={() => navigate(previousPage.path === "/" ? "/" : previousPage.path, { state: { from: null } })}
             >
-              <ShoppingCart size={20} style={{ marginRight: '0.5rem' }} />
-              Add to Cart
-            </Button>
+              {previousPage.name}
+            </button>
+            <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
+          </>
+        ) : (
+          <>
+            <button className="breadcrumb-link" onClick={() => navigate("/")}>
+              Home
+            </button>
+            <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
+          </>
+        )}
+        <span className="breadcrumb-current">{product.name}</span>
+      </div>
 
-            <div style={{ padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Stock:</strong> {mockProduct.stock > 0 ? `${mockProduct.stock} in stock` : 'Out of stock'}
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Category:</strong> {mockProduct.category}
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Free Shipping:</strong> On orders over $50
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>30-Day Return:</strong> Money-back guarantee
-              </p>
+      <div className="pdp-wrapper">
+        {/* LEFT GALLERY */}
+        <div className="pdp-gallery">
+          <div className="gallery-list">
+            {images.map((img, i) => (
+              <img
+                key={i}
+                className={`thumb ${mainImg === img ? "active" : ""}`}
+                src={img?.startsWith("http") ? img : `/images${img}`}
+                alt=""
+                onClick={() => setMainImg(img)}
+              />
+            ))}
+          </div>
+
+          <div className="gallery-main">
+            <img src={mainImg} alt={product.name} />
+          </div>
+        </div>
+
+        {/* RIGHT INFO */}
+        <div className="pdp-info">
+
+          <h1 className="title">{product.name}</h1>
+          
+          <div className="price">{product.price.toLocaleString("vi-VN")}.000đ</div>
+
+          <div className="section">
+            <div className="label">Description:</div>
+            <p className="desc">{product.description}</p>
+          </div>
+
+          <div className="section">
+            <div className="label">Color:</div>
+            <div className="color-list">
+              {(product.colors || ["Black", "White", "Gray"]).map((c) => (
+                <button
+                  key={c}
+                  className={`pill ${color === c ? "active" : ""}`}
+                  onClick={() => setColor(c)}
+                >
+                  {c}
+                </button>
+              ))}
             </div>
           </div>
-        </Col>
-      </Row>
-    </Container>
+
+          <div className="section">
+            <div className="label">Size:</div>
+            <div className="size-list">
+              {(product.sizes || ["XS", "S", "M", "L", "XL"]).map((s: string) => (
+                <button
+                  key={s}
+                  className={`pill ${size === s ? "active" : ""}`}
+                  onClick={() => setSize(s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="actions">
+            <QuantityControl
+              quantity={qty}
+              onDecrease={() => setQty(Math.max(1, qty - 1))}
+              onIncrease={() => setQty(qty + 1)}
+              onChange={(v) => {
+                if (v >= 1) setQty(v);
+              }}
+              size="medium"
+            />
+
+            <button className="btn-add" onClick={handleAdd}>
+              Add To Cart – {(product.price * qty).toLocaleString("vi-VN")}.000đ
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* RELATED PRODUCT */}
+      <div className="related">
+        <h2>Related Product</h2>
+
+        <div className="related-grid">
+          {relatedProducts.length > 0 ? (
+            relatedProducts.map((item) => (
+              <ProductCard
+                key={item.id}
+                product={item}
+                onViewDetails={(productId) => navigate(`/product/${productId}`)}
+              />
+            ))
+          ) : (
+            <p>No related products found</p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
+
+export default ProductDetailPage;
