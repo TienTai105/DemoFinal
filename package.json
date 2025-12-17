@@ -36,7 +36,13 @@
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^6.20.0",
     "react-slick": "^0.31.0",
+<<<<<<< HEAD
+    "react-toastify": "^11.0.5",
     "reactstrap": "^9.2.0",
+    "recharts": "^3.6.0",
+=======
+    "reactstrap": "^9.2.0",
+>>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
     "slick-carousel": "^1.8.1",
     "yup": "^1.3.3",
     "zustand": "^4.4.0"
@@ -51,6 +57,11 @@
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/react-slick": "^0.23.13",
+<<<<<<< HEAD
+    "@types/react-toastify": "^4.0.2",
+    "@types/recharts": "^1.8.29",
+=======
+>>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
     "babel-loader": "^9.1.3",
     "css-loader": "^6.8.1",
     "html-webpack-plugin": "^5.6.0",

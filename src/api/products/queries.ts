@@ -49,7 +49,6 @@ export const useProductById = (id?: string) => {
     staleTime: 1000 * 60 * 5, // 5 minutes - cache for better reload experience
     gcTime: 1000 * 60 * 10,
     retry: 3,
-    refetchOnWindowFocus: false, // Don't refetch on window focus
     refetchOnReconnect: true,
   });
 };

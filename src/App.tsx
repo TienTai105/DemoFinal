@@ -8,6 +8,8 @@ import { Toaster } from 'react-hot-toast';
 import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer/Footer';
 import CartDrawer from './components/CartDrawer/CartDrawer';
+import UserRoutes from './routes/UserRoutes';
+import AdminRoutes from './routes/AdminRoutes';
 import { HomePage } from './pages/HomePage/HomePage';
 import ProductDetailPage  from './pages/ProductDetailPage/ProductDetailPage';
 import { CheckoutPage } from './pages/CheckoutPage/CheckoutPage';
@@ -57,24 +59,9 @@ function App() {
           {/* Main Content */}
           <main className="main-content">
             <Routes>
-              {/* Home */}
-              <Route path="/" element={<HomePage />} />
-
-              {/* ✅ PRODUCT LIST – PHẦN CỦA BẠN */}
-              <Route path="/products" element={<ProductListPage />} />
-
-              {/* Product Detail */}
-              <Route path="/product/:id" element={<ProductDetailPage />} />
-              
-              {/* Checkout */}
-              <Route path="/checkout" element={<CheckoutPage />} />
-
-              {/* ✅ SHIPPING & DELIVERY – PHẦN CỦA BẠN */}
-              <Route path="/shipping" element={<ShippingPage />} />
-              <Route path="/about" element={<About />} />
-              
-              {/* Contact Us */}
-              <Route path="/contact" element={<ContactPage />} />
+              {/* Delegate to User and Admin route trees */}
+              <Route path="/admin/*" element={<AdminRoutes />} />
+              <Route path="/*" element={<UserRoutes />} />
             </Routes>
           </main>
 

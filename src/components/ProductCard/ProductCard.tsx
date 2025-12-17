@@ -29,7 +29,6 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
   const { addItem, removeItem, isInWishlist } = useWishlistStore();
   const inWishlist = isInWishlist(product.id);
-
   const handleCardClick = () => {
     onViewDetails?.(product.id);
   };
@@ -50,6 +49,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
       });
     }
   };
+
 
   // Handle image - support both string and array
   const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
@@ -106,6 +106,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
               title={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
             >
               <Heart size={20} fill={inWishlist ? 'currentColor' : 'none'} />
+
             </button>
             <div className="product-price">
               <span className="current-price">{product.price.toLocaleString('vi-VN')}.000đ</span>
