@@ -5,13 +5,24 @@ export interface Product {
   description: string;
   price: number;
   originalPrice?: number;
-  image: string;
+  image: string | string[];
   category: string;
-  rating: number;
-  reviews: number;
-  stock: number;
+  subCategory?: string;
+  date?: number | string;
+  bestseller?: boolean;
+  newproduct?: boolean;
+  rating?: number;
+  reviews?: number;
+  stock?: number;
   inCart?: boolean;
   quantity?: number;
+  colors?: string[];
+  sizes?: string[];
+}
+
+// Cart types
+export interface CartItem extends Product {
+  quantity: number;
   size?: string;
   color?: string;
 }
@@ -19,6 +30,8 @@ export interface Product {
 // Cart types
 export interface CartItem extends Product {
   quantity: number;
+  size?: string;
+  color?: string;
 }
 
 // User types
@@ -26,7 +39,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  phone: string;
+  phone?: string;
+  role?: string; // 'admin' | 'user'
 }
 
 // Order types

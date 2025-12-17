@@ -1,0 +1,41 @@
+$muted: #6b7280;
+$shadow: 0 6px 18px rgba(12,28,56,0.04);
+
+.manage-users {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+
+  .admin-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+  .page-title { font-size:1.1rem; font-weight:700; }
+
+  .users-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:1rem; }
+
+  .user-card {
+    background:#fff;
+    padding:1rem;
+    border-radius:10px;
+    box-shadow: $shadow;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    .user-info { color:#111827; }
+    .user-name { font-weight:600; color:#173036; }
+    .user-email { color:$muted; }
+    .user-joined { font-size:0.85rem; color:#9aa6b2; }
+  }
+
+  .user-actions { display:flex; gap:0.5rem; align-items:center; }
+  .user-role { padding:0.25rem 0.5rem; border-radius:8px; font-weight:600; }
+  .user-role.is-admin { background:#fff7ed; color:#92400e; }
+  .user-role.is-user { background:#f3f4f6; color:#111827; }
+
+  .btn { padding:0.45rem 0.75rem; border-radius:8px; background:#f3f4f6; border:none; cursor:pointer; }
+  .btn--small { padding:0.25rem 0.5rem; font-size:0.85rem; }
+  .btn--danger { background:#ef4444; color:#fff; }
+
+  .empty-placeholder { color:$muted; }
+
+  @media (max-width: 720px) { .users-grid { grid-template-columns: 1fr; } }
+}

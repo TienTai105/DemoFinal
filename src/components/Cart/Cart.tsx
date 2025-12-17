@@ -1,22 +1,37 @@
 import React from 'react';
 import { useCartStore } from '../../store/cartStore';
+import { useProducts } from '../../api/products/queries';
 import { Container, Row, Col, Button, Table } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
-import { Trash2 } from 'lucide-react';
+import { ChevronRight, Trash2 } from 'lucide-react';
+import { QuantityControl } from '../UI/QuantityControl/QuantityControl';
 import './Cart.scss';
 import ConfirmModal from '../UI/ConfirmModal/ConfirmModal';
 
 type CartVariant = 'page' | 'drawer' | 'inline' | 'checkout';
+type QuantitySizeVariant = 'small' | 'medium' | 'large';
 
 interface CartProps {
   variant?: CartVariant;
   onClose?: () => void; // for drawer variant
+  quantitySize?: QuantitySizeVariant; // for controlling quantity button size
 }
 
-export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose }) => {
+export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose, quantitySize = 'small' }) => {
   const { items, removeItem, updateQuantity, getTotal } = useCartStore();
+  const { data: allProducts = [] } = useProducts();
   const total = getTotal();
   const navigate = useNavigate();
+
+  // Helper function to get product image from API
+  const getProductImage = (productId: string) => {
+    const product = allProducts.find(p => p.id === productId);
+    if (product) {
+      const img = Array.isArray(product.image) ? product.image[0] : product.image;
+      return img?.startsWith('http') ? img : `/images${img}`;
+    }
+    return '/images/placeholder.png'; // fallback image
+  };
 
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [confirmTarget, setConfirmTarget] = React.useState<{
@@ -65,67 +80,60 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose }) => {
       <thead>
         <tr>
           <th>Product</th>
-          {variant !== 'inline' && <th>Price</th>}
+          <th>Price</th>
           <th>Size</th>
           <th>Color</th>
           <th>Quantity</th>
           <th>Total</th>
-          {variant === 'page' && <th>Action</th>}
         </tr>
       </thead>
       <tbody>
-        {items.map((item) => (
-          <tr key={item.id} className="cart-item">
+        {items.map((item) => {
+          const itemKey = `${item.id}-${item.size || 'default'}-${item.color || 'default'}`;
+          return (
+            <tr key={itemKey} className="cart-item">
             <td>
               <div className="item-info">
-                <img src={item.image} alt={item.name} className="item-image" />
+                <img src={getProductImage(item.id)} alt={item.name} className="item-image" />
                 <span>{item.name}</span>
               </div>
             </td>
-            {variant !== 'inline' && <td>${item.price.toFixed(2)}</td>}
+            <td>{item.price.toLocaleString('vi-VN')}.000đ</td>
             <td>{item.size ?? '-'}</td>
             <td>{item.color ?? '-'}</td>
             <td>
-              <div className="quantity-control">
-                <button
-                  onClick={() => {
+              <div className="quantity-with-action">
+                <QuantityControl
+                  quantity={item.quantity}
+                  onDecrease={() => {
                     const newQ = item.quantity - 1;
                     if (newQ <= 0) {
-                      openRemoveConfirmForQty(String(item.id), item.name, newQ);
+                      openRemoveConfirmForQty(itemKey, item.name, newQ);
                     } else {
-                      updateQuantity(String(item.id), newQ);
+                      updateQuantity(itemKey, newQ);
                     }
                   }}
-                >
-                  -
-                </button>
-                <input
-                  type="string"
-                  min={1}
-                  value={item.quantity}
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value, 10);
-                    if (Number.isNaN(v)) return;
+                  onIncrease={() => updateQuantity(itemKey, item.quantity + 1)}
+                  onChange={(v) => {
                     if (v <= 0) {
-                      openRemoveConfirmForQty(String(item.id), item.name, v);
+                      openRemoveConfirmForQty(itemKey, item.name, v);
                     } else {
-                      updateQuantity(String(item.id), v);
+                      updateQuantity(itemKey, v);
                     }
                   }}
+                  size={quantitySize}
                 />
-                <button onClick={() => updateQuantity(String(item.id), item.quantity + 1)}>+</button>
+                {(variant === 'page' || variant === 'checkout') && (
+                  <button className="cart-delete-btn" onClick={() => openRemoveConfirm(itemKey, item.name)} aria-label={`Remove ${item.name}`}>
+                    <Trash2 size={20} />
+                  </button>
+                )}
               </div>
             </td>
-            <td>${(item.price * item.quantity).toFixed(2)}</td>
-            {variant === 'page' && (
-              <td>
-                <button className="btn btn-sm btn-danger" onClick={() => openRemoveConfirm(String(item.id), item.name)}>
-                  <Trash2 size={16} />
-                </button>
-              </td>
-            )}
+            <td>{(item.price * item.quantity).toLocaleString('vi-VN')}.000đ</td>
           </tr>
-        ))}
+          );
+        })}
       </tbody>
     </Table>
   );
@@ -147,47 +155,40 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose }) => {
           {items.length === 0 ? (
             <div className="empty">Your cart is empty</div>
           ) : (
-            <div>
+            <>
               <ul className="drawer-list">
                 {items.map((item) => (
-                  <li className="drawer-item" key={item.id}>
-                    <img src={item.image} alt={item.name} className="drawer-thumb" />
+                  <li className="drawer-item" key={`${item.id}-${item.size}-${item.color}`}>
+                    <img src={getProductImage(item.id)} alt={item.name} className="drawer-thumb" />
                     <div className="info">
                       <div className="name">{item.name}</div>
                       <div className="meta">Color: {item.color ?? '-'} • Size: {item.size ?? '-'}</div>
                       <div className="qty">
-                        <button
-                          onClick={() => {
+                        <QuantityControl
+                          quantity={item.quantity}
+                          onDecrease={() => {
                             const newQ = item.quantity - 1;
                             if (newQ <= 0) {
-                              openRemoveConfirmForQty(String(item.id), item.name, newQ);
+                              openRemoveConfirmForQty(`${item.id}-${item.size}-${item.color}`, item.name, newQ);
                             } else {
-                              updateQuantity(String(item.id), newQ);
+                              updateQuantity(`${item.id}-${item.size}-${item.color}`, newQ);
                             }
                           }}
-                        >
-                          -
-                        </button>
-                        <input
-                          type="string"
-                          min={1}
-                          value={item.quantity}
-                          onChange={(e) => {
-                            const v = parseInt(e.target.value, 10);
-                            if (Number.isNaN(v)) return;
+                          onIncrease={() => updateQuantity(`${item.id}-${item.size}-${item.color}`, item.quantity + 1)}
+                          onChange={(v) => {
                             if (v <= 0) {
-                              openRemoveConfirmForQty(String(item.id), item.name, v);
+                              openRemoveConfirmForQty(`${item.id}-${item.size}-${item.color}`, item.name, v);
                             } else {
-                              updateQuantity(String(item.id), v);
+                              updateQuantity(`${item.id}-${item.size}-${item.color}`, v);
                             }
                           }}
+                          size="small"
                         />
-                        <button onClick={() => updateQuantity(String(item.id), item.quantity + 1)}>+</button>
                       </div>
                     </div>
                     <div className="actions">
-                      <div className="price">${(item.price * item.quantity).toFixed(2)}</div>
-                      <button className="remove" onClick={() => openRemoveConfirm(String(item.id), item.name)} aria-label={`Remove ${item.name}`}>
+                      <div className="price">{(item.price * item.quantity).toLocaleString('vi-VN')}.000đ</div>
+                      <button className="remove" onClick={() => openRemoveConfirm(`${item.id}-${item.size}-${item.color}`, item.name)} aria-label={`Remove ${item.name}`}>
                         <Trash2 size={14} />
                       </button>
                     </div>
@@ -195,14 +196,14 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose }) => {
                 ))}
               </ul>
               <div className="drawer-footer">
-                <div className="subtotal">Subtotal: <strong>${total.toFixed(2)}</strong></div>
+                <div className="subtotal">Subtotal: <strong>{total.toLocaleString('vi-VN')}.000đ</strong></div>
                 <div className="buttons">
-                  <Button color="primary" onClick={() => { onClose?.(); navigate('/checkout'); }}>
-                    Proceed to Checkout
+                  <Button className="checkout-btn-accent" onClick={() => { onClose?.(); navigate('/checkout'); }}>
+                    Check Out <ChevronRight/>
                   </Button>
                 </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </>
@@ -282,7 +283,7 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose }) => {
               <h4>Order Summary</h4>
               <div className="summary-row">
                 <span>Subtotal:</span>
-                <span>${total.toFixed(2)}</span>
+                <span>{total.toLocaleString('vi-VN')}.000đ</span>
               </div>
               <div className="summary-row">
                 <span>Shipping:</span>
@@ -290,17 +291,17 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose }) => {
               </div>
               <div className="summary-row">
                 <span>Tax:</span>
-                <span>${(total * 0.1).toFixed(2)}</span>
+                <span>{(total * 0.1).toLocaleString('vi-VN')}.000đ</span>
               </div>
               <hr />
               <div className="summary-row total">
                 <span>Total:</span>
-                <span>${(total * 1.1).toFixed(2)}</span>
+                <span>{(total * 1.1).toLocaleString('vi-VN')}.000đ</span>
               </div>
-              <Button color="primary" block className="mt-4 checkout-btn" onClick={() => navigate('/checkout')}>
-                Proceed to Checkout
+              <Button className="mt-4 checkout-btn" onClick={() => navigate('/checkout')}>
+                Check Out <ChevronRight/>
               </Button>
-              <Button color="secondary" outline block className="mt-2" onClick={() => navigate('/')}>
+              <Button color="secondary" outline block className="mt-2" onClick={() => navigate('/')} style={{ color: '#173036', borderColor: '#ddd' }}>
                 Continue Shopping
               </Button>
             </div>

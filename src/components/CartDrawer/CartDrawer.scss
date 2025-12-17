@@ -3,61 +3,61 @@
   inset: 0;
   background: rgba(0,0,0,0.35);
   z-index: 500;
-  display:flex;
-  justify-content:flex-end;
-  
+  display: flex;
+  justify-content: flex-end;
 }
 
 .cart-drawer{
-  width: 33%;
-  max-width: 480px;
-  min-width: 320px;
+  width: 100%;
+  max-width: 420px;
   height: 100vh;
   background: #fff;
-  box-shadow: -4px 0 12px rgba(0,0,0,0.08);
-  display:flex;
-  flex-direction:column;
-  padding: 16px;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .drawer-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border-bottom:1px solid #eee;
-  padding-bottom:8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #eee;
+
+  h5 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #173036;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #333;
+    }
+  }
 }
 
 .drawer-body{
-  flex:1 1 auto;
-  overflow:auto;
-  padding:12px 4px;
+  flex: 1 1 auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
-
-.drawer-list{
-  list-style:none;
-  margin:0;
-  padding:0;
-}
-
-.drawer-item{
-  display:flex;
-  gap:12px;
-  align-items:flex-start;
-  padding:8px 4px;
-  border-bottom:1px solid #f1f1f1;
-}
-
-.drawer-item .drawer-thumb,
-.drawer-item img.drawer-thumb { width:56px; height:56px; object-fit:cover; border-radius:6px }
-.drawer-item .info{ flex:1; min-width:0 }
-.drawer-item .name{ font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
-.drawer-item .meta{ font-size:0.9rem; color:#666 }
-.drawer-item .qty{ display:flex; gap:6px; align-items:center; margin-top:8px }
-.drawer-item .qty input{ width:56px; text-align:center }
-
-.drawer-item .actions{ display:flex; flex-direction:column; align-items:flex-end; gap:8px }
-.drawer-item .remove{ background:transparent; border:0; color:#dc3545 }
 
 .drawer-footer{
   border-top:1px solid #eee;
