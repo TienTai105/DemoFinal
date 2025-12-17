@@ -27,20 +27,12 @@ interface ProductCardProps {
  * Design from component wireframe with Electric Lime accents
  */
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
-<<<<<<< HEAD
   const { addItem, removeItem, isInWishlist } = useWishlistStore();
   const inWishlist = isInWishlist(product.id);
-
-=======
-  
-
-
->>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
   const handleCardClick = () => {
     onViewDetails?.(product.id);
   };
 
-<<<<<<< HEAD
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering card click
     const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
@@ -58,8 +50,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
     }
   };
 
-=======
->>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
+
   // Handle image - support both string and array
   const rawImage = Array.isArray(product.image) ? product.image[0] : product.image;
   // Support both absolute URLs and relative paths
@@ -109,17 +100,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         <div className="product-info-row">
           <h3 className="product-name">{product.name}</h3>
           <div className="product-right">
-<<<<<<< HEAD
             <button 
               className={`wishlist-btn ${inWishlist ? 'active' : ''}`} 
               onClick={handleWishlistClick}
               title={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
             >
               <Heart size={20} fill={inWishlist ? 'currentColor' : 'none'} />
-=======
-            <button className="wishlist-btn" title="Add to Wishlist">
-              <Heart size={20} />
->>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
+
             </button>
             <div className="product-price">
               <span className="current-price">{product.price.toLocaleString('vi-VN')}.000đ</span>

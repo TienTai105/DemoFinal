@@ -46,17 +46,9 @@ export const useProductById = (id?: string) => {
     queryKey: ['product', id],
     queryFn: () => fetchProductById(id!),
     enabled: !!id,
-<<<<<<< HEAD
     staleTime: 1000 * 60 * 5, // 5 minutes - cache for better reload experience
     gcTime: 1000 * 60 * 10,
     retry: 3,
-    refetchOnWindowFocus: false, // Don't refetch on window focus
-=======
-    staleTime: 0,
-    gcTime: 1000 * 60 * 10,
-    retry: 3,
-    refetchOnWindowFocus: true, // Refetch when window regains focus
->>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
     refetchOnReconnect: true,
   });
 };

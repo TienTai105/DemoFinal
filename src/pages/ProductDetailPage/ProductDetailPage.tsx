@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import "./ProductDetailPage.scss";
 
 // ⭐ IMPORT HOOKS
-import { useCartStore } from "../store/cartStore";
-import { useProductById, useProducts } from "../api/products/queries";
-import { ProductCard } from "../components/ProductCard/ProductCard";
+import { useCartStore } from "../../store/cartStore";
+import { useProductById, useProducts } from "../../api/products/queries";
+import { ProductCard } from "../../components/ProductCard/ProductCard";
+import { QuantityControl } from "../../components/UI/QuantityControl/QuantityControl";
+import { ChevronRightIcon } from "lucide-react";
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // ⭐ Fetch product detail từ API
   const { data: product, isLoading, error } = useProductById(id);
@@ -20,6 +23,41 @@ const ProductDetailPage: React.FC = () => {
 
   // ⭐ Fetch all products để lấy related products
   const { data: allProducts = [] } = useProducts();
+
+  // ⭐ GET PREVIOUS PAGE FROM NAVIGATION STATE OR HISTORY
+  const getPreviousPage = () => {
+    const state = location.state as any;
+    if (state?.from) {
+      return state.from;
+    }
+    
+    // Check browser history
+    if (window.history.length > 1) {
+      // Kiểm tra localStorage để lấy trang trước
+      const prevPage = sessionStorage.getItem('previousPage');
+      if (prevPage) {
+        return JSON.parse(prevPage);
+      }
+      return null;
+    }
+    return null;
+  };
+
+  const previousPage = getPreviousPage();
+
+  // ⭐ SAVE PRODUCT DETAIL PAGE TO SESSION STORAGE WHEN LEAVING
+  useEffect(() => {
+    if (!product) return;
+    return () => {
+      sessionStorage.setItem(
+        'previousPage',
+        JSON.stringify({
+          name: product.name,
+          path: `/product/${id}`,
+        })
+      );
+    };
+  }, [id, product]);
 
   // ⭐ Auto scroll khi vào trang
   useEffect(() => {
@@ -31,7 +69,7 @@ const ProductDetailPage: React.FC = () => {
 
   const [mainImg, setMainImg] = useState<string>("");
   const [color, setColor] = useState("Black");
-  const [size, setSize] = useState("M");
+  const [size, setSize] = useState("S");
   const [qty, setQty] = useState(1);
 
   // Set default image khi product load
@@ -48,7 +86,7 @@ const ProductDetailPage: React.FC = () => {
   // ⭐ GET RELATED PRODUCTS - cùng category, exclude product hiện tại
   const relatedProducts = allProducts
     .filter((p) => p.category === product?.category && p.id !== product?.id)
-    .slice(0, 4);
+    .slice(0, 10);
 
   // ⭐ ADD TO CART GỬI VÀO ZUSTAND
   const handleAdd = () => {
@@ -70,19 +108,28 @@ const ProductDetailPage: React.FC = () => {
 
   // ⭐ LOADING STATE
   if (!id) {
-    return <div className="pdp"><p>Invalid product ID</p></div>;
+    return (
+      <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
+        <p>Invalid product ID</p>
+      </div>
+    );
   }
 
   if (isLoading) {
-    return <div className="pdp"><p>Loading...</p></div>;
+    return (
+      <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
+        <p>Loading product...</p>
+      </div>
+    );
   }
 
   // ⭐ ERROR STATE
   if (error || !product) {
+    console.error('Product fetch error:', error);
     return (
-      <div className="pdp">
+      <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
         <p>Product not found</p>
-        <button onClick={() => navigate("/")} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}>
+        <button onClick={() => navigate("/")} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer", backgroundColor: '#173036', color: '#fff', border: 'none', borderRadius: '6px' }}>
           Back to Home
         </button>
       </div>
@@ -97,14 +144,24 @@ const ProductDetailPage: React.FC = () => {
     <div className="pdp">
       {/* Breadcrumb */}
       <div className="breadcrumb-top">
-        <button className="breadcrumb-link" onClick={() => navigate("/")}>
-          Home
-        </button>
-        <span className="breadcrumb-sep">/</span>
-        <button className="breadcrumb-link" onClick={() => navigate(`/?category=${product.category}`)}>
-          {product.category}
-        </button>
-        <span className="breadcrumb-sep">/</span>
+        {previousPage ? (
+          <>
+            <button 
+              className="breadcrumb-link" 
+              onClick={() => navigate(previousPage.path === "/" ? "/" : previousPage.path, { state: { from: null } })}
+            >
+              {previousPage.name}
+            </button>
+            <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
+          </>
+        ) : (
+          <>
+            <button className="breadcrumb-link" onClick={() => navigate("/")}>
+              Home
+            </button>
+            <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
+          </>
+        )}
         <span className="breadcrumb-current">{product.name}</span>
       </div>
 
@@ -143,7 +200,7 @@ const ProductDetailPage: React.FC = () => {
           <div className="section">
             <div className="label">Color:</div>
             <div className="color-list">
-              {["Black", "White", "Gray"].map((c) => (
+              {(product.colors || ["Black", "White", "Gray"]).map((c) => (
                 <button
                   key={c}
                   className={`pill ${color === c ? "active" : ""}`}
@@ -158,7 +215,7 @@ const ProductDetailPage: React.FC = () => {
           <div className="section">
             <div className="label">Size:</div>
             <div className="size-list">
-              {["XS", "S", "M", "L", "XL"].map((s: string) => (
+              {(product.sizes || ["XS", "S", "M", "L", "XL"]).map((s: string) => (
                 <button
                   key={s}
                   className={`pill ${size === s ? "active" : ""}`}
@@ -171,11 +228,15 @@ const ProductDetailPage: React.FC = () => {
           </div>
 
           <div className="actions">
-            <div className="qty-box">
-              <button onClick={() => setQty(Math.max(1, qty - 1))}>-</button>
-              <div className="qty">{qty}</div>
-              <button onClick={() => setQty(qty + 1)}>+</button>
-            </div>
+            <QuantityControl
+              quantity={qty}
+              onDecrease={() => setQty(Math.max(1, qty - 1))}
+              onIncrease={() => setQty(qty + 1)}
+              onChange={(v) => {
+                if (v >= 1) setQty(v);
+              }}
+              size="medium"
+            />
 
             <button className="btn-add" onClick={handleAdd}>
               Add To Cart – {(product.price * qty).toLocaleString("vi-VN")}.000đ

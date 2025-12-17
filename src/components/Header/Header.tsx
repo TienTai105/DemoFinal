@@ -3,7 +3,6 @@
 // =====================================================
 // Main navigation header with logo, menu, and action icons
 
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
@@ -11,43 +10,24 @@ import { useWishlistStore } from '../../store/wishlistStore';
 import { useAuthStore } from '../../store/authStore';
 import { Search, ShoppingCart, Heart, User, Truck, X } from 'lucide-react';
 import { Wishlist } from '../Wishlist/Wishlist';
-=======
-import type { FC } from 'react';
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useCartStore } from '../../store/cartStore';
-import { Search, ShoppingCart, Heart, ChevronDown, User } from 'lucide-react';
->>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
+
 import './Header.scss';
 
 interface HeaderProps {
   onCartClick?: () => void;
 }
 
-// Main categories
-const MAIN_CATEGORIES = [
-  { name: 'Men', icon: '👔' },
-  { name: 'Women', icon: '👗' },
-  { name: 'Kids', icon: '👶' },
-  { name: 'Baby', icon: '🍼' },
-];
-
 /**
  * Header Component
  * Main navigation with:
  * - Logo/Brand name
-<<<<<<< HEAD
  * - Navigation menu (Collections, About, Contacts, Shop)
-=======
- * - Navigation menu (Shop with dropdown, Collections, About, Contacts)
->>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
  * - Search, cart, and wishlist icons
  * - Auth links (Login/Register or user menu)
  */
 export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
   const navigate = useNavigate();
   const { items } = useCartStore();
-<<<<<<< HEAD
   const { items: wishlistItems, removeItem } = useWishlistStore();
   const user = useAuthStore((s) => s.user);
   const isAdmin = useAuthStore((s) => s.isAdmin);
@@ -56,9 +36,6 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
   const [showWishlist, setShowWishlist] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = React.useRef<HTMLDivElement | null>(null);
-=======
-  const [showDropdown, setShowDropdown] = useState(false);
->>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
 
   const cartCount = items.length;
   const displayName = user?.email ? user.email.split('@')[0] : user?.name || '';
@@ -88,9 +65,13 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const handleCategoryClick = (category: string) => {
-    setShowDropdown(false);
-    navigate(`/?category=${category}`);
+  const handleWishlistRemove = (id: string) => {
+    removeItem(id);
+  };
+
+  const handleAddToCart = (id: string) => {
+    // TODO: Implement add to cart from wishlist
+    navigate(`/product/${id}`);
   };
 
   return (
@@ -98,40 +79,9 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
       <div className="header-container">
         {/* Left Section - Navigation Menu */}
         <nav className="header-nav-left">
-<<<<<<< HEAD
           <Link to="/" className="nav-item">
             Shop
           </Link>
-=======
-          {/* Shop Dropdown */}
-          <div className="nav-dropdown">
-            <button 
-              className="nav-item shop-btn"
-              onClick={() => setShowDropdown(!showDropdown)}
-            >
-              <span className="nav-text">Shop</span>
-              <ChevronDown size={16} className="nav-arrow" />
-            </button>
-
-            {/* Dropdown Menu */}
-            {showDropdown && (
-              <div className="dropdown-menu-portal">
-                <div className="dropdown-content">
-                  {MAIN_CATEGORIES.map((category) => (
-                    <button
-                      key={category.name}
-                      className="dropdown-item"
-                      onClick={() => handleCategoryClick(category.name)}
-                    >
-                      <span className="dropdown-item-title">{category.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
->>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
           <Link to="/products" className="nav-item">
             Collections
           </Link>
@@ -182,7 +132,6 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
             <Heart size={20} fill={wishlistItems.length > 0 ? "currentColor" : "none"} />
             {wishlistItems.length > 0 && <span className="wishlist-badge">{wishlistItems.length}</span>}
           </button>
-<<<<<<< HEAD
 
           {user ? (
             <div className="user-menu-wrapper" ref={userMenuRef}>
@@ -211,11 +160,6 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
               <User size={20} />
             </Link>
           )}
-=======
-          <button className="icon-btn user-btn" title="User Account">
-            <User size={20} />
-          </button>
->>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
         </div>
       </div>
 

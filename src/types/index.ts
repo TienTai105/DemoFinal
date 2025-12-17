@@ -27,13 +27,6 @@ export interface CartItem extends Product {
   color?: string;
 }
 
-// Cart types
-export interface CartItem extends Product {
-  quantity: number;
-  size?: string;
-  color?: string;
-}
-
 // User types
 export interface User {
   id: string;
