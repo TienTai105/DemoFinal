@@ -18,7 +18,11 @@
   .product-card-image {
     position: relative;
     width: 100%;
+<<<<<<< HEAD
     height: 400px;
+=======
+    height: 450px;
+>>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
     background-color: #f5f5f5;
     overflow: hidden;
     display: flex;
@@ -114,8 +118,13 @@
   }
 
   .product-name {
+<<<<<<< HEAD
     font-size: 1.05rem;
     font-weight: 600;
+=======
+    font-size: 1.1rem;
+    font-weight: 500 ;
+>>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
     color: #173036;
     margin: 0;
     line-height: 1.4;
@@ -196,8 +205,13 @@
     gap: 0.25rem;
 
     .current-price {
+<<<<<<< HEAD
       font-size: 1.1rem;
       font-weight: 600;
+=======
+      font-size: 1rem;
+      font-weight: 500;
+>>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
       color: #173036;
     }
 

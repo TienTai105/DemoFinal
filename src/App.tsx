@@ -8,9 +8,15 @@ import { Toaster } from 'react-hot-toast';
 import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer/Footer';
 import CartDrawer from './components/CartDrawer/CartDrawer';
+<<<<<<< HEAD
 import UserRoutes from './routes/UserRoutes';
 import AdminRoutes from './routes/AdminRoutes';
 
+=======
+import { HomePage } from './pages/HomePage';
+import ProductDetailPage  from './pages/ProductDetailPage';
+import { CheckoutPage } from './pages/CheckoutPage';
+>>>>>>> 9477c6c8ca48db074ed2be7dca061b76656658cf
 import './App.scss';
 
 // Create a client for React Query
