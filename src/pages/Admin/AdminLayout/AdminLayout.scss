@@ -2,12 +2,12 @@
 .admin-layout { min-height: 100vh; background: #f6f9fb; }
 
 .admin-topbar { background: #fff; box-shadow: 0 2px 8px rgba(12,28,56,0.04); }
-.admin-topbar__inner { max-width: 1200px; margin: 0 auto; padding: 1rem; display:flex; align-items:center; justify-content:space-between; }
+.admin-topbar__inner { max-width: 1750px; margin: 0 auto; padding: 1rem; display:flex; align-items:center; justify-content:space-between; }
 .admin-topbar__brand .brand { font-weight: 700; color: #173036; text-decoration: none; }
 .admin-topbar__actions { display:flex; gap: 1rem; align-items:center; }
 .admin-greeting { color: #6b7280; }
 
-.admin-container { max-width:1200px; margin: 1.5rem auto; padding: 0 1rem; display:grid; grid-template-columns: 240px 1fr; gap: 1.25rem; padding-bottom: 1rem; }
+.admin-container { max-width:1800px; margin: 1.5rem auto; padding: 0 1rem; display:grid; grid-template-columns: 240px 1fr; gap: 1.25rem; padding-bottom: 1rem; }
 
 .admin-sidebar { background:#fff; padding: 1rem; border-radius: 10px; box-shadow: 0 6px 18px rgba(12,28,56,0.04); }
 .admin-nav { display:flex; flex-direction:column; gap: 0.25rem; }

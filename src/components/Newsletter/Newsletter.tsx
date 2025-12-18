@@ -28,7 +28,7 @@ export const Newsletter: React.FC<NewsletterProps> = ({ onSubscribe }) => {
     e.preventDefault();
 
     if (!email) {
-      setMessage({ type: 'error', text: 'Please enter an email address' });
+      setMessage({ type: 'error', text: 'Vui lòng nhập địa chỉ email' });
       return;
     }
 
@@ -38,10 +38,10 @@ export const Newsletter: React.FC<NewsletterProps> = ({ onSubscribe }) => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       onSubscribe?.(email);
-      setMessage({ type: 'success', text: '✓ Thanks for subscribing!' });
+      setMessage({ type: 'success', text: '✓ Cảm ơn bạn đã đăng ký!' });
       setEmail('');
     } catch {
-      setMessage({ type: 'error', text: 'Failed to subscribe. Try again.' });
+      setMessage({ type: 'error', text: 'Không thể đăng ký. Vui lòng thử lại.' });
     } finally {
       setIsLoading(false);
       setTimeout(() => setMessage(null), 3000);
@@ -56,16 +56,16 @@ export const Newsletter: React.FC<NewsletterProps> = ({ onSubscribe }) => {
           <div className="newsletter-text">
             <div className="newsletter-badge">
               <Sparkles size={16} />
-              <span>Exclusive Perks</span>
+              <span>Ưu Đãi Độc Quyền</span>
             </div>
-            <h2 className="newsletter-headline">Stay in the Loop</h2>
+            <h2 className="newsletter-headline">Cập Nhật Tin Tức</h2>
             <p className="newsletter-description">
-              Get exclusive drops, early access to new collections, insider style tips, and special discounts delivered straight to your inbox.
+              Nhận những sản phẩm độc quyền, truy cập sớm vào bộ sưu tập mới, mẹo kiểu tươi mới và giảm giá đặc biệt gửi trực tiếp đến inbox của bạn.
             </p>
             <ul className="newsletter-benefits">
-              <li>Early access to new drops</li>
-              <li>Exclusive member-only discounts</li>
-              <li>Curated style tips & trends</li>
+              <li>Truy cập sớm vào sản phẩm mới</li>
+              <li>Giảm giá độc quyền chỉ cho thành viên</li>
+              <li>Mẹo kiểu trang & xu hướng</li>
             </ul>
           </div>
 
@@ -76,7 +76,7 @@ export const Newsletter: React.FC<NewsletterProps> = ({ onSubscribe }) => {
                 <Mail size={20} />
                 <input
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder="email@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -84,11 +84,11 @@ export const Newsletter: React.FC<NewsletterProps> = ({ onSubscribe }) => {
                 />
               </div>
               <button type="submit" disabled={isLoading}>
-                {isLoading ? 'Subscribing...' : 'Subscribe'}
+                {isLoading ? 'Đang Đăng Ký...' : 'Đăng Ký'}
                 <ArrowRight size={18} />
               </button>
               <div className="newsletter-form-footer">
-                {isLoading && <div className="newsletter-loading">Processing your request...</div>}
+                {isLoading && <div className="newsletter-loading">Xử lý yêu cầu của bạn...</div>}
                 {message && (
                   <div className={`newsletter-message newsletter-message-${message.type}`}>
                     {message.text}

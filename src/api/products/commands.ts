@@ -18,6 +18,11 @@ const createProduct = async (product: Omit<Product, 'id'>): Promise<Product> => 
 };
 
 /**
+ * Export for direct use (not hook)
+ */
+export const addProduct = createProduct;
+
+/**
  * Hook to create a new product
  */
 export const useCreateProduct = () => {
@@ -35,10 +40,15 @@ export const useCreateProduct = () => {
 /**
  * Update an existing product
  */
-const updateProduct = async (id: string, product: Partial<Product>): Promise<Product> => {
+const updateProductFn = async (id: string, product: Partial<Product>): Promise<Product> => {
   const response = await axios.put<Product>(`${API_BASE_URL}/${id}`, product);
   return response.data;
 };
+
+/**
+ * Export for direct use (not hook)
+ */
+export const updateProduct = updateProductFn;
 
 /**
  * Hook to update a product
@@ -48,7 +58,7 @@ export const useUpdateProduct = () => {
 
   return useMutation({
     mutationFn: ({ id, product }: { id: string; product: Partial<Product> }) =>
-      updateProduct(id, product),
+      updateProductFn(id, product),
     onSuccess: () => {
       // Invalidate products query
       queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -59,9 +69,14 @@ export const useUpdateProduct = () => {
 /**
  * Delete a product
  */
-const deleteProduct = async (id: string): Promise<void> => {
+const deleteProductFn = async (id: string): Promise<void> => {
   await axios.delete(`${API_BASE_URL}/${id}`);
 };
+
+/**
+ * Export for direct use (not hook)
+ */
+export const deleteProduct = deleteProductFn;
 
 /**
  * Hook to delete a product
@@ -70,7 +85,7 @@ export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteProduct,
+    mutationFn: deleteProductFn,
     onSuccess: () => {
       // Invalidate products query
       queryClient.invalidateQueries({ queryKey: ['products'] });

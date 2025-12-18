@@ -12,14 +12,14 @@ const ShippingPage = () => {
     if (state?.from) return state.from;
     const prevPage = sessionStorage.getItem('previousPage');
     if (prevPage) return JSON.parse(prevPage);
-    return { name: 'Home', path: '/' };
+    return { name: 'Trang Chủ', path: '/' };
   };
 
   const previousPage = getPreviousPage();
 
   useEffect(() => {
     return () => {
-      sessionStorage.setItem('previousPage', JSON.stringify({ name: 'Shipping & Delivery', path: '/shipping' }));
+      sessionStorage.setItem('previousPage', JSON.stringify({ name: 'Vận Chuyển & Giao Hàng', path: '/shipping' }));
     };
   }, []);
 
@@ -36,53 +36,53 @@ const ShippingPage = () => {
               {previousPage.name}
             </button>
             <span className="breadcrumb-sep"><ChevronRight size={18} /></span>
-            <span className="breadcrumb-current">Shipping & Delivery</span>
+            <span className="breadcrumb-current">Vận Chuyển & Giao Hàng</span>
           </div>
 
-          <h1 className="page-title">Shipping & Delivery</h1>
+          <h1 className="page-title">Vận Chuyển & Giao Hàng</h1>
         </div>
 
         {/* ===== CONTENT ===== */}
         <div className="shipping-body">
           <section>
-            <h3>Processing Time</h3>
+            <h3>Thời Gian Xử Lý</h3>
             <p>
-              All orders are processed within 1–2 business days. Orders placed on weekends or holidays will be processed on the next business day. Once your order is shipped, you'll receive an email confirmation with tracking details.
+              Tất cả các đơn hàng được xử lý trong vòng 1-2 ngày làm việc. Các đơn hàng đặt vào cuối tuần hoặc ngày lễ sẽ được xử lý vào ngày làm việc tiếp theo. Khi đơn hàng của bạn được gửi đi, bạn sẽ nhận được email xác nhận kèm chi tiết theo dõi.
             </p>
           </section>
 
           <section>
-            <h3>Shipping Times</h3>
+            <h3>Thời Gian Giao Hàng</h3>
             <p>
-              Delivery times depend on your location and selected shipping option. Standard shipping usually takes 5–10 business days, while express options may arrive in 2–5 days. These estimates may vary based on destination and carrier availability.
+              Thời gian giao hàng tùy thuộc vào vị trí của bạn và tùy chọn vận chuyển được chọn. Vận chuyển tiêu chuẩn thường mất 5-10 ngày làm việc, trong khi các tùy chọn nhanh hơn có thể đến trong 2-5 ngày. Những ước tính này có thể thay đổi tùy theo điểm đến và khả năng của nhà cung cấp.
             </p>
           </section>
 
           <section>
-            <h3>Tracking Your Order</h3>
+            <h3>Theo Dõi Đơn Hàng Của Bạn</h3>
             <p>
-              When your order has been dispatched, you'll receive a tracking link to monitor the delivery progress. Please allow up to 24 hours for tracking updates to appear after shipment.
+              Khi đơn hàng của bạn được gửi đi, bạn sẽ nhận được liên kết theo dõi để giám sát tiến độ giao hàng. Vui lòng chờ đến 24 giờ để cập nhật theo dõi xuất hiện sau khi gửi hàng.
             </p>
           </section>
 
           <section>
-            <h3>Shipping Costs</h3>
+            <h3>Chi Phí Vận Chuyển</h3>
             <p>
-              Shipping costs are calculated at checkout and depend on your location and chosen delivery method. We occasionally offer free shipping during promotional periods.
+              Chi phí vận chuyển được tính toán tại thanh toán và tùy thuộc vào vị trí và phương thức giao hàng được chọn của bạn. Chúng tôi thỉnh thoảng cung cấp vận chuyển miễn phí trong các kỳ khuyến mãi.
             </p>
           </section>
 
           <section>
-            <h3>Delays and Exceptions</h3>
+            <h3>Độ Trễ và Ngoại Lệ</h3>
             <p>
-              Unforeseen circumstances such as weather conditions, customs clearance, or carrier delays may affect delivery times. We appreciate your patience and understanding in such cases.
+              Những hoàn cảnh không lường trước như điều kiện thời tiết, thủ tục hải quan hoặc độ trễ của nhà cung cấp có thể ảnh hưởng đến thời gian giao hàng. Chúng tôi trân trọng sự kiên nhẫn và thông cảm của bạn trong những trường hợp như vậy.
             </p>
           </section>
 
           <section>
-            <h3>Need Help?</h3>
+            <h3>Cần Giúp Đỡ?</h3>
             <p>
-              If you haven't received your order within the expected timeframe or notice any issue with your delivery, contact our team at support@dropcode.com with your order number — we'll assist you as soon as possible.
+              Nếu bạn chưa nhận được đơn hàng trong khung thời gian dự kiến hoặc nhận thấy bất kỳ vấn đề nào với việc giao hàng, hãy liên hệ với đội ngũ của chúng tôi tại support@nhom7.com kèm theo số đơn hàng của bạn — chúng tôi sẽ hỗ trợ bạn sớm nhất có thể.
             </p>
           </section>
         </div>

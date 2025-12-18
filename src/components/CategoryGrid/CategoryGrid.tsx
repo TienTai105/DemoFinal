@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import './CategoryGrid.scss';
+import { Link } from 'react-router-dom';
 
 interface CategoryItem {
   id: string;
@@ -22,16 +23,16 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ items }) => {
           <div className="category-image">
             <img src={category.image} alt={category.title} loading="lazy" />
             <div className="category-overlay">
-              <a href={category.link || '#'} className="shop-now-btn">
-                Shop Now
+              <Link to= "/collection" className="shop-now-btn">
+                Mua Ngay
                 <ChevronRight size={18} />
-              </a>
+              </Link>
             </div>
           </div>
           <div className="category-content">
             <h3 className="category-title">{category.title}</h3>
             {category.count && (
-              <p className="category-count">{category.count} items</p>
+              <p className="category-count">{category.count} sản phẩm</p>
             )}
           </div>
         </div>

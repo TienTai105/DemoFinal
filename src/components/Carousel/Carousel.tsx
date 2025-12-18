@@ -6,6 +6,7 @@
 import React from 'react';
 import Slider from 'react-slick';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './Carousel.scss';
@@ -43,7 +44,7 @@ const PrevArrow: React.FC<ArrowProps> = ({ onClick }) => (
   <button
     className="carousel-arrow carousel-arrow-prev"
     onClick={onClick}
-    aria-label="Previous slide"
+    aria-label="Slide Trước"
   >
     <ChevronLeft size={24} />
   </button>
@@ -53,7 +54,7 @@ const NextArrow: React.FC<ArrowProps> = ({ onClick }) => (
   <button
     className="carousel-arrow carousel-arrow-next"
     onClick={onClick}
-    aria-label="Next slide"
+    aria-label="Slide Tiếp"
   >
     <ChevronRight size={24} />
   </button>
@@ -130,9 +131,9 @@ export const Carousel: React.FC<CarouselProps> = ({
                 {slide.title && <h2 className="carousel-title">{slide.title}</h2>}
                 {slide.subtitle && <p className="carousel-subtitle">{slide.subtitle}</p>}
                 {slide.cta && (
-                  <a href={slide.link || '#'} className="carousel-cta">
-                    {slide.cta}
-                  </a>
+                  <Link to={slide.link || '/collection'} className="carousel-cta">
+                    {slide.cta} 
+                  </Link>
                 )}
               </div>
             )}

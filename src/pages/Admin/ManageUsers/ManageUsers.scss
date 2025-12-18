@@ -1,41 +1,462 @@
-$muted: #6b7280;
-$shadow: 0 6px 18px rgba(12,28,56,0.04);
-
 .manage-users {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem;
+  padding: 2rem;
+  background: #f9f9f9;
+  min-height: 100vh;
 
-  .admin-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
-  .page-title { font-size:1.1rem; font-weight:700; }
-
-  .users-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:1rem; }
-
-  .user-card {
-    background:#fff;
-    padding:1rem;
-    border-radius:10px;
-    box-shadow: $shadow;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    .user-info { color:#111827; }
-    .user-name { font-weight:600; color:#173036; }
-    .user-email { color:$muted; }
-    .user-joined { font-size:0.85rem; color:#9aa6b2; }
+  @media (max-width: 1024px) {
+    padding: 1.5rem;
   }
 
-  .user-actions { display:flex; gap:0.5rem; align-items:center; }
-  .user-role { padding:0.25rem 0.5rem; border-radius:8px; font-weight:600; }
-  .user-role.is-admin { background:#fff7ed; color:#92400e; }
-  .user-role.is-user { background:#f3f4f6; color:#111827; }
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
 
-  .btn { padding:0.45rem 0.75rem; border-radius:8px; background:#f3f4f6; border:none; cursor:pointer; }
-  .btn--small { padding:0.25rem 0.5rem; font-size:0.85rem; }
-  .btn--danger { background:#ef4444; color:#fff; }
+.manage-users-header {
+  margin-bottom: 2rem;
 
-  .empty-placeholder { color:$muted; }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
 
-  @media (max-width: 720px) { .users-grid { grid-template-columns: 1fr; } }
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #173036;
+      margin: 0;
+    }
+
+    .users-count {
+      background: #D6FC45;
+      color: #173036;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+
+      .page-title {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  // Search Bar
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+
+    svg {
+      color: #999;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+      color: #333;
+      font-family: inherit;
+
+      &::placeholder {
+        color: #999;
+      }
+    }
+
+    &:focus-within {
+      border-color: #173036;
+      box-shadow: 0 2px 8px rgba(23, 48, 54, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      padding: 0.65rem 0.75rem;
+
+      input {
+        font-size: 0.85rem;
+      }
+
+      svg {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
+
+// Users Table
+.users-table-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.empty-state {
+  padding: 3rem 2rem;
+  text-align: center;
+  color: #999;
+
+  p {
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+.users-list {
+  .user-row {
+    display: flex;
+    align-items: center;
+    padding: 1.25rem;
+    border-bottom: 1px solid #f0f0f0;
+    gap: 1rem;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #f9f9f9;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    @media (max-width: 1024px) {
+      padding: 1rem 0.75rem;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 0.75rem;
+      border-left: 4px solid #D6FC45;
+    }
+  }
+}
+
+.user-col {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+// User Info Column
+.user-col-info {
+  flex: 1;
+  min-width: 0;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    gap: 0.75rem;
+  }
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #f0f0f0;
+
+  @media (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+
+  .user-name {
+    font-weight: 600;
+    color: #173036;
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: 768px) {
+      font-size: 0.95rem;
+    }
+  }
+
+  .user-email {
+    color: #999;
+    font-size: 0.85rem;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: 768px) {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// Contact Column
+.user-col-contact {
+  min-width: 130px;
+
+  @media (max-width: 1024px) {
+    min-width: 110px;
+  }
+
+  @media (max-width: 768px) {
+    min-width: auto;
+    width: 100%;
+
+    &::before {
+      content: "SĐT: ";
+      font-weight: 600;
+      color: #999;
+      margin-right: 0.5rem;
+    }
+  }
+
+  .user-phone {
+    color: #333;
+    font-size: 0.9rem;
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+// Role Column
+.user-col-role {
+  min-width: 110px;
+  justify-content: center;
+
+  @media (max-width: 1024px) {
+    min-width: 100px;
+  }
+
+  @media (max-width: 768px) {
+    min-width: auto;
+    width: 100%;
+
+    &::before {
+      content: "Vai trò: ";
+      font-weight: 600;
+      color: #999;
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.admin {
+    background: #173036;
+    color: #D6FC45;
+  }
+
+  &.user {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// Status Column
+.user-col-status {
+  min-width: 140px;
+  justify-content: center;
+
+  @media (max-width: 1024px) {
+    min-width: 120px;
+  }
+
+  @media (max-width: 768px) {
+    min-width: auto;
+    width: 100%;
+
+    &::before {
+      content: "Trạng thái: ";
+      font-weight: 600;
+      color: #999;
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.active {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  &.inactive {
+    background: #f8d7da;
+    color: #721c24;
+  }
+}
+
+// Date Column
+.user-col-date {
+  min-width: 110px;
+  justify-content: center;
+  color: #666;
+  font-size: 0.85rem;
+
+  @media (max-width: 1024px) {
+    min-width: 95px;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 768px) {
+    min-width: auto;
+    width: 100%;
+    justify-content: flex-start;
+
+    &::before {
+      content: "Tham gia: ";
+      font-weight: 600;
+      color: #999;
+      margin-right: 0.5rem;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+// Actions Column
+.user-col-actions {
+  flex-direction: row;
+  gap: 0.5rem;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    gap: 0.35rem;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &-view {
+    background: #e3f2fd;
+    color: #1976d2;
+
+    &:hover {
+      background: #1976d2;
+      color: white;
+    }
+  }
+
+  &-role {
+    background: #f3e5f5;
+    color: #7b1fa2;
+
+    &:hover {
+      background: #7b1fa2;
+      color: white;
+    }
+  }
+
+  &-status {
+    background: #fff3e0;
+    color: #f57c00;
+
+    &:hover {
+      background: #f57c00;
+      color: white;
+    }
+  }
+
+  &-delete {
+    background: #ffebee;
+    color: #c62828;
+
+    &:hover {
+      background: #c62828;
+      color: white;
+    }
+  }
 }

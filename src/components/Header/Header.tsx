@@ -38,16 +38,7 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
   const userMenuRef = React.useRef<HTMLDivElement | null>(null);
 
   const cartCount = items.length;
-  const displayName = user?.email ? user.email.split('@')[0] : user?.name || '';
-
-  const handleWishlistRemove = (id: string) => {
-    removeItem(id);
-  };
-
-  const handleAddToCart = (id: string) => {
-    // TODO: Implement add to cart from wishlist
-    navigate(`/product/${id}`);
-  };
+  const displayName = user?.username ? user.username : user?.email?.split('@')[0] || '';
 
   const handleLogout = () => {
     logout();
@@ -79,28 +70,28 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
       <div className="header-container">
         {/* Left Section - Navigation Menu */}
         <nav className="header-nav-left">
-          <Link to="/" className="nav-item">
-            Shop
+          <Link to="/home" className="nav-item">
+            Cửa Hàng
           </Link>
-          <Link to="/products" className="nav-item">
-            Collections
+          <Link to="/collection" className="nav-item">
+            Bộ Sưu Tập
           </Link>
           <Link to="/about" className="nav-item">
-            About
+            Về Chúng Tôi
           </Link>
           <Link to="/contact" className="nav-item">
-            Contacts
+            Liên Hệ
           </Link>
         </nav>
 
         {/* Center - Logo/Brand */}
-        <Link to="/" className="header-logo">
+        <Link to="/home" className="header-logo">
           <span className="logo-text">E-Shop</span>
         </Link>
 
         {/* Right Section - Action Icons */}
         <div className="header-actions">
-          <button className="icon-btn search-btn" title="Search">
+          <button className="icon-btn search-btn" title="Tìm Kiếm">
             <Search size={20} />
           </button>
 
@@ -108,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
           <button
             className="icon-btn shipping-btn"
             onClick={() => navigate('/shipping')}
-            title="Shipping & Delivery"
+            title="Vận Chuyển & Giao Hàng"
           >
             <Truck size={20} />
           </button>
@@ -122,13 +113,13 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
                 navigate('/checkout');
               }
             }}
-            title="Shopping Cart"
+            title="Giỏ Hàng"
           >
             <ShoppingCart size={20} />
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
 
-          <button className="icon-btn wishlist-btn" onClick={() => setShowWishlist(!showWishlist)} title="Wishlist">
+          <button className="icon-btn wishlist-btn" onClick={() => setShowWishlist(!showWishlist)} title="Danh Sách Yêu Thích">
             <Heart size={20} fill={wishlistItems.length > 0 ? "currentColor" : "none"} />
             {wishlistItems.length > 0 && <span className="wishlist-badge">{wishlistItems.length}</span>}
           </button>
@@ -138,7 +129,7 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
               <button
                 className="icon-btn user-btn user-logged-in"
                 onClick={() => setShowUserMenu((s) => !s)}
-                title={user.email || user.name}
+                title={user.username || user.email}
                 aria-expanded={showUserMenu}
               >
                 <span className="user-name">{displayName}</span>
@@ -156,7 +147,7 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
               )}
             </div>
           ) : (
-            <Link to="/login" className="icon-btn user-btn" title="Login">
+            <Link to="/login" className="icon-btn user-btn" title="Đăng Nhập">
               <User size={20} />
             </Link>
           )}
@@ -170,7 +161,7 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
             <button 
               className="wishlist-close-btn" 
               onClick={() => setShowWishlist(false)}
-              title="Close"
+              title="Đóng"
             >
               <X size={24} />
             </button>

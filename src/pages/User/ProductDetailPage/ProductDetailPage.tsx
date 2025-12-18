@@ -92,6 +92,21 @@ const ProductDetailPage: React.FC = () => {
   const handleAdd = () => {
     if (!product) return;
 
+    // ⭐ Kiểm tra hết hàng
+    if (product.stock === 0 || product.stock === undefined || product.stock < qty) {
+      toast.error('Sản phẩm đã hết hàng hoặc không đủ số lượng!', {
+        duration: 2000,
+        position: 'bottom-right',
+        style: {
+          background: '#dc3545',
+          color: '#fff',
+          borderRadius: '8px',
+          padding: '16px',
+        },
+      });
+      return;
+    }
+
     const item = {
       id: product.id,
       name: product.name,
@@ -110,7 +125,7 @@ const ProductDetailPage: React.FC = () => {
   if (!id) {
     return (
       <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
-        <p>Invalid product ID</p>
+        <p>Mã Sản Phẩm Không Hợp Lệ</p>
       </div>
     );
   }
@@ -118,7 +133,7 @@ const ProductDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
-        <p>Loading product...</p>
+        <p>Đang Tải Sản Phẩm...</p>
       </div>
     );
   }
@@ -128,9 +143,9 @@ const ProductDetailPage: React.FC = () => {
     console.error('Product fetch error:', error);
     return (
       <div className="pdp" style={{ padding: '2rem', textAlign: 'center' }}>
-        <p>Product not found</p>
+        <p>Không Tìm Thấy Sản Phẩm</p>
         <button onClick={() => navigate("/")} style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer", backgroundColor: '#173036', color: '#fff', border: 'none', borderRadius: '6px' }}>
-          Back to Home
+          Quay Lại Trang Chủ
         </button>
       </div>
     );
@@ -157,7 +172,7 @@ const ProductDetailPage: React.FC = () => {
         ) : (
           <>
             <button className="breadcrumb-link" onClick={() => navigate("/")}>
-              Home
+              Trang Chủ
             </button>
             <span className="breadcrumb-sep"><ChevronRightIcon size={18}/></span>
           </>
@@ -193,12 +208,12 @@ const ProductDetailPage: React.FC = () => {
           <div className="price">{product.price.toLocaleString("vi-VN")}.000đ</div>
 
           <div className="section">
-            <div className="label">Description:</div>
+            <div className="label">Mô Tả:</div>
             <p className="desc">{product.description}</p>
           </div>
 
           <div className="section">
-            <div className="label">Color:</div>
+            <div className="label">Màu:</div>
             <div className="color-list">
               {(product.colors || ["Black", "White", "Gray"]).map((c) => (
                 <button
@@ -213,7 +228,7 @@ const ProductDetailPage: React.FC = () => {
           </div>
 
           <div className="section">
-            <div className="label">Size:</div>
+            <div className="label">Kích Cỡ:</div>
             <div className="size-list">
               {(product.sizes || ["XS", "S", "M", "L", "XL"]).map((s: string) => (
                 <button
@@ -236,10 +251,19 @@ const ProductDetailPage: React.FC = () => {
                 if (v >= 1) setQty(v);
               }}
               size="medium"
+              disabled={product.stock === 0}
             />
 
-            <button className="btn-add" onClick={handleAdd}>
-              Add To Cart – {(product.price * qty).toLocaleString("vi-VN")}.000đ
+            <button 
+              className="btn-add" 
+              onClick={handleAdd}
+              disabled={product.stock === 0 || product.stock === undefined}
+              style={{
+                opacity: product.stock === 0 ? 0.6 : 1,
+                cursor: product.stock === 0 ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {product.stock === 0 ? 'Hết Hàng' : `Thêm Vào Giỏ — ${(product.price * qty).toLocaleString("vi-VN")}.000đ`}
             </button>
           </div>
         </div>
@@ -247,7 +271,7 @@ const ProductDetailPage: React.FC = () => {
 
       {/* RELATED PRODUCT */}
       <div className="related">
-        <h2>Related Product</h2>
+        <h2>Sản Phẩm Liên Quan</h2>
 
         <div className="related-grid">
           {relatedProducts.length > 0 ? (

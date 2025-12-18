@@ -21,8 +21,8 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
         aria-modal="true"
       >
         <div className="drawer-header">
-          <h5>Your Cart</h5>
-          <button className="close-btn" onClick={onClose} aria-label="Close">×</button>
+          <h5>Giỏ Hàng Của Bạn</h5>
+          <button className="close-btn" onClick={onClose} aria-label="Đóng">×</button>
         </div>
 
         <div className="drawer-body">

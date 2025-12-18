@@ -17,6 +17,9 @@ const fetchProducts = async (): Promise<Product[]> => {
   return response.data;
 };
 
+// Export function for direct use (not hook)
+export { fetchProducts };
+
 /**
  * Hook to fetch all products
  */
@@ -38,6 +41,9 @@ const fetchProductById = async (id: string): Promise<Product> => {
   return response.data;
 };
 
+// Export function for direct use (not hook)
+export { fetchProductById };
+
 /**
  * Hook to fetch single product by ID
  */
@@ -46,10 +52,10 @@ export const useProductById = (id?: string) => {
     queryKey: ['product', id],
     queryFn: () => fetchProductById(id!),
     enabled: !!id,
-    staleTime: 1000 * 60 * 5, // 5 minutes - cache for better reload experience
+    staleTime: 0,
     gcTime: 1000 * 60 * 10,
     retry: 3,
-    refetchOnReconnect: true,
+    refetchOnReconnect: false,
   });
 };
 

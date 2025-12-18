@@ -1,212 +1,312 @@
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import ConfirmModal from "../../../components/UI/ConfirmModal/ConfirmModal"; 
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { Eye, Trash2, Search } from "lucide-react";
+import ConfirmModal from "../../../components/UI/ConfirmModal/ConfirmModal";
+import OrderDetailModal from "./OrderDetailModal";
 import './ManageOrders.scss';
+
+type Address = {
+  id: string;
+  receiverName: string;
+  phone: string;
+  addressLine: string;
+  ward: string;
+  district: string;
+  city: string;
+  isDefault: boolean;
+};
+
+type OrderItem = {
+  id: string;
+  productId: string;
+  productName: string;
+  price: number;
+  quantity: number;
+  image?: string;
+};
 
 type Order = {
   id: string;
-  user?: {
-    id?: string | null;
-    name?: string;
-    email?: string;
-    phone?: string;
-    addresses?: any[];
-    shippingAddressId?: string | null;
-  };
-  items: any[];
+  userId?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  shippingAddress?: Address;
+  items: OrderItem[];
   subtotal?: number;
+  shippingFee?: number;
   total?: number;
-  status?: string;
-  statusHistory?: { status: string; at: string; note?: string }[];
-  updatedAt?: string;
+  status?: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  paymentMethod?: string;
+  paymentStatus?: "unpaid" | "paid";
+  notes?: string;
   createdAt?: string;
+  updatedAt?: string;
 };
 
 const ManageOrders: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [selected, setSelected] = useState<Order | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const [localOrders, setLocalOrders] = useState<Order[]>([]);
 
-  useEffect(() => {
-    load();
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === "orders") load();
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+  const API_URL = "https://68ef2e22b06cc802829c5e18.mockapi.io/api/orders";
+
+  // Load orders from localStorage
+  React.useEffect(() => {
+    try {
+      const ordersFromStorage = localStorage.getItem('orders');
+      if (ordersFromStorage) {
+        const parsed = JSON.parse(ordersFromStorage);
+        setLocalOrders(Array.isArray(parsed) ? parsed : []);
+        console.log('📦 Loaded orders from localStorage:', parsed);
+      }
+    } catch (error) {
+      console.error('Error loading orders from localStorage:', error);
+    }
   }, []);
 
-  const load = () => {
-    try {
-      const arr = JSON.parse(localStorage.getItem("orders") || "[]");
+  // Fetch orders from MockAPI
+  const { data: apiOrders = [], isLoading, isError, refetch } = useQuery({
+    queryKey: ["orders"],
+    queryFn: async () => {
+      try {
+        const response = await axios.get(API_URL);
+        return Array.isArray(response.data) ? response.data : [];
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        return [];
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 
-      setOrders(Array.isArray(arr) ? arr.slice().reverse() : []);
-    } catch {
-      setOrders([]);
+  // Merge both sources - localStorage takes priority
+  const allOrders = [...localOrders, ...apiOrders].reduce((unique, order) => {
+    if (!unique.find((o: Order) => o.id === order.id)) {
+      unique.push(order);
     }
+    return unique;
+  }, [] as Order[]);
+
+  const filteredOrders = allOrders.filter((order: Order) =>
+    (order.id?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
+    (order.customerName?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
+    (order.customerEmail?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
+    (order.customerPhone ?? "").includes(searchTerm)
+  );
+
+  const openDetailModal = (order: Order) => {
+    setSelectedOrder(order);
+    setShowDetailModal(true);
   };
 
+  const updateOrderStatus = (id: string, newStatus: Order["status"]) => {
+    if (!selectedOrder) return;
 
-  const updateStatus = (id: string, status: string) => {
+    const updatedOrder = { ...selectedOrder, status: newStatus, updatedAt: new Date().toISOString() };
+
+    // First, update in localStorage
     try {
-      const raw = JSON.parse(localStorage.getItem("orders") || "[]");
-      const now = new Date().toISOString();
-      const updated = raw.map((o: any) => {
-        if (o.id !== id) return o;
-        const history = Array.isArray(o.statusHistory) ? o.statusHistory.slice() : [];
-        history.push({ status, at: now, note: "Cập nhật bởi admin" });
-        return { ...o, status, statusHistory: history, updatedAt: now };
-      });
-      localStorage.setItem("orders", JSON.stringify(updated));
-      setOrders(updated.slice().reverse());
-      toast.success("Cập nhật trạng thái thành công");
-      if (selected?.id === id) setSelected((s) => s ? { ...s, status, statusHistory: (s.statusHistory || []).concat([{ status, at: now, note: "Cập nhật bởi admin" }]) } : s);
-    } catch (err) {
-      console.error(err);
-      toast.error("Lỗi khi cập nhật trạng thái");
+      const ordersFromStorage = localStorage.getItem('orders');
+      const orders = ordersFromStorage ? JSON.parse(ordersFromStorage) : [];
+      const updatedOrders = orders.map((o: Order) => o.id === id ? updatedOrder : o);
+      localStorage.setItem('orders', JSON.stringify(updatedOrders));
+      setLocalOrders(updatedOrders);
+      console.log('✅ Order status updated in localStorage');
+    } catch (error) {
+      console.error('Error updating order in localStorage:', error);
     }
+
+    // Also try to update in MockAPI if available
+    axios
+      .put(`${API_URL}/${id}`, updatedOrder)
+      .then(() => {
+        refetch();
+        setSelectedOrder(updatedOrder);
+        toast.success("Cập nhật trạng thái đơn hàng thành công!");
+      })
+      .catch(() => {
+        // Still show success since we updated localStorage
+        toast.success("Cập nhật trạng thái đơn hàng thành công!");
+        setSelectedOrder(updatedOrder);
+      });
   };
 
   const removeOrderConfirmed = (id: string) => {
+    // First, delete from localStorage
     try {
-      const raw = JSON.parse(localStorage.getItem("orders") || "[]");
-      const updated = raw.filter((o: any) => o.id !== id);
-      localStorage.setItem("orders", JSON.stringify(updated));
-      setOrders(updated.slice().reverse());
-      if (selected?.id === id) setSelected(null);
-      toast.success("Đã xóa đơn hàng");
-    } catch (err) {
-      console.error(err);
-      toast.error("Xóa không thành công");
-    } finally {
-      setPendingDelete(null);
+      const ordersFromStorage = localStorage.getItem('orders');
+      const orders = ordersFromStorage ? JSON.parse(ordersFromStorage) : [];
+      const updatedOrders = orders.filter((o: Order) => o.id !== id);
+      localStorage.setItem('orders', JSON.stringify(updatedOrders));
+      setLocalOrders(updatedOrders);
+      console.log('✅ Order deleted from localStorage');
+    } catch (error) {
+      console.error('Error deleting order from localStorage:', error);
     }
+
+    // Also try to delete from MockAPI if available
+    axios
+      .delete(`${API_URL}/${id}`)
+      .then(() => {
+        refetch();
+        setPendingDelete(null);
+        setShowDetailModal(false);
+        toast.success("Đã xóa đơn hàng thành công");
+      })
+      .catch(() => {
+        // Still show success since we deleted from localStorage
+        setPendingDelete(null);
+        setShowDetailModal(false);
+        toast.success("Đã xóa đơn hàng thành công");
+      });
   };
 
-  const formatAddress = (a: any) => {
-    if (!a) return "-";
-    const parts = [];
-    if (a.street) parts.push(a.street);
-    if (a.city) parts.push(a.city);
-    if (a.state) parts.push(a.state);
-    if (a.postalCode) parts.push(a.postalCode);
-    if (a.country) parts.push(a.country);
-    return parts.join(", ");
-  };
+  if (isLoading) {
+    return (
+      <div className="manage-orders">
+        <div className="loading-state">Đang tải dữ liệu...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="manage-orders">
+        <div className="error-state">Có lỗi khi tải dữ liệu</div>
+      </div>
+    );
+  }
 
   return (
     <div className="manage-orders">
-      <div className="orders-grid">
-        <div className="orders-list">
-          <div className="admin-header">
-            <h2 className="page-title">Quản lý đơn hàng</h2>
-            <div className="header-actions">
-              <button onClick={load} className="btn">Tải lại</button>
-            </div>
-          </div>
-
-          {orders.length === 0 ? (
-            <div className="empty-placeholder">Chưa có đơn hàng.</div>
-          ) : (
-            <div className="order-list">
-              {orders.map((o) => (
-                <div key={o.id} className="order-item">
-                  <div className="order-meta">
-                    <div className="order-id">Đơn #{o.id}</div>
-                    <div className="order-customer">Khách: {o.user?.name || o.user?.email || "-"}</div>
-                    <div className="order-date">Ngày: {new Date(o.createdAt || Date.now()).toLocaleString()}</div>
-                  </div>
-                  <div className="order-actions">
-                    <div className="order-total">{(o.total || o.subtotal || 0).toLocaleString('vi-VN')}.000 VND</div>
-                    <div className={`order-status ${o.status === "Delivered" ? "is-delivered" : "pending"}`}>
-                      {o.status || "Pending"}
-                    </div>
-                    <button onClick={() => setSelected(o)} className="btn btn--small">Chi tiết</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="order-detail">
-          <div className="detail-card">
-            <h3 className="detail-title">Chi tiết đơn hàng</h3>
-            {!selected ? (
-              <div className="empty-placeholder">Chọn một đơn để xem chi tiết.</div>
-            ) : (
-              <>
-                <div className="detail-row"><strong>Đơn:</strong> {selected.id}</div>
-                <div className="detail-row"><strong>Khách:</strong> {selected.user?.name || selected.user?.email}</div>
-                <div className="detail-row"><strong>Số điện thoại:</strong> {selected.user?.phone || "-"}</div>
-
-                <div className="detail-row">
-                  <strong>Địa chỉ giao hàng:</strong>
-                  <div className="address-list">
-                    {Array.isArray(selected.user?.addresses) && selected.user!.addresses.length > 0 ? (
-                      selected.user!.addresses.map((a: any, idx: number) => (
-                        <div key={a.id || idx} className={`address-item ${selected.user?.shippingAddressId === a.id ? "is-default" : ""}`}>
-                          <div className="address-title">{a.label || `Địa chỉ ${idx + 1}`}</div>
-                          <div className="address-text">{formatAddress(a)}</div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="empty-placeholder">Không có địa chỉ</div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="detail-row">
-                  <h4 className="detail-subtitle">Sản phẩm</h4>
-                  <ul className="product-list">
-                    {selected.items.map((it: any, idx: number) => (
-                      <li key={idx} className="product-row">
-                        <div className="product-left">
-                          <img src={it.image || "/no-image.png"} alt={it.name} className="product-thumb-small" />
-                          <div>
-                            <div className="product-name">{it.name}</div>
-                            <div className="product-meta-small">{it.size ? `Size: ${it.size}` : ""} • x{it.quantity}</div>
-                          </div>
-                        </div>
-                        <div className="product-price">{((it.price || 0) * (it.quantity || 0)).toLocaleString('vi-VN')}.000 VND</div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="detail-row">
-                  <label className="detail-label">Trạng thái</label>
-                  <select
-                    value={selected.status || "Pending"}
-                    onChange={(e) => {
-                      const newStatus = e.target.value;
-                      setSelected({ ...selected, status: newStatus });
-                      updateStatus(selected.id, newStatus);
-                    }}
-                    className="select"
-                  >
-                    <option>Pending</option>
-                    <option>Processing</option>
-                    <option>Shipped</option>
-                    <option>Delivered</option>
-                    <option>Cancelled</option>
-                  </select>
-                </div>
-
-                <div className="detail-actions">
-                  <button onClick={() => setPendingDelete(selected.id)} className="btn btn--danger">Xóa</button>
-                  <button onClick={() => setSelected(null)} className="btn">Đóng</button>
-                </div>
-              </>
-            )}
-          </div>
+      {/* Header */}
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Quản lý đơn hàng</h1>
+          <p className="page-subtitle">Tổng cộng {filteredOrders.length} đơn hàng</p>
         </div>
       </div>
+
+      {/* Search */}
+      <div className="search-bar">
+        <Search size={18} />
+        <input
+          type="text"
+          placeholder="Tìm kiếm theo ID, tên khách, email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      {/* Orders Table */}
+      {filteredOrders.length === 0 ? (
+        <div className="empty-state">
+          <p>Không có đơn hàng nào</p>
+        </div>
+      ) : (
+        <div className="table-container">
+          <div className="orders-table">
+            {/* Header Row */}
+            <div className="table-header">
+              <div className="header-cell order-id-header">Mã đơn</div>
+              <div className="header-cell customer-header">Khách hàng</div>
+              <div className="header-cell contact-header">Liên hệ</div>
+              <div className="header-cell items-header">Sản phẩm</div>
+              <div className="header-cell status-header">Trạng thái</div>
+              <div className="header-cell total-header">Tổng tiền</div>
+              <div className="header-cell date-header">Ngày đặt</div>
+              <div className="header-cell actions-header">Thao tác</div>
+            </div>
+
+            {/* Data Rows */}
+            {filteredOrders.map((order: Order) => (
+              <div key={order.id} className="table-row">
+                <div className="table-cell order-id-cell">
+                  <span className="order-id-text">#{order.id?.slice(-8).toUpperCase()}</span>
+                </div>
+
+                <div className="table-cell customer-cell">
+                  <span className="customer-name">{order.customerName || "N/A"}</span>
+                </div>
+
+                <div className="table-cell contact-cell">
+                  <div className="contact-info">
+                    <div className="contact-email">{order.customerEmail || "-"}</div>
+                    <div className="contact-phone">{order.customerPhone || "-"}</div>
+                  </div>
+                </div>
+
+                <div className="table-cell items-cell">
+                  <span className="items-badge">{order.items?.length || 0}</span>
+                </div>
+
+                <div className="table-cell status-cell">
+                  <span className={`status-badge status-${order.status || "pending"}`}>
+                    {order.status === "pending" && "Chờ xử lý"}
+                    {order.status === "processing" && "Đang xử lý"}
+                    {order.status === "shipped" && "Đã gửi"}
+                    {order.status === "delivered" && "Đã giao"}
+                    {order.status === "cancelled" && "Đã hủy"}
+                  </span>
+                </div>
+
+                <div className="table-cell total-cell">
+                  <span className="total-price">
+                    {(order.total || 0).toLocaleString('vi-VN')}.000₫
+                  </span>
+                </div>
+
+                <div className="table-cell date-cell">
+                  <span className="date-text">
+                    {order.createdAt ? new Date(order.createdAt).toLocaleDateString('vi-VN') : "-"}
+                  </span>
+                </div>
+
+                <div className="table-cell actions-cell">
+                  <div>
+                    <button
+                      className="action-btn action-btn-view"
+                      title="Xem chi tiết"
+                      onClick={() => openDetailModal(order)}
+                    >
+                      <Eye size={16} />
+                    </button>
+                    <button
+                      className="action-btn action-btn-delete"
+                      title="Xóa"
+                      onClick={() => setPendingDelete(order.id)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {selectedOrder && (
+        <OrderDetailModal
+          isOpen={showDetailModal}
+          order={selectedOrder}
+          onClose={() => setShowDetailModal(false)}
+          onStatusChange={(newStatus: Order["status"]) => updateOrderStatus(selectedOrder.id, newStatus)}
+          onDelete={() => setPendingDelete(selectedOrder.id)}
+        />
+      )}
 
       <ConfirmModal
         isOpen={!!pendingDelete}
         title="Xác nhận xóa đơn hàng"
-        message={<span>Bạn có chắc chắn muốn xóa đơn <strong>{pendingDelete}</strong> ?</span>}
+        message={<span>Bạn có chắc chắn muốn xóa đơn hàng <strong>#{pendingDelete?.slice(-8)}</strong> ?</span>}
         onCancel={() => setPendingDelete(null)}
         onConfirm={() => removeOrderConfirmed(pendingDelete!)}
         cancelText="Hủy"

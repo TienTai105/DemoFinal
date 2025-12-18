@@ -6,8 +6,9 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../store/authStore";
 import { Eye, EyeOff } from "lucide-react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import './LoginPage.scss';
 
 type LoginFormInputs = {
@@ -21,41 +22,27 @@ const schema = yup.object().shape({
   password: yup.string().required("Vui lòng nhập mật khẩu"),
 });
 
-const ADMIN_EMAIL = "admin123@gmail.com";
-const ADMIN_PW = "admin123";
-
-const makeId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-
-const seedAdminIfMissing = () => {
-  try {
-    const usersRaw = localStorage.getItem("users");
-    const users = usersRaw ? JSON.parse(usersRaw) : [];
-    const hasAdmin = users.some((u: any) => u.email === ADMIN_EMAIL && u.role === "admin");
-    if (!hasAdmin) {
-      const admin = {
-        id: makeId(),
-        name: "Admin",
-        email: ADMIN_EMAIL,
-        password: ADMIN_PW,
-        role: "admin",
-        createdAt: new Date().toISOString(),
-      };
-      users.push(admin);
-      localStorage.setItem("users", JSON.stringify(users));
-    }
-  } catch (err) {
-    console.error("seedAdminIfMissing:", err);
-  }
-};
+const API_URL = "https://68ef2e22b06cc802829c5e18.mockapi.io/api/users";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const loginStore = useAuthStore((s) => s.login);
   const [showPassword, setShowPassword] = useState(false);
+  const [redirectPath, setRedirectPath] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Handle redirect after login
   useEffect(() => {
-    seedAdminIfMissing();
-  }, []);
+    if (redirectPath) {
+      console.log('REDIRECT PATH SET:', redirectPath);
+      const timer = setTimeout(() => {
+        console.log('NAVIGATING TO:', redirectPath);
+        navigate(redirectPath);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+    return;
+  }, [redirectPath, navigate]);
 
   const {
     register,
@@ -65,57 +52,85 @@ const LoginPage: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: LoginFormInputs) => {
+  const onSubmit = async (data: LoginFormInputs): Promise<void> => {
+    console.log('onSubmit called with:', { username: data.username, password: '***' });
     const username = String(data.username).trim().toLowerCase();
     const password = String(data.password);
 
-    let users: any[] = [];
+    setIsLoading(true);
+    
     try {
-      users = JSON.parse(localStorage.getItem("users") || "[]");
-    } catch {
-      users = [];
-    }
+      // Fetch all users from MockAPI
+      const response = await axios.get(API_URL);
+      const users = response.data || [];
+      
+      // Find user by username or email
+      const found = users.find((u: any) => 
+        (u.username?.toLowerCase() === username || u.email?.toLowerCase() === username) && 
+        u.password === password
+      );
 
-    if (username === ADMIN_EMAIL && password === ADMIN_PW) {
-      let admin = users.find((u) => u.email === ADMIN_EMAIL && u.role === "admin");
-      if (!admin) {
-        admin = {
-          id: makeId(),
-          name: "Admin",
-          email: ADMIN_EMAIL,
-          password: ADMIN_PW,
-          role: "admin",
-          createdAt: new Date().toISOString(),
-        };
-        users.push(admin);
-        localStorage.setItem("users", JSON.stringify(users));
+      if (!found) {
+        toast.error("Tên đăng nhập/email hoặc mật khẩu không đúng!", {
+          duration: 2000,
+          position: 'bottom-right',
+          style: {
+            background: '#dc3545',
+            color: '#fff',
+            borderRadius: '8px',
+            padding: '16px',
+          },
+        });
+        setIsLoading(false);
+        return;
       }
 
-      // Use store properly with a User object and a token
-      loginStore({ id: admin.id, name: admin.name, email: admin.email, role: 'admin' }, 'admin-token');
-      toast.success("Đăng nhập thành công tài khoản admin", {
-        autoClose: 1500
+      // Log user into store
+      loginStore(
+        { 
+          id: found.id, 
+          name: found.fullName || found.username, 
+          email: found.email, 
+          role: found.role || 'user' 
+        }, 
+        'user-token'
+      );
+      
+      console.log('USER LOGIN SUCCESS:', found);
+      toast.success("Đăng nhập thành công!", {
+        duration: 2000,
+        position: 'bottom-right',
+        style: {
+          background: '#173036',
+          color: '#fff',
+          borderRadius: '8px',
+          padding: '16px',
+        },
       });
       
-      navigate("/admin");
-      return;
-    }
-
-    const found = users.find((u) => u.email === username && u.password === password);
-    if (!found) {
-        toast.error("Email hoặc mật khẩu không đúng (hoặc chưa đăng ký).", {
-        autoClose: 1500
+      // Redirect based on role
+      if (found.role === "admin") {
+        console.log('SETTING REDIRECT TO /admin');
+        setRedirectPath("/admin");
+      } else {
+        console.log('SETTING REDIRECT TO /');
+        setRedirectPath("/");
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error("Có lỗi khi đăng nhập. Vui lòng thử lại!", {
+        duration: 2000,
+        position: 'bottom-right',
+        style: {
+          background: '#dc3545',
+          color: '#fff',
+          borderRadius: '8px',
+          padding: '16px',
+        },
       });
-      return;
+    } finally {
+      setIsLoading(false);
     }
-
-    // Log user into store
-    loginStore({ id: found.id, name: found.name, email: found.email, role: found.role || 'user' }, 'user-token');
-    toast.success("Đăng nhập thành công!", {
-      autoClose: 1500
-    });
-    if ((found.role || 'user') === "admin") navigate("/admin");
-    else navigate("/");
   };
 
   return (
@@ -123,8 +138,8 @@ const LoginPage: React.FC = () => {
       <div className="auth-card">
         <div className="auth-card__inner">
           <div className="auth-header">
-            <h1 className="auth-title">welcome to <span className="brand">E-Shop</span></h1>
-            <p className="auth-subtitle">login to your E-Shop account</p>
+            <h1 className="auth-title">Chào mừng đến <span className="brand">E-Shop</span></h1>
+            <p className="auth-subtitle">Đăng nhập vào tài khoản E-Shop của bạn</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
@@ -133,7 +148,7 @@ const LoginPage: React.FC = () => {
               <input
                 {...register("username")}
                 className="form-input"
-                placeholder="Nhập email..."
+                placeholder="Nhập email của bạn..."
               />
               {errors.username && <p className="form-error">{errors.username.message}</p>}
             </div>
@@ -157,23 +172,24 @@ const LoginPage: React.FC = () => {
             <div className="form-row">
               <label className="checkbox-label">
                 <input type="checkbox" {...register("remember")} className="form-checkbox" />
-                <span className="checkbox-text">Ghi nhớ đăng nhập</span>
+                <span className="checkbox-text">Ghi nhớ tôi</span>
               </label>
 
               <a href="#" className="link-forgot">Quên mật khẩu?</a>
             </div>
 
             <div className="form-group">
-              <button className="btn btn--primary btn-login" type="submit">Đăng nhập</button>
+              <button className="btn btn--primary btn-login" type="submit" disabled={isLoading}>
+                {isLoading ? "Đang xử lý..." : "Đăng nhập"}
+              </button>
             </div>
           </form>
 
           <div className="auth-footer">
-            Chưa có tài khoản? <Link to="/register" className="auth-link">Đăng ký</Link>
+            Bạn chưa có tài khoản? <Link to="/register" className="auth-link">Đăng Ký</Link>
           </div>
           <div className="auth-note">
-            Admin - admin123@gmail.com | admin123
-            <br />User - abc@gmail.com | 1234
+            Demo - admin@gmail.com / 123456 | taitranbmt111@gmail.com / 123456
           </div>
         </div>
       </div>

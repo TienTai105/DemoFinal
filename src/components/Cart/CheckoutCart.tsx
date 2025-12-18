@@ -23,35 +23,35 @@ export const CheckoutCart: React.FC = () => {
 
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [confirmTarget, setConfirmTarget] = React.useState<{
-    id?: string;
+    itemKey?: string;
     name?: string;
     pendingQuantity?: number | undefined;
   }>({});
 
-  const openRemoveConfirm = (id: string, name?: string) => {
-    setConfirmTarget({ id, name });
+  const openRemoveConfirm = (itemKey: string, name?: string) => {
+    setConfirmTarget({ itemKey, name });
     setConfirmOpen(true);
   };
 
-  const openRemoveConfirmForQty = (id: string, name?: string, pendingQuantity?: number) => {
-    setConfirmTarget({ id, name, pendingQuantity });
+  const openRemoveConfirmForQty = (itemKey: string, name?: string, pendingQuantity?: number) => {
+    setConfirmTarget({ itemKey, name, pendingQuantity });
     setConfirmOpen(true);
   };
 
   const handleConfirm = () => {
-    if (!confirmTarget.id) {
+    if (!confirmTarget.itemKey) {
       setConfirmOpen(false);
       return;
     }
     if (confirmTarget.pendingQuantity !== undefined) {
       const q = confirmTarget.pendingQuantity;
       if (q > 0) {
-        updateQuantity(String(confirmTarget.id), q);
+        updateQuantity(confirmTarget.itemKey, q);
       } else {
-        removeItem(String(confirmTarget.id));
+        removeItem(confirmTarget.itemKey);
       }
     } else {
-      removeItem(String(confirmTarget.id));
+      removeItem(confirmTarget.itemKey);
     }
     setConfirmOpen(false);
     setConfirmTarget({});
@@ -66,9 +66,9 @@ export const CheckoutCart: React.FC = () => {
     return (
       <div className="checkout-cart-wrapper">
         <div className="cart-header">
-          <h4>Cart</h4>
+          <h4>Giỏ Hàng</h4>
         </div>
-        <div className="empty-cart">Your cart is empty</div>
+        <div className="empty-cart">Giỏ hàng của bạn trống</div>
       </div>
     );
   }
@@ -77,25 +77,25 @@ export const CheckoutCart: React.FC = () => {
     <>
       <ConfirmModal
         isOpen={confirmOpen}
-        title="Remove item"
-        message={confirmTarget.name ? `Are you sure you want to remove "${confirmTarget.name}"?` : 'Are you sure?'}
-        confirmText="Remove"
-        cancelText="Cancel"
+        title="Xóa Sản Phẩm"
+        message={confirmTarget.name ? `Bạn có chắc chắn muốn xóa "${confirmTarget.name}"?` : 'Bạn có chắc chắn?'}
+        confirmText="Xóa"
+        cancelText="Hủy"
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
       <div className="checkout-cart-wrapper">
         <div className="cart-header">
-          <h4>Cart</h4>
+          <h4>Giỏ Hàng</h4>
         </div>
         <Table hover className="checkout-cart-table">
           <thead>
             <tr>
-              <th className="col-product">Product</th>
-              <th className="col-quantity">Quantity</th>
-              <th className="col-size">Size</th>
-              <th className="col-color">Color</th>
-              <th className="col-total">Total</th>
+              <th className="col-product">Sản Phẩm</th>
+              <th className="col-quantity">Số Lượng</th>
+              <th className="col-size">Kích Cỡ</th>
+              <th className="col-color">Màu</th>
+              <th className="col-total">Tổng</th>
             </tr>
           </thead>
           <tbody>
@@ -108,7 +108,7 @@ export const CheckoutCart: React.FC = () => {
                       <img src={getProductImage(item.id)} alt={item.name} className="product-image" />
                       <div className="product-info">
                         <div className="product-name">{item.name}</div>
-                        <div className="product-sku">SKU: {item.id}</div>
+                        <div className="product-sku">Mã: {item.id}</div>
                         <div className="product-price">{item.price.toLocaleString('vi-VN')}.000đ</div>
                       </div>
                     </div>
@@ -138,8 +138,8 @@ export const CheckoutCart: React.FC = () => {
                       <button
                         className="delete-btn"
                         onClick={() => openRemoveConfirm(itemKey, item.name)}
-                        aria-label={`Remove ${item.name}`}
-                        title="Delete"
+                        aria-label={`Xóa ${item.name}`}
+                        title="Xóa"
                       >
                         <Trash2 size={20} />
                       </button>

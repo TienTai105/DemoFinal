@@ -30,10 +30,25 @@ export interface CartItem extends Product {
 // User types
 export interface User {
   id: string;
-  name: string;
+  name?: string;
+  fullName?: string;
+  username?: string;
   email: string;
   phone?: string;
-  role?: string; // 'admin' | 'user'
+  avatar?: string;
+  role?: 'admin' | 'user';
+  status?: 'active' | 'inactive';
+  addresses?: {
+    id: string;
+    receiverName: string;
+    phone: string;
+    addressLine: string;
+    ward: string;
+    district: string;
+    city: string;
+    isDefault: boolean;
+  }[];
+  createdAt?: string;
 }
 
 // Order types

@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/ProductCard/ProductCard";
 import { FilterSidebar } from "@/components/UI/FilterSidebar";
 import { Pagination } from "@/components/Pagination/Pagination";
 import { ChevronRight } from "lucide-react";
+import { useProducts } from "@/api/products/queries";
 
 interface Product {
   id: string;
@@ -21,6 +22,7 @@ const PRODUCTS_PER_PAGE = 9;
 const ProductListPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { data: apiProducts = [] } = useProducts();
   const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -42,19 +44,17 @@ const ProductListPage = () => {
   const [colors, setColors] = useState<string[]>([]);
   
 
-  // ===== FETCH PRODUCTS =====
+  // ===== FETCH PRODUCTS FROM MOCKAPI =====
   useEffect(() => {
-    fetch("https://68ef2e22b06cc802829c5e18.mockapi.io/api/products")
-      .then((res) => res.json())
-      .then((data) => {
-        const mapped = data.map((item: Product, i: number) => ({
-          ...item,
-          size: ["S", "M", "L", "XL"][i % 4],
-          color: ["black", "white", "gray"][i % 3],
-        }));
-        setProducts(mapped);
-      });
-  }, []);
+    if (apiProducts && apiProducts.length > 0) {
+      const mapped = apiProducts.map((item: any, i: number) => ({
+        ...item,
+        size: ["S", "M", "L", "XL"][i % 4],
+        color: ["black", "white", "gray"][i % 3],
+      }));
+      setProducts(mapped);
+    }
+  }, [apiProducts]);
 
   // ===== FILTER LOGIC =====
   const filteredProducts = products.filter((item) => {
@@ -108,14 +108,14 @@ const ProductListPage = () => {
               {previousPage.name}
             </button>
             <span className="breadcrumb-sep"><ChevronRight size={18} /></span>
-            <span className="breadcrumb-current">Collection</span>
+            <span className="breadcrumb-current">Bộ Sưu Tập</span>
           </div>
 
           <div className="header-row">
-            <h1>Explore All Product</h1>
+            <h1>Khám Phá Tất Cả Sản Phẩm</h1>
             <div className="sort">
-              <span>Sort: Relevance</span>
-              <span>{filteredProducts.length} products</span>
+              <span>Sắp xếp: Phù Hợp Nhất</span>
+              <span>{filteredProducts.length} sản phẩm</span>
             </div>
           </div>
         </div>

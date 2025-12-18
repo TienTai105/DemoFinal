@@ -46,8 +46,8 @@ export const Wishlist: React.FC<WishlistProps> = ({
       <div className="wishlist-header">
         <div className="wishlist-title">
           <Heart size={24} fill="#c41e3a" color="#c41e3a" />
-          <h4>My Wishlist</h4>
-          <span className="wishlist-count">{items.length} items</span>
+          <h4>Danh Sách Yêu Thích </h4>
+          <span className="wishlist-count">{items.length} sản phẩm</span>
         </div>
         
       </div>
@@ -55,8 +55,8 @@ export const Wishlist: React.FC<WishlistProps> = ({
       {items.length === 0 ? (
         <div className="empty-wishlist">
           <Heart size={48} color="#ccc" />
-          <p>Your wishlist is empty</p>
-          <small>Save your favorite items to view them later</small>
+          <p>Danh sách yêu thích của bạn trống</p>
+          <small>Lưu các sản phẩm yêu thích để xem lại sau</small>
         </div>
       ) : (
         <div className="wishlist-items">
@@ -77,14 +77,14 @@ export const Wishlist: React.FC<WishlistProps> = ({
                 <button
                   className="btn-add-to-cart"
                   onClick={() => onAddToCart(item.id)}
-                  title="Add to cart"
+                  title="Thêm vào giỏ"
                 >
                   <ShoppingCart size={18} />
                 </button>
                 <button
                   className="btn-remove"
                   onClick={() => handleDeleteClick(item)}
-                  title="Remove from wishlist"
+                  title="Xóa khỏi danh sách yêu thích"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -96,10 +96,10 @@ export const Wishlist: React.FC<WishlistProps> = ({
 
       <ConfirmModal
         isOpen={showConfirm}
-        title="Remove from Wishlist"
-        message={itemToDelete ? `Are you sure you want to remove "${itemToDelete.name}" from your wishlist?` : 'Are you sure?'}
-        confirmText="Remove"
-        cancelText="Cancel"
+        title="Xóa Khỏi Danh Sách Yêu Thích"
+        message={itemToDelete ? `Bạn có chắc chắn muốn xóa "${itemToDelete.name}" khỏi danh sách yêu thích?` : 'Bạn có chắc chắn?'}
+        confirmText="Xóa"
+        cancelText="Hủy"
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
       />

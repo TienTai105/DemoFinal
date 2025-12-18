@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Carousel } from '../../../components/Carousel/Carousel';
 import { ShippingBanner } from '../../../components/ShippingBanner/ShippingBanner';
 import { ProductCard } from '../../../components/ProductCard/ProductCard';
@@ -7,11 +7,8 @@ import { ImageGrid } from '../../../components/ImageGrid/ImageGrid';
 import { CategoryGrid } from '../../../components/CategoryGrid/CategoryGrid';
 import { Pagination } from '../../../components/Pagination/Pagination';
 import { Newsletter } from '../../../components/Newsletter/Newsletter';
-import { useProducts } from '../../../api/products'; 
+import { useProducts } from '../../../api/products/queries';
 import './HomePage.scss';
-
-// Default categories fallback (will be replaced by dynamic categories from API)
-const DEFAULT_CATEGORIES = ['Men', 'Women', 'Bags', 'Shoes', 'Accessories'];
 
 // Carousel slides data
 const CAROUSEL_SLIDES = [
@@ -19,25 +16,25 @@ const CAROUSEL_SLIDES = [
     id: '1',
     image: '/images/banner1.jpg',
     title: '2025',
-    subtitle: 'Autumn Collection',
+    subtitle: 'Bộ Sưu Tập Mùa Thu',
   },
   {
     id: '2',
     image: '/images/banner1.jpg',
-    title: 'New Arrivals',
-    subtitle: 'Discover the latest styles',
+    title: 'Sản Phẩm Mới',
+    subtitle: 'Khám phá những phong cách mới nhất',
   },
   {
     id: '3',
     image: '/images/banner3.jpg',
-    title: 'Summer Sale',
-    subtitle: 'Up to 50% off',
+    title: 'Khuyến Mãi Mùa Hè',
+    subtitle: 'Giảm đến 50%',
   },
   {
     id: '4',
     image: '/images/banner3.jpg',
-    title: 'Summer Sale',
-    subtitle: 'Up to 50% off',
+    title: 'Khuyến Mãi Mùa Hè',
+    subtitle: 'Giảm đến 50%',
   },
 ];
 
@@ -48,7 +45,7 @@ const HERO_SLIDES = [
     image: '/images/banner5.jpg',
     title: 'Khám Phá Bộ Sưu Tập Mới',
     subtitle: 'Thời trang mùa mới – phong cách tối giản, chất liệu thoải mái & phù hợp cho mọi hoạt động hằng ngày.',
-    cta: 'Shop Now',
+    cta: 'Mua Ngay',
     layout: 'glassmorphism' as const,
     floatingElements: [
       { type: 'badge' as const, text: 'NEW', position: 'top-left' as const },
@@ -61,7 +58,7 @@ const HERO_SLIDES = [
     image: '/images/banner6.jpg',
     title: 'Sale Mùa Hè – Giảm Đến 50%',
     subtitle: 'Sưu tập những mẫu áo thun, sơ mi và váy hot nhất với mức giá cực ưu đãi. Số lượng có hạn.',
-    cta: 'Shop Now',
+    cta: 'Mua Ngay',
     layout: 'glassmorphism' as const,
     floatingElements: [
       { type: 'badge' as const, text: 'SALE', position: 'top-left' as const },
@@ -75,7 +72,7 @@ const HERO_SLIDES = [
     image: '/images/banner9.jpg',
     title: 'Thời Trang Trẻ Em – Dễ Thương & An Toàn',
     subtitle: 'Chất liệu mềm mại, thoáng mát, an toàn cho làn da bé. Nhiều mẫu mới mỗi tuần.',
-    cta: 'Shop Now',
+    cta: 'Mua Ngay',
     layout: 'glassmorphism' as const,
     floatingElements: [
       { type: 'badge' as const, text: 'KIDS', position: 'top-left' as const },
@@ -88,7 +85,7 @@ const HERO_SLIDES = [
     image: '/images/banner8.jpg',
     title: 'Phong Cách Streetwear Tối Giản',
     subtitle: 'Tự tin thể hiện cá tính với phong cách đơn giản nhưng cuốn hút. Hoodie, jogger & tee mới nhất.',
-    cta: 'Shop Now',
+    cta: 'Mua Ngay',
     floatingElements: [
       { type: 'badge' as const, text: 'TREND', position: 'top-right' as const },
       { type: 'star' as const, position: 'top-left' as const },
@@ -140,7 +137,7 @@ const IMAGE_GRID_ITEMS = [
  */
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState("Men");
+  const [activeCategory, setActiveCategory] = useState("");
   const [currentPageNewArrivals, setCurrentPageNewArrivals] = useState(1);
   const [currentPageBestSellers, setCurrentPageBestSellers] = useState(1);
   const itemsPerPage = 5;
@@ -148,9 +145,19 @@ export const HomePage: React.FC = () => {
   // Fetch products from API
   const { data: allProducts = [], isLoading, error } = useProducts();
 
-  // Extract unique categories from products
-  const categories = Array.from(new Set(allProducts.map((product) => product.category)));
-  const displayCategories = categories.length > 0 ? categories : DEFAULT_CATEGORIES;
+  // Debug log
+  React.useEffect(() => {
+    console.log('HomePage Debug:', {
+      isLoading,
+      error: error?.message || null,
+      productCount: allProducts.length,
+      firstProduct: allProducts[0],
+      categories: Array.from(new Set(allProducts.map((p) => p.category))),
+    });
+  }, [allProducts, isLoading, error]);
+
+  // Extract unique categories from products (only from API)
+  const displayCategories = Array.from(new Set(allProducts.map((product) => product.category)));
 
   // Generate dynamic category items with product count
   const dynamicCategoryItems = displayCategories.map((category, index) => {
@@ -166,7 +173,7 @@ export const HomePage: React.FC = () => {
       id: `cat-${index}`,
       image: categoryImages[index % categoryImages.length],
       title: category,
-      count,
+      count: count > 0 ? count : undefined,
       link: `/category/${category.toLowerCase()}`,
     };
   });
@@ -176,18 +183,27 @@ export const HomePage: React.FC = () => {
     navigate(`/product/${id}`);
   };
 
-  // Filter products by active category
-  const filteredProducts = allProducts.filter((product) => product.category === activeCategory);
+  // Filter products for New Arrivals (newproduct = true)
+  let newArrivalsProducts = allProducts.filter((product) => product.newproduct === true);
+  if (activeCategory) {
+    newArrivalsProducts = newArrivalsProducts.filter((p) => p.category === activeCategory);
+  }
+
+  // Filter products for Best Sellers (bestseller = true)
+  let bestSellerProducts = allProducts.filter((product) => product.bestseller === true);
+  if (activeCategory) {
+    bestSellerProducts = bestSellerProducts.filter((p) => p.category === activeCategory);
+  }
 
   // Pagination logic for New Arrivals
-  const totalPagesNewArrivals = Math.ceil(filteredProducts.length / itemsPerPage);
+  const totalPagesNewArrivals = Math.ceil(newArrivalsProducts.length / itemsPerPage);
   const startIndexNewArrivals = (currentPageNewArrivals - 1) * itemsPerPage;
-  const paginatedProducts = filteredProducts.slice(startIndexNewArrivals, startIndexNewArrivals + itemsPerPage);
+  const paginatedProducts = newArrivalsProducts.slice(startIndexNewArrivals, startIndexNewArrivals + itemsPerPage);
 
   // Pagination logic for Best Sellers
-  const totalPagesBestSellers = Math.ceil(filteredProducts.length / itemsPerPage);
+  const totalPagesBestSellers = Math.ceil(bestSellerProducts.length / itemsPerPage);
   const startIndexBestSellers = (currentPageBestSellers - 1) * itemsPerPage;
-  const paginatedBestSellers = filteredProducts.slice(startIndexBestSellers, startIndexBestSellers + itemsPerPage);
+  const paginatedBestSellers = bestSellerProducts.slice(startIndexBestSellers, startIndexBestSellers + itemsPerPage);
 
   const handlePageChangeNewArrivals = (page: number) => {
     setCurrentPageNewArrivals(page);
@@ -212,8 +228,8 @@ export const HomePage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="home-page">
-        <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-          <p>Loading products...</p>
+        <div style={{ textAlign: 'center', padding: '6rem 2rem' }}>
+          <p style={{ fontSize: '1.1rem', color: '#666' }}>Đang tải sản phẩm từ MockAPI...</p>
         </div>
       </div>
     );
@@ -223,8 +239,21 @@ export const HomePage: React.FC = () => {
   if (error) {
     return (
       <div className="home-page">
-        <div style={{ textAlign: 'center', padding: '4rem 2rem', color: '#d32f2f' }}>
-          <p>Failed to load products. Please try again later.</p>
+        <div style={{ textAlign: 'center', padding: '6rem 2rem', color: '#d32f2f' }}>
+          <p style={{ fontSize: '1.1rem' }}>Không thể tải sản phẩm. Vui lòng thử lại sau.</p>
+          <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Hãy chắc chắn rằng MockAPI có thể truy cập được.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show message if no products found
+  if (allProducts.length === 0) {
+    return (
+      <div className="home-page">
+        <div style={{ textAlign: 'center', padding: '6rem 2rem', color: '#999' }}>
+          <p style={{ fontSize: '1.1rem' }}>Không có sản phẩm nào từ MockAPI.</p>
+          <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Vui lòng kiểm tra cài đặt MockAPI của bạn.</p>
         </div>
       </div>
     );
@@ -256,7 +285,7 @@ export const HomePage: React.FC = () => {
       {/* ===== CATEGORY GRID SECTION ===== */}
       <section className="category-grid-section" data-aos="fade-up" data-aos-delay="200">
         <div className="category-grid-container">
-          <h2 className="section-title">Shop by Category</h2>
+          <h2 className="section-title">Mua Theo Danh Mục</h2>
           <CategoryGrid items={dynamicCategoryItems} />
         </div>
       </section>
@@ -265,15 +294,13 @@ export const HomePage: React.FC = () => {
       <section className="products-section" data-aos="fade-left" data-aos-delay="300">
         <div className="products-container">
           <div className="section-header-row">
-            <h2 className="section-title">New Arrivals</h2>
+            <h2 className="section-title">Sản Phẩm Mới</h2>
 
             <div className="category-tabs">
               {displayCategories.map((category: string) => (
                 <button
                   key={category}
-                  className={`category-tab ${
-                    activeCategory === category ? 'active' : ''
-                  }`}
+                  className={`category-tab ${activeCategory === category ? 'active' : ''}`}
                   onClick={() => setActiveCategory(category)}
                 >
                   {category}
@@ -281,9 +308,9 @@ export const HomePage: React.FC = () => {
               ))}
             </div>
 
-            <a href="#" className="show-more-link">
-              Show More →
-            </a>
+            <Link to ="/collection" className="show-more-link">
+              Xem Thêm →
+            </Link>
           </div>
 
           <div className="products-grid">
@@ -323,9 +350,8 @@ export const HomePage: React.FC = () => {
       <section className="products-section" data-aos="fade-right" data-aos-delay="300">
         <div className="products-container">
           <div className="section-header-row">
-            <h2 className="section-title">Best Sellers</h2>
+            <h2 className="section-title">Sản phẩm bán chạy</h2>
 
-            {/* Category Filter Tabs */}
             <div className="category-tabs">
               {displayCategories.map((category: string) => (
                 <button
@@ -338,9 +364,9 @@ export const HomePage: React.FC = () => {
               ))}
             </div>
 
-            <a href="#" className="show-more-link">
-              Show More →
-            </a>
+            <Link to="/collection" className="show-more-link">
+              Xem Thêm →
+            </Link>
           </div>
 
           {/* 4-Column Products Grid */}

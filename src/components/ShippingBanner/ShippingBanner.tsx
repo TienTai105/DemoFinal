@@ -29,26 +29,26 @@ export const ShippingBanner: React.FC = () => {
     {
       id: '1',
       icon: <Truck size={40} />,
-      title: 'Free Shipping',
-      description: 'On orders over $50',
+      title: 'Vận Chuyển Miễn Phí',
+      description: 'Cho đơn hàng trên 50đ',
     },
     {
       id: '2',
       icon: <Shield size={40} />,
-      title: 'Secure Payment',
-      description: '100% secure transactions',
+      title: 'Thanh Toán An Toàn',
+      description: 'Giao dịch 100% bảo mật',
     },
     {
       id: '3',
       icon: <RotateCcw size={40} />,
-      title: 'Easy Returns',
-      description: '30-day return policy',
+      title: 'Dễ Dàng Hoàn Trả',
+      description: 'Chính sách hoàn trả 30 ngày',
     },
     {
       id: '4',
       icon: <Headphones size={40} />,
-      title: '24/7 Support',
-      description: 'Dedicated customer care',
+      title: 'Hỗ Trợ 24/7',
+      description: 'Chăm sóc khách hàng chuyên dụng',
     },
   ];
 

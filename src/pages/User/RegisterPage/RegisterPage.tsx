@@ -68,39 +68,65 @@ const RegisterPage: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: RegisterFormInputs) => {
+  const onSubmit = async (data: RegisterFormInputs) => {
     const email = String(data.username).trim().toLowerCase();
     const password = String(data.password);
 
-    // load users
-    let users: any[] = [];
     try {
-      users = JSON.parse(localStorage.getItem("users") || "[]");
-    } catch {
-      users = [];
+      // Check if email already exists in MockAPI
+      const API_URL = 'https://68ef2e22b06cc802829c5e18.mockapi.io/api/users';
+      const response = await fetch(API_URL);
+      const existingUsers = await response.json();
+
+      if (existingUsers.some((u: any) => u.email === email)) {
+        alert("Email này đã được đăng ký. Vui lòng dùng email khác hoặc đăng nhập.");
+        return;
+      }
+
+      // Create new user with minimal info
+      const newUser = {
+        name: email.split("@")[0] || email,
+        username: email.split("@")[0] || email,
+        email,
+        password,
+        role: "user",
+        status: "active",
+        fullName: "",
+        phone: "",
+        avatar: "https://ui-avatars.com/api/?name=" + encodeURIComponent(email),
+        addresses: [],
+        createdAt: new Date().toISOString(),
+      };
+
+      // Save to MockAPI
+      const createResponse = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser),
+      });
+
+      if (createResponse.ok) {
+        const createdUser = await createResponse.json();
+        
+        // Auto login
+        loginStore({
+          id: createdUser.id,
+          name: createdUser.name,
+          email: createdUser.email,
+          role: 'user',
+          avatar: createdUser.avatar,
+          createdAt: createdUser.createdAt,
+        }, 'user-token');
+
+        alert("Đăng ký thành công! Vui lòng hoàn thành hồ sơ cá nhân.");
+        navigate("/login");
+      } else {
+        alert("Lỗi khi đăng ký. Vui lòng thử lại!");
+      }
+    } catch (error) {
+      console.error("Register error:", error);
+      alert("Lỗi khi đăng ký. Vui lòng thử lại!");
     }
-
-    if (users.some((u) => u.email === email)) {
-      alert("Email này đã được đăng ký. Vui lòng dùng email khác hoặc đăng nhập.");
-      return;
-    }
-
-    const newUser = {
-      id: makeId(),
-      name: email.split("@")[0] || email,
-      email,
-      password,
-      role: "user",
-      createdAt: new Date().toISOString(),
-    };
-
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-
-    // auto login by storing user object
-    loginStore({ id: newUser.id, name: newUser.name, email: newUser.email, role: 'user' }, 'user-token');
-
-    navigate("/login");
   };
 
   return (
@@ -108,8 +134,8 @@ const RegisterPage: React.FC = () => {
       <div className="auth-card">
         <div className="auth-card__inner">
           <div className="auth-header">
-            <h1 className="auth-title">welcome to <span className="brand">E-Shop</span></h1>
-            <p className="auth-subtitle">register to your E-Shop account</p>
+            <h1 className="auth-title">Chào mừng đến <span className="brand">E-Shop</span></h1>
+            <p className="auth-subtitle">đăng ký tài khoản E-Shop của bạn</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
@@ -118,7 +144,7 @@ const RegisterPage: React.FC = () => {
               <input
                 {...register("username")}
                 className="form-input"
-                placeholder="you@example.com"
+                placeholder="email@example.com"
               />
               {errors.username && <p className="form-error">{errors.username.message}</p>}
             </div>
@@ -140,7 +166,7 @@ const RegisterPage: React.FC = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Nhập lại mật khẩu</label>
+              <label className="form-label">Xác Nhận Mật Khẩu</label>
               <div className="input-wrapper">
                 <input
                   {...register("confirm")}
@@ -165,7 +191,7 @@ const RegisterPage: React.FC = () => {
             </div>
 
             <div className="form-group">
-              <button className="btn btn--primary btn-login" type="submit">Đăng ký</button>
+              <button className="btn btn--primary btn-login" type="submit">Đăng Ký</button>
             </div>
           </form>
 

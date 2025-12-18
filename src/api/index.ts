@@ -1,36 +1,19 @@
-import axios from 'axios';
-import type { Product } from '../types';
+/**
+ * API Index
+ * Centralized exports for all API functions and hooks
+ */
 
-const API_BASE = 'https://68ef2e22b06cc802829c5e18.mockapi.io/api/products';
+// Product Queries - Functions
+export { fetchProducts, fetchProductById } from './products/queries';
 
-export const getProducts = async (): Promise<Product[]> => {
-  const res = await axios.get<Product[]>(API_BASE);
-  return res.data;
-};
+// Product Queries - Hooks
+export { useProducts, useProductById } from './products/queries';
 
-export const getProductById = async (id: string): Promise<Product> => {
-  const res = await axios.get<Product>(`${API_BASE}/${id}`);
-  return res.data;
-};
+// Product Commands - Functions
+export { addProduct, updateProduct, deleteProduct } from './products/commands';
 
-export const addProduct = async (payload: Omit<Product, 'id'>): Promise<Product> => {
-  const res = await axios.post<Product>(API_BASE, payload);
-  return res.data;
-};
+// Product Commands - Hooks
+export { useCreateProduct, useUpdateProduct, useDeleteProduct } from './products/commands';
 
-export const updateProduct = async (product: Product): Promise<Product> => {
-  const res = await axios.put<Product>(`${API_BASE}/${product.id}`, product);
-  return res.data;
-};
-
-export const deleteProduct = async (id: string): Promise<void> => {
-  await axios.delete(`${API_BASE}/${id}`);
-};
-
-export default {
-  getProducts,
-  getProductById,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-};
+// Config
+export { MOCKAPI_ENDPOINTS, PRODUCTS_API } from './config';

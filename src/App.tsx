@@ -1,22 +1,13 @@
-import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Toaster } from 'react-hot-toast';
-import { Header } from './components/Header/Header';
-import { Footer } from './components/Footer/Footer';
-import CartDrawer from './components/CartDrawer/CartDrawer';
+import { UserLayout } from './layouts/UserLayout';
+import { AdminLayout } from './layouts/AdminLayout';
 import UserRoutes from './routes/UserRoutes';
-import AdminRoutes from './routes/AdminRoutes';
-import { HomePage } from './pages/HomePage/HomePage';
-import ProductDetailPage  from './pages/ProductDetailPage/ProductDetailPage';
-import { CheckoutPage } from './pages/CheckoutPage/CheckoutPage';
-import About from './pages/Aboutpage/AboutPage';
-import { ContactPage } from './pages/ContactPage/ContactPage';
-import ProductListPage  from './pages/ProductList/ProductListPage';
-import ShippingPage  from './pages/ShippingPage/ShippingPage';  
+import AdminRoutes from './routes/AdminRoutes'; 
 import './App.scss';
 
 // Create a client for React Query
@@ -35,60 +26,47 @@ const queryClient = new QueryClient({
  * Provides QueryClient context for data fetching
  */
 function App() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
   // Initialize AOS animations on mount
   useEffect(() => {
     AOS.init({
       duration: 800,
       once: false,
       easing: 'ease-in-out',
-      offset: 0, // Animations trigger immediately when elements are visible
+      offset: 0,
     });
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <div className="app-container">
-          {/* Header Navigation */}
-          <Header onCartClick={() => setDrawerOpen(true)} />
+        <Routes>
+          {/* Admin routes - no header/footer */}
+          <Route path="/admin/*" element={<AdminLayout><AdminRoutes /></AdminLayout>} />
+          
+          {/* User routes - with header/footer */}
+          <Route path="/*" element={<UserLayout><UserRoutes /></UserLayout>} />
+        </Routes>
 
-          {/* Global Cart Drawer */}
-          <CartDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
-
-          {/* Main Content */}
-          <main className="main-content">
-            <Routes>
-              {/* Delegate to User and Admin route trees */}
-              <Route path="/admin/*" element={<AdminRoutes />} />
-              <Route path="/*" element={<UserRoutes />} />
-            </Routes>
-          </main>
-
-          {/* Footer */}
-          <Footer />
-
-          {/* Toast Notifications */}
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              duration: 3000,
+        {/* Toast Notifications */}
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: '#173036',
+              color: '#fff',
+              fontSize: '14px',
+              borderRadius: '8px',
+              padding: '16px',
+            },
+            success: {
               style: {
                 background: '#173036',
-                color: '#fff',
-                fontSize: '14px',
-                borderRadius: '8px',
-                padding: '16px',
               },
-              success: {
-                style: {
-                  background: '#173036',
-                },
-                icon: '✓',
-              },
-            }}
-          />
-        </div>
+              icon: '✓',
+            },
+          }}
+        />
       </Router>
     </QueryClientProvider>
   );

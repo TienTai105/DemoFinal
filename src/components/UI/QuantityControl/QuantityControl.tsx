@@ -56,7 +56,7 @@ export const QuantityControl: React.FC<QuantityControlProps> = ({
         className="qty-btn qty-btn--minus"
         onClick={onDecrease}
         disabled={disabled}
-        aria-label="Decrease quantity"
+        aria-label="Giảm số lượng"
       >
         −
       </button>
@@ -73,7 +73,7 @@ export const QuantityControl: React.FC<QuantityControlProps> = ({
         className="qty-btn qty-btn--plus"
         onClick={onIncrease}
         disabled={disabled}
-        aria-label="Increase quantity"
+        aria-label="Tăng số lượng"
       >
         +
       </button>

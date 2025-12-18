@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
           <div className="footer-column">
             <h4 className="footer-brand">NHOM_7</h4>
             <p className="footer-description">
-              Discover timeless essentials that move with you. Quality, style, and sustainability in every piece.
+              Khám phá những bộ sưu tập cơ bản mang tính thời vượt thời gian. Chất lượng, phong cách và tính bền vững trong mỗi sản phẩm.
             </p>
             <div className="social-links">
               <a href="#" aria-label="Facebook">
@@ -45,48 +45,48 @@ export const Footer: React.FC = () => {
 
           {/* Shop Column */}
           <div className="footer-column">
-            <h5 className="footer-column-title">Shop</h5>
+            <h5 className="footer-column-title">Cửa Hàng</h5>
             <ul className="footer-links">
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/products">Collections</Link></li>
-              <li><a href="#new-arrivals">New Arrivals</a></li>
-              <li><a href="#sale">Sale</a></li>
-              <li><a href="#gift-cards">Gift Cards</a></li>
+              <li><Link to="/">Trang Chủ</Link></li>
+              <li><Link to="/products">Bộ Sưu Tập</Link></li>
+              <li><a href="#new-arrivals">Hàng Mới</a></li>
+              <li><a href="#sale">Khuyến Mãi</a></li>
+              <li><a href="#gift-cards">Thẻ Quà Tặng</a></li>
             </ul>
           </div>
 
           {/* Customer Care Column */}
           <div className="footer-column">
-            <h5 className="footer-column-title">Customer Care</h5>
+            <h5 className="footer-column-title">Hỗ Trợ Khách Hàng</h5>
             <ul className="footer-links">
-              <li><Link to="/contact">Contact Us</Link></li>
-              <li><Link to="/shipping">Shipping & Delivery</Link></li>
-              <li><a href="#faq">FAQ</a></li>
-              <li><a href="#size-guide">Size Guide</a></li>
-              <li><a href="#returns">Returns & Exchange</a></li>
+              <li><Link to="/contact">Liên Hệ Chúng Tôi</Link></li>
+              <li><Link to="/shipping">Vận Chuyển & Giao Hàng</Link></li>
+              <li><a href="#faq">Câu Hỏi Thường Gặp</a></li>
+              <li><a href="#size-guide">Hướng Dẫn Kích Cỡ</a></li>
+              <li><a href="#returns">Hoàn Trả & Đổi Trả</a></li>
             </ul>
           </div>
 
           {/* Brand Column */}
           <div className="footer-column">
-            <h5 className="footer-column-title">About</h5>
+            <h5 className="footer-column-title">Về Chúng Tôi</h5>
             <ul className="footer-links">
-              <li><Link to="/about">About Us</Link></li>
-              <li><a href="#sustainability">Sustainability</a></li>
-              <li><a href="#careers">Careers</a></li>
-              <li><a href="#press">Press</a></li>
+              <li><Link to="/about">Thông Tin Về Chúng Tôi</Link></li>
+              <li><a href="#sustainability">Tính Bền Vững</a></li>
+              <li><a href="#careers">Công Việc</a></li>
+              <li><a href="#press">Báo Chí</a></li>
               <li><a href="#blog">Blog</a></li>
             </ul>
           </div>
 
           {/* Legal Column */}
           <div className="footer-column">
-            <h5 className="footer-column-title">Legal</h5>
+            <h5 className="footer-column-title">Pháp Lý</h5>
             <ul className="footer-links">
-              <li><a href="#privacy">Privacy Policy</a></li>
-              <li><a href="#terms">Terms of Service</a></li>
-              <li><a href="#cookies">Cookie Policy</a></li>
-              <li><a href="#accessibility">Accessibility</a></li>
+              <li><a href="#privacy">Chính Sách Bảo Mật</a></li>
+              <li><a href="#terms">Điều Khoản Dịch Vụ</a></li>
+              <li><a href="#cookies">Chính Sách Cookie</a></li>
+              <li><a href="#accessibility">Khả Năng Truy Cập</a></li>
             </ul>
           </div>
         </div>
@@ -97,10 +97,10 @@ export const Footer: React.FC = () => {
         {/* Footer Bottom */}
         <div className="footer-bottom">
           <p className="footer-copyright">
-            © {currentYear} NHOM_7. All rights reserved.
+            © {currentYear} NHOM_7. Tất cả các quyền được bảo lưu.
           </p>
           <div className="payment-methods">
-            <span>Payment Methods:</span>
+            <span>Phương Thức Thanh Toán:</span>
             <div className="payment-icons">
               <span className="payment-icon">💳</span>
               <span className="payment-icon">🏦</span>

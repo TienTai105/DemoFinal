@@ -16,20 +16,20 @@ interface ContactFormData {
 // Validation schema
 const validationSchema = Yup.object().shape({
   fullName: Yup.string()
-    .required('Full name is required')
-    .min(2, 'Full name must be at least 2 characters'),
+    .required('Tên đầy đủ là bắt buộc')
+    .min(2, 'Tên phải có ít nhất 2 ký tự'),
   email: Yup.string()
-    .required('Email is required')
-    .email('Email must be valid'),
+    .required('Email là bắt buộc')
+    .email('Email phải hợp lệ'),
   phone: Yup.string()
-    .required('Phone number is required')
-    .matches(/^[0-9\s\-\+\(\)]+$/, 'Phone number is invalid'),
+    .required('Số điện thoại là bắt buộc')
+    .matches(/^[0-9\s\-\+\(\)]+$/, 'Số điện thoại không hợp lệ'),
   subject: Yup.string()
-    .required('Subject is required')
-    .min(3, 'Subject must be at least 3 characters'),
+    .required('Chủ đề là bắt buộc')
+    .min(3, 'Chủ đề phải có ít nhất 3 ký tự'),
   message: Yup.string()
-    .required('Message is required')
-    .min(10, 'Message must be at least 10 characters'),
+    .required('Tin nhắn là bắt buộc')
+    .min(10, 'Tin nhắn phải có ít nhất 10 ký tự'),
 });
 
 export const ContactPage: React.FC = () => {
@@ -60,8 +60,8 @@ export const ContactPage: React.FC = () => {
       {/* Hero Section */}
       <section className="contact-hero">
         <div className="contact-hero-content">
-          <h1>Get In Touch</h1>
-          <p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+          <h1>Liên Hệ Với Chúng Tôi</h1>
+          <p>Chúng tôi rất muốn nghe từ bạn. Gửi cho chúng tôi một tin nhắn và chúng tôi sẽ phản hồi soonest có thể.</p>
         </div>
       </section>
 
@@ -73,7 +73,7 @@ export const ContactPage: React.FC = () => {
               <div className="info-icon">
                 <MapPin size={28} />
               </div>
-              <h3>Address</h3>
+              <h3>Địa Chỉ</h3>
               <p>123 Fashion Street<br />District 1, Ho Chi Minh City<br />Vietnam 70000</p>
             </div>
 
@@ -81,7 +81,7 @@ export const ContactPage: React.FC = () => {
               <div className="info-icon">
                 <Phone size={28} />
               </div>
-              <h3>Phone</h3>
+              <h3>Điện Thoại</h3>
               <p>+84 123 456 789<br />+84 987 654 321</p>
             </div>
 
@@ -97,8 +97,8 @@ export const ContactPage: React.FC = () => {
               <div className="info-icon">
                 <Clock size={28} />
               </div>
-              <h3>Business Hours</h3>
-              <p>Mon - Fri: 9:00 - 18:00<br />Sat - Sun: 10:00 - 16:00</p>
+              <h3>Giờ Làm Việc</h3>
+              <p>Thứ Hai - Thứ Sáu: 9:00 - 18:00<br />Thứ Bảy - Chủ Nhật: 10:00 - 16:00</p>
             </div>
           </div>
         </section>
@@ -108,21 +108,21 @@ export const ContactPage: React.FC = () => {
           <div className="contact-grid">
             {/* Form */}
             <div className="contact-form-wrapper">
-              <h2>Send us a Message</h2>
+              <h2>Gửi Tin Nhắn Cho Chúng Tôi</h2>
 
               {submitSuccess && (
                 <div className="success-message">
-                  <span>✓ Message sent successfully! We'll get back to you soon.</span>
+                  <span>✓ Tin nhắn được gửi thành công! Chúng tôi sẽ liên hệ lại bạn sớm.</span>
                 </div>
               )}
 
               <form onSubmit={handleSubmit(onSubmit)} className="contact-form" id="contactForm">
                 <div className="form-group">
-                  <label htmlFor="fullName">Full Name</label>
+                  <label htmlFor="fullName">Tên Đầy Đủ</label>
                   <input
                     type="text"
                     id="fullName"
-                    placeholder="John Doe"
+                    placeholder="Nguyễn Văn A"
                     {...register('fullName')}
                     className={errors.fullName ? 'error' : ''}
                   />
@@ -132,11 +132,11 @@ export const ContactPage: React.FC = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="email">Email Address</label>
+                  <label htmlFor="email">Địa Chỉ Email</label>
                   <input
                     type="email"
                     id="email"
-                    placeholder="your.email@example.com"
+                    placeholder="email@example.com"
                     {...register('email')}
                     className={errors.email ? 'error' : ''}
                   />
@@ -146,7 +146,7 @@ export const ContactPage: React.FC = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="phone">Phone Number</label>
+                  <label htmlFor="phone">Số Điện Thoại</label>
                   <input
                     type="tel"
                     id="phone"

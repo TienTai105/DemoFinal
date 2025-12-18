@@ -71,7 +71,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         <button
           className="add-to-cart-btn"
           disabled={product.stock !== undefined && product.stock === 0}
-          title="Add to Cart"
+          title="Thêm Vào Giỏ"
         >
           <Plus size={24} />
         </button>
@@ -86,7 +86,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         {/* Stock Status */}
         {product.stock === 0 && (
           <div className="out-of-stock-overlay">
-            <span>Out of Stock</span>
+            <span>Hết Hàng</span>
           </div>
         )}
       </div>
@@ -103,7 +103,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
             <button 
               className={`wishlist-btn ${inWishlist ? 'active' : ''}`} 
               onClick={handleWishlistClick}
-              title={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+              title={inWishlist ? 'Xóa Khỏi Danh Sách Yêu Thích' : 'Thêm Vào Danh Sách Yêu Thích'}
             >
               <Heart size={20} fill={inWishlist ? 'currentColor' : 'none'} />
 

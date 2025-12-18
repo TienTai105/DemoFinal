@@ -35,35 +35,35 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose, quantityS
 
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [confirmTarget, setConfirmTarget] = React.useState<{
-    id?: string;
+    itemKey?: string;
     name?: string;
     pendingQuantity?: number | undefined;
   }>({});
 
-  const openRemoveConfirm = (id: string, name?: string) => {
-    setConfirmTarget({ id, name });
+  const openRemoveConfirm = (itemKey: string, name?: string) => {
+    setConfirmTarget({ itemKey, name });
     setConfirmOpen(true);
   };
 
-  const openRemoveConfirmForQty = (id: string, name?: string, pendingQuantity?: number) => {
-    setConfirmTarget({ id, name, pendingQuantity });
+  const openRemoveConfirmForQty = (itemKey: string, name?: string, pendingQuantity?: number) => {
+    setConfirmTarget({ itemKey, name, pendingQuantity });
     setConfirmOpen(true);
   };
 
   const handleConfirm = () => {
-    if (!confirmTarget.id) {
+    if (!confirmTarget.itemKey) {
       setConfirmOpen(false);
       return;
     }
     if (confirmTarget.pendingQuantity !== undefined) {
       const q = confirmTarget.pendingQuantity;
       if (q > 0) {
-        updateQuantity(String(confirmTarget.id), q);
+        updateQuantity(confirmTarget.itemKey, q);
       } else {
-        removeItem(String(confirmTarget.id));
+        removeItem(confirmTarget.itemKey);
       }
     } else {
-      removeItem(String(confirmTarget.id));
+      removeItem(confirmTarget.itemKey);
     }
     setConfirmOpen(false);
     setConfirmTarget({});
@@ -79,12 +79,12 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose, quantityS
     <Table hover className={variant === 'inline' ? 'cart-table cart-table--inline' : 'cart-table'}>
       <thead>
         <tr>
-          <th>Product</th>
-          <th>Price</th>
-          <th>Size</th>
-          <th>Color</th>
-          <th>Quantity</th>
-          <th>Total</th>
+          <th>Sản Phẩm</th>
+          <th>Giá</th>
+          <th>Kích Cỡ</th>
+          <th>Màu</th>
+          <th>Số Lượng</th>
+          <th>Tổng</th>
         </tr>
       </thead>
       <tbody>
@@ -124,7 +124,7 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose, quantityS
                   size={quantitySize}
                 />
                 {(variant === 'page' || variant === 'checkout') && (
-                  <button className="cart-delete-btn" onClick={() => openRemoveConfirm(itemKey, item.name)} aria-label={`Remove ${item.name}`}>
+                  <button className="cart-delete-btn" onClick={() => openRemoveConfirm(itemKey, item.name)} aria-label={`Xóa ${item.name}`}>
                     <Trash2 size={20} />
                   </button>
                 )}
@@ -144,16 +144,16 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose, quantityS
       <>
         <ConfirmModal
           isOpen={confirmOpen}
-          title="Remove item"
-          message={confirmTarget.name ? `Are you sure you want to remove "${confirmTarget.name}"?` : 'Are you sure?'}
-          confirmText="Remove"
-          cancelText="Cancel"
+          title="Xóa Sản Phẩm"
+          message={confirmTarget.name ? `Bạn có chắc chắn muốn xóa "${confirmTarget.name}"?` : 'Bạn có chắc chắn?'}
+          confirmText="Xóa"
+          cancelText="Hủy"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />
         <div className="cart-drawer-content">
           {items.length === 0 ? (
-            <div className="empty">Your cart is empty</div>
+            <div className="empty">Giỏ hàng của bạn trống</div>
           ) : (
             <>
               <ul className="drawer-list">
@@ -199,7 +199,7 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose, quantityS
                 <div className="subtotal">Subtotal: <strong>{total.toLocaleString('vi-VN')}.000đ</strong></div>
                 <div className="buttons">
                   <Button className="checkout-btn-accent" onClick={() => { onClose?.(); navigate('/checkout'); }}>
-                    Check Out <ChevronRight/>
+                    Thanh Toán <ChevronRight/>
                   </Button>
                 </div>
               </div>
@@ -216,10 +216,10 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose, quantityS
       <>
         <ConfirmModal
           isOpen={confirmOpen}
-          title="Remove item"
-          message={confirmTarget.name ? `Are you sure you want to remove "${confirmTarget.name}"?` : 'Are you sure?'}
-          confirmText="Remove"
-          cancelText="Cancel"
+          title="Xóa Sản Phẩm"
+          message={confirmTarget.name ? `Bạn có chắc chắn muốn xóa "${confirmTarget.name}"?` : 'Bạn có chắc chắn?'}
+          confirmText="Xóa"
+          cancelText="Hủy"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />
@@ -235,14 +235,14 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose, quantityS
         <>
           <ConfirmModal
             isOpen={confirmOpen}
-            title="Remove item"
-            message={confirmTarget.name ? `Are you sure you want to remove "${confirmTarget.name}"?` : 'Are you sure?'}
-            confirmText="Remove"
-            cancelText="Cancel"
+            title="Xóa Sản Phẩm"
+            message={confirmTarget.name ? `Bạn có chắc chắn muốn xóa "${confirmTarget.name}"?` : 'Bạn có chắc chắn?'}
+            confirmText="Xóa"
+            cancelText="Hủy"
             onConfirm={handleConfirm}
             onCancel={handleCancel}
           />
-          <div className="text-muted text-center py-3">Your cart is empty</div>
+          <div className="text-muted text-center py-3">Giỏ hàng của bạn trống</div>
         </>
       );
     }
@@ -250,10 +250,10 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose, quantityS
       <>
         <ConfirmModal
           isOpen={confirmOpen}
-          title="Remove item"
-          message={confirmTarget.name ? `Are you sure you want to remove "${confirmTarget.name}"?` : 'Are you sure?'}
-          confirmText="Remove"
-          cancelText="Cancel"
+          title="Xóa Sản Phẩm"
+          message={confirmTarget.name ? `Bạn có chắc chắn muốn xóa "${confirmTarget.name}"?` : 'Bạn có chắc chắn?'}
+          confirmText="Xóa"
+          cancelText="Hủy"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />
@@ -267,42 +267,42 @@ export const Cart: React.FC<CartProps> = ({ variant = 'page', onClose, quantityS
     <>
       <ConfirmModal
         isOpen={confirmOpen}
-        title="Remove item"
-        message={confirmTarget.name ? `Are you sure you want to remove "${confirmTarget.name}"?` : 'Are you sure?'}
-        confirmText="Remove"
-        cancelText="Cancel"
+        title="Xóa Sản Phẩm"
+        message={confirmTarget.name ? `Bạn có chắc chắn muốn xóa "${confirmTarget.name}"?` : 'Bạn có chắc chắn?'}
+        confirmText="Xóa"
+        cancelText="Hủy"
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
       <Container className="cart-container py-5">
-        <h2 className="mb-4">Shopping Cart</h2>
+        <h2 className="mb-4">Giỏ Hàng</h2>
         <Row>
           <Col lg={8}>{ItemsTable}</Col>
           <Col lg={4}>
             <div className="cart-summary">
-              <h4>Order Summary</h4>
+              <h4>Tóm Tắt Đơn Hàng</h4>
               <div className="summary-row">
-                <span>Subtotal:</span>
+                <span>Tổng Phụ:</span>
                 <span>{total.toLocaleString('vi-VN')}.000đ</span>
               </div>
               <div className="summary-row">
-                <span>Shipping:</span>
-                <span>Free</span>
+                <span>Vận Chuyển:</span>
+                <span>Miễn Phí</span>
               </div>
               <div className="summary-row">
-                <span>Tax:</span>
+                <span>Thuế:</span>
                 <span>{(total * 0.1).toLocaleString('vi-VN')}.000đ</span>
               </div>
               <hr />
               <div className="summary-row total">
-                <span>Total:</span>
+                <span>Tổng Cộng:</span>
                 <span>{(total * 1.1).toLocaleString('vi-VN')}.000đ</span>
               </div>
               <Button className="mt-4 checkout-btn" onClick={() => navigate('/checkout')}>
-                Check Out <ChevronRight/>
+                Thanh Toán <ChevronRight/>
               </Button>
               <Button color="secondary" outline block className="mt-2" onClick={() => navigate('/')} style={{ color: '#173036', borderColor: '#ddd' }}>
-                Continue Shopping
+                Tiếp Tục Mua Sắm
               </Button>
             </div>
           </Col>

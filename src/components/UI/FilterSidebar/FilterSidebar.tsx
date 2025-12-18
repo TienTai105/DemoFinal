@@ -82,15 +82,15 @@ export const FilterSidebar = ({
     <aside className="filter">
       {/* ===== CATEGORY ===== */}
       <div className="filter-group">
-        <h4>Category:</h4>
+        <h4>Danh Mục:</h4>
         <div className="checkbox-filter">
-          {["All", "Women", "Men", "Kid", "Baby"].map((c) => (
+          {["Tất Cả", "Nữ", "Nam", "Trẻ Em", "Bé"].map((c) => (
             <label key={c} className="checkbox-item">
               <input
                 type="checkbox"
-                checked={c === "All" || categories.includes(c)}
+                checked={c === "Tất Cả" || categories.includes(c)}
                 onChange={() => {
-                  if (c !== "All") {
+                  if (c !== "Tất Cả") {
                     handleCategoryToggle(c);
                   }
                 }}
@@ -103,7 +103,7 @@ export const FilterSidebar = ({
 
       {/* ===== PRODUCTS ===== */}
       <div className="filter-group">
-        <h4>Products:</h4>
+        <h4>Sản Phẩm:</h4>
         <div className="product-filter">
           {(Object.keys(productGroups) as Array<keyof typeof productGroups>).map(
             (group) => (
@@ -143,12 +143,12 @@ export const FilterSidebar = ({
 
       {/* ===== COLOR ===== */}
       <div className="filter-group">
-        <h4>Color:</h4>
+        <h4>Màu:</h4>
         <div className="color-radio-filter">
           {[
-            { key: "black", label: "Black" },
-            { key: "white", label: "White" },
-            { key: "gray", label: "Gray" },
+            { key: "black", label: "Đen" },
+            { key: "white", label: "Trắng" },
+            { key: "gray", label: "Xám" },
           ].map((c) => (
             <label
               key={c.key}
@@ -168,7 +168,7 @@ export const FilterSidebar = ({
 
       {/* ===== SIZE ===== */}
       <div className="filter-group">
-        <h4>Size</h4>
+        <h4>Kích Cỡ</h4>
         <div className="size-radio-filter">
           {["XXXL", "XXS", "XS", "S", "M", "L", "XL"].map((s) => (
             <label
@@ -188,7 +188,7 @@ export const FilterSidebar = ({
 
       {/* ===== PRICE RANGE SLIDER ===== */}
       <div className="filter-group">
-        <h4>Price: 59.000đ — {(maxPrice * 1000).toLocaleString('vi-VN')}.000đ</h4>
+        <h4>Giá: 59.000đ — {(maxPrice * 1000).toLocaleString('vi-VN')}.000đ</h4>
         <div className="price-range-slider">
           <div className="range-track" />
           <input

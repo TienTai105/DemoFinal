@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import type { User } from '../types';
 
 interface AuthStore {
@@ -10,24 +11,32 @@ interface AuthStore {
   setUser: (user: User) => void;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  isAdmin: false,
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set) => ({
+      user: null,
+      isAuthenticated: false,
+      isAdmin: false,
 
-  login: (user: User, token: string) => {
-    localStorage.setItem('authToken', token);
-    const admin = user?.role === 'admin';
-    set({ user, isAuthenticated: true, isAdmin: admin });
-  },
+      login: (user: User, token: string) => {
+        localStorage.setItem('authToken', token);
+        const admin = user?.role === 'admin';
+        set({ user, isAuthenticated: true, isAdmin: admin });
+      },
 
-  logout: () => {
-    localStorage.removeItem('authToken');
-    set({ user: null, isAuthenticated: false, isAdmin: false });
-  },
+      logout: () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('auth-storage');
+        set({ user: null, isAuthenticated: false, isAdmin: false });
+      },
 
-  setUser: (user: User) => {
-    const admin = user?.role === 'admin';
-    set({ user, isAuthenticated: true, isAdmin: admin });
-  },
-}));
+      setUser: (user: User) => {
+        const admin = user?.role === 'admin';
+        set({ user, isAuthenticated: true, isAdmin: admin });
+      },
+    }),
+    {
+      name: 'auth-storage',
+    }
+  )
+);
