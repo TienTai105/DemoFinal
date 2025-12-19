@@ -157,7 +157,13 @@ export const HomePage: React.FC = () => {
   }, [allProducts, isLoading, error]);
 
   // Extract unique categories from products (only from API)
-  const displayCategories = Array.from(new Set(allProducts.map((product) => product.category)));
+  const displayCategories = Array.from(
+    new Set(
+      allProducts
+        .map((product) => product.category)
+        .filter((category) => category !== undefined && category !== null && category !== '')
+    )
+  );
 
   // Generate dynamic category items with product count
   const dynamicCategoryItems = displayCategories.map((category, index) => {
@@ -184,12 +190,14 @@ export const HomePage: React.FC = () => {
   };
 
   // Filter products for New Arrivals (newproduct = true)
+  // Apply category filter if selected
   let newArrivalsProducts = allProducts.filter((product) => product.newproduct === true);
   if (activeCategory) {
     newArrivalsProducts = newArrivalsProducts.filter((p) => p.category === activeCategory);
   }
 
   // Filter products for Best Sellers (bestseller = true)
+  // Apply category filter if selected
   let bestSellerProducts = allProducts.filter((product) => product.bestseller === true);
   if (activeCategory) {
     bestSellerProducts = bestSellerProducts.filter((p) => p.category === activeCategory);
