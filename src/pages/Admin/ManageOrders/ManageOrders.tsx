@@ -62,7 +62,7 @@ const ManageOrders: React.FC = () => {
       if (ordersFromStorage) {
         const parsed = JSON.parse(ordersFromStorage);
         setLocalOrders(Array.isArray(parsed) ? parsed : []);
-        console.log('📦 Loaded orders from localStorage:', parsed);
+        console.log('Loaded orders from localStorage:', parsed);
       }
     } catch (error) {
       console.error('Error loading orders from localStorage:', error);
@@ -118,7 +118,7 @@ const ManageOrders: React.FC = () => {
       const updatedOrders = orders.map((o: Order) => o.id === id ? updatedOrder : o);
       localStorage.setItem('orders', JSON.stringify(updatedOrders));
       setLocalOrders(updatedOrders);
-      console.log('✅ Order status updated in localStorage');
+      console.log('Order status updated in localStorage');
     } catch (error) {
       console.error('Error updating order in localStorage:', error);
     }
@@ -146,7 +146,7 @@ const ManageOrders: React.FC = () => {
       const updatedOrders = orders.filter((o: Order) => o.id !== id);
       localStorage.setItem('orders', JSON.stringify(updatedOrders));
       setLocalOrders(updatedOrders);
-      console.log('✅ Order deleted from localStorage');
+      console.log('Order deleted from localStorage');
     } catch (error) {
       console.error('Error deleting order from localStorage:', error);
     }

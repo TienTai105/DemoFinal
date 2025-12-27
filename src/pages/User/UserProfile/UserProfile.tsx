@@ -3,6 +3,7 @@ import { Edit2, Save, X, Upload, Mail, Phone, MapPin, Calendar, User as UserIcon
 import toast from 'react-hot-toast';
 import './UserProfile.scss';
 import { useAuthStore } from '../../../store/authStore';
+import { useUpdateUser } from '../../../api';
 import type { User, Order } from '../../../types';
 
 const UserProfile: React.FC = () => {
@@ -195,6 +196,8 @@ const UserProfile: React.FC = () => {
     }));
   };
 
+  const updateUserMutation = useUpdateUser();
+
   const handleSave = async () => {
     try {
       // Validate form data
@@ -223,31 +226,26 @@ const UserProfile: React.FC = () => {
         role: user?.role,
       };
 
-      // Save to MockAPI
-      try {
-        const API_URL = 'https://68ef2e22b06cc802829c5e18.mockapi.io/api/users';
-        const response = await fetch(`${API_URL}/${user.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updatedUser),
-        });
-
-        if (response.ok) {
-          // Update in store
-          setUser(updatedUser);
-          setIsEditing(false);
-          toast.success('Cập nhật hồ sơ thành công!');
-          console.log('Profile updated:', updatedUser);
-        } else {
-          throw new Error('Update failed');
+      // Use API hook to update user
+      updateUserMutation.mutate(
+        { id: user!.id, user: updatedUser },
+        {
+          onSuccess: (responseData) => {
+            // Update in store with API response
+            setUser(responseData);
+            setIsEditing(false);
+            toast.success('Cập nhật hồ sơ thành công!');
+            console.log('Profile updated:', responseData);
+          },
+          onError: (error) => {
+            console.error('Error updating profile:', error);
+            // Still update locally even if API fails (to maintain UX)
+            setUser(updatedUser);
+            setIsEditing(false);
+            toast.success('Cập nhật hồ sơ thành công!');
+          },
         }
-      } catch (error) {
-        console.error('Error updating profile:', error);
-        // Still update locally even if API fails
-        setUser(updatedUser);
-        setIsEditing(false);
-        toast.success('Cập nhật hồ sơ thành công!');
-      }
+      );
     } catch (error) {
       console.error('Error saving profile:', error);
       toast.error('Lỗi khi cập nhật hồ sơ');

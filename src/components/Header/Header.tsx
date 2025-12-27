@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useCartStore } from '../../store/cartStore';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { useAuthStore } from '../../store/authStore';
@@ -43,7 +44,16 @@ export const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
   const handleLogout = () => {
     logout();
     setShowUserMenu(false);
-    navigate('/');
+    toast.success('Đã đăng xuất thành công!', {
+      duration: 2000,
+      position: 'bottom-right',
+      style: {
+        background: '#173036',
+        color: '#fff',
+        borderRadius: '8px',
+        padding: '16px',
+      },
+    });
   };
 
   React.useEffect(() => {

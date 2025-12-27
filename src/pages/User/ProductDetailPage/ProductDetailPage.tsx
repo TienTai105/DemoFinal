@@ -5,6 +5,7 @@ import "./ProductDetailPage.scss";
 
 // ⭐ IMPORT HOOKS
 import { useCartStore } from "../../../store/cartStore";
+import { useAuthStore } from "../../../store/authStore";
 import { useProductById, useProducts } from "../../../api/products/queries";
 import { ProductCard } from "../../../components/ProductCard/ProductCard";
 import { QuantityControl } from "../../../components/UI/QuantityControl/QuantityControl";
@@ -64,8 +65,9 @@ const ProductDetailPage: React.FC = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // ⭐ LẤY HÀM addItem TỪ ZUSTAND
+  // ⭐ LẤY HÀM addItem TỪ ZUSTAND VÀ KIỂM TRA AUTH
   const { addItem } = useCartStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const [mainImg, setMainImg] = useState<string>("");
   const [color, setColor] = useState("Black");
@@ -91,6 +93,36 @@ const ProductDetailPage: React.FC = () => {
   // ⭐ ADD TO CART GỬI VÀO ZUSTAND
   const handleAdd = () => {
     if (!product) return;
+
+    // ⭐ Kiểm tra đăng nhập trước
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để thêm vào giỏ hàng!', {
+        duration: 2000,
+        position: 'bottom-right',
+        style: {
+          background: '#dc3545',
+          color: '#fff',
+          borderRadius: '8px',
+          padding: '16px',
+        },
+      });
+      // Navigate đến login với state chứa product info
+      navigate('/login', {
+        state: {
+          from: `/product/${id}`,
+          productInfo: {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: qty,
+            color,
+            size,
+          }
+        }
+      });
+      return;
+    }
 
     // ⭐ Kiểm tra hết hàng
     if (product.stock === 0 || product.stock === undefined || product.stock < qty) {

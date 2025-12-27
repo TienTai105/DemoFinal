@@ -1,39 +1,12 @@
 
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { Eye, Edit2, Trash2, Shield, Search } from "lucide-react";
+import { useUsers, useUpdateUser, useDeleteUser } from "../../../api";
+import type { User } from "../../../types";
 import ConfirmModal from "../../../components/UI/ConfirmModal/ConfirmModal";
 import UserDetailModal from "./UserDetailModal";
 import "./ManageUsers.scss";
-
-const API_URL = "https://68ef2e22b06cc802829c5e18.mockapi.io/api/users";
-
-type Address = {
-  id: string;
-  receiverName: string;
-  phone: string;
-  addressLine: string;
-  ward: string;
-  district: string;
-  city: string;
-  isDefault: boolean;
-};
-
-type User = {
-  id: string;
-  username: string;
-  password: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  avatar: string;
-  role: "admin" | "user";
-  status: "active" | "inactive";
-  createdAt: string;
-  addresses: Address[];
-};
 
 const ManageUsers: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -41,22 +14,10 @@ const ManageUsers: React.FC = () => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
-  // Fetch users from MockAPI
-  const { data: users = [], isLoading, isError, refetch } = useQuery({
-    queryKey: ["users"],
-    queryFn: async () => {
-      try {
-        const response = await axios.get(API_URL);
-        return response.data;
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        return [];
-      }
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
-    refetchOnWindowFocus: false,
-  });
+  // Use API hooks
+  const { data: users = [], isLoading, isError } = useUsers();
+  const updateUserMutation = useUpdateUser();
+  const deleteUserMutation = useDeleteUser();
 
   const filteredUsers = users.filter((user: User) =>
     (user.fullName?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
@@ -73,53 +34,56 @@ const ManageUsers: React.FC = () => {
     const userToUpdate = users.find((u: User) => u.id === id);
     if (!userToUpdate) return;
 
-    const nextRole = userToUpdate.role === "admin" ? "user" : "admin";
-    const updatedUser = { ...userToUpdate, role: nextRole };
+    const nextRole: "admin" | "user" = userToUpdate.role === "admin" ? "user" : "admin";
+    const updatedUser: Partial<User> = { ...userToUpdate, role: nextRole };
 
-    axios
-      .put(`${API_URL}/${id}`, updatedUser)
-      .then(() => {
-        refetch();
-        toast.success(
-          `Thay đổi role thành ${nextRole === "admin" ? "Admin" : "User"}`
-        );
-      })
-      .catch(() => {
-        toast.error("Có lỗi khi cập nhật role");
-      });
+    updateUserMutation.mutate(
+      { id, user: updatedUser },
+      {
+        onSuccess: () => {
+          toast.success(
+            `Thay đổi role thành ${nextRole === "admin" ? "Admin" : "User"}`
+          );
+        },
+        onError: () => {
+          toast.error("Có lỗi khi cập nhật role");
+        },
+      }
+    );
   };
 
   const toggleStatus = (id: string) => {
     const userToUpdate = users.find((u: User) => u.id === id);
     if (!userToUpdate) return;
 
-    const nextStatus: User["status"] = userToUpdate.status === "active" ? "inactive" : "active";
-    const updatedUser = { ...userToUpdate, status: nextStatus };
+    const nextStatus: "active" | "inactive" = userToUpdate.status === "active" ? "inactive" : "active";
+    const updatedUser: Partial<User> = { ...userToUpdate, status: nextStatus };
 
-    axios
-      .put(`${API_URL}/${id}`, updatedUser)
-      .then(() => {
-        refetch();
-        toast.success(
-          `Cập nhật trạng thái thành ${nextStatus === "active" ? "Đang hoạt động" : "Không hoạt động"}`
-        );
-      })
-      .catch(() => {
-        toast.error("Có lỗi khi cập nhật trạng thái");
-      });
+    updateUserMutation.mutate(
+      { id, user: updatedUser },
+      {
+        onSuccess: () => {
+          toast.success(
+            `Cập nhật trạng thái thành ${nextStatus === "active" ? "Đang hoạt động" : "Không hoạt động"}`
+          );
+        },
+        onError: () => {
+          toast.error("Có lỗi khi cập nhật trạng thái");
+        },
+      }
+    );
   };
 
   const removeUserConfirmed = (id: string) => {
-    axios
-      .delete(`${API_URL}/${id}`)
-      .then(() => {
-        refetch();
+    deleteUserMutation.mutate(id, {
+      onSuccess: () => {
         setPendingDelete(null);
         toast.success("Đã xóa người dùng thành công");
-      })
-      .catch(() => {
+      },
+      onError: () => {
         toast.error("Có lỗi khi xóa người dùng");
-      });
+      },
+    });
   };
 
   if (isLoading) {
@@ -159,7 +123,7 @@ const ManageUsers: React.FC = () => {
         confirmText="Xác nhận xóa"
       />
 
-      <UserDetailModal isOpen={showDetailModal} user={selectedUser} onClose={() => setShowDetailModal(false)} />
+<UserDetailModal isOpen={showDetailModal} user={selectedUser!} onClose={() => setShowDetailModal(false)} />
 
       {/* Header */}
       <div className="manage-users-header">
@@ -221,7 +185,7 @@ const ManageUsers: React.FC = () => {
 
                 {/* Joined Date */}
                 <div className="user-col user-col-date">
-                  <p>{new Date(user.createdAt).toLocaleDateString("vi-VN")}</p>
+                  <p>{new Date(user.createdAt || Date.now()).toLocaleDateString("vi-VN")}</p>
                 </div>
 
                 {/* Actions */}

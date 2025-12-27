@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../../../store/authStore";
+import { useCartStore } from "../../../store/cartStore";
+import { useUsers } from "../../../api";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import './LoginPage.scss';
 
 type LoginFormInputs = {
@@ -22,14 +23,17 @@ const schema = yup.object().shape({
   password: yup.string().required("Vui lòng nhập mật khẩu"),
 });
 
-const API_URL = "https://68ef2e22b06cc802829c5e18.mockapi.io/api/users";
-
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const loginStore = useAuthStore((s) => s.login);
+  const { addItem } = useCartStore();
   const [showPassword, setShowPassword] = useState(false);
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch users from API hook
+  const { data: users = [] } = useUsers();
 
   // Handle redirect after login
   useEffect(() => {
@@ -60,9 +64,21 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
     
     try {
-      // Fetch all users from MockAPI
-      const response = await axios.get(API_URL);
-      const users = response.data || [];
+      // Use pre-fetched users from hook
+      if (!users || users.length === 0) {
+        toast.error("Đang tải dữ liệu người dùng. Vui lòng thử lại!", {
+          duration: 2000,
+          position: 'bottom-right',
+          style: {
+            background: '#dc3545',
+            color: '#fff',
+            borderRadius: '8px',
+            padding: '16px',
+          },
+        });
+        setIsLoading(false);
+        return;
+      }
       
       // Find user by username or email
       const found = users.find((u: any) => 
@@ -108,13 +124,41 @@ const LoginPage: React.FC = () => {
         },
       });
       
-      // Redirect based on role
+      // ⭐ Tự động thêm vào giỏ nếu có product info từ state
+      const state = location.state as any;
+      if (state?.productInfo) {
+        const productInfo = state.productInfo;
+        const item = {
+          id: productInfo.id,
+          name: productInfo.name,
+          price: productInfo.price,
+          quantity: productInfo.quantity,
+          image: productInfo.image,
+          color: productInfo.color,
+          size: productInfo.size,
+        };
+        addItem(item);
+        toast.success(`Đã thêm ${productInfo.quantity} ${productInfo.name} vào giỏ hàng!`, {
+          duration: 2000,
+          position: 'bottom-right',
+          style: {
+            background: '#28a745',
+            color: '#fff',
+            borderRadius: '8px',
+            padding: '16px',
+          },
+        });
+      }
+      
+      // ⭐ Redirect based on role hoặc từ state
       if (found.role === "admin") {
         console.log('SETTING REDIRECT TO /admin');
         setRedirectPath("/admin");
       } else {
-        console.log('SETTING REDIRECT TO /');
-        setRedirectPath("/");
+        // Nếu có "from" trong state (từ product detail), redirect về đó
+        const redirectTo = state?.from || "/";
+        console.log('SETTING REDIRECT TO:', redirectTo);
+        setRedirectPath(redirectTo);
       }
     } catch (error) {
       console.error('Login error:', error);

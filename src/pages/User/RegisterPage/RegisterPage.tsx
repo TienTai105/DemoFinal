@@ -4,8 +4,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../../store/authStore";
+import { useUsers, useCreateUser } from "../../../api";
+import type { User } from "../../../types";
 import { Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
 import './RegisterPage.scss';
 
 type RegisterFormInputs = {
@@ -53,8 +55,11 @@ const seedAdminIfMissing = () => {
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
-  const loginStore = useAuthStore((s) => s.login);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Fetch users to check for duplicates
+  const { data: existingUsers = [] } = useUsers();
+  const createUserMutation = useCreateUser();
 
   useEffect(() => {
     seedAdminIfMissing();
@@ -73,18 +78,16 @@ const RegisterPage: React.FC = () => {
     const password = String(data.password);
 
     try {
-      // Check if email already exists in MockAPI
-      const API_URL = 'https://68ef2e22b06cc802829c5e18.mockapi.io/api/users';
-      const response = await fetch(API_URL);
-      const existingUsers = await response.json();
-
+      // Check if email already exists
       if (existingUsers.some((u: any) => u.email === email)) {
-        alert("Email này đã được đăng ký. Vui lòng dùng email khác hoặc đăng nhập.");
+        toast.error("Email này đã được đăng ký. Vui lòng dùng email khác hoặc đăng nhập.", {
+          position: 'bottom-right',
+        });
         return;
       }
 
       // Create new user with minimal info
-      const newUser = {
+      const newUser: Omit<User, "id"> = {
         name: email.split("@")[0] || email,
         username: email.split("@")[0] || email,
         email,
@@ -98,34 +101,28 @@ const RegisterPage: React.FC = () => {
         createdAt: new Date().toISOString(),
       };
 
-      // Save to MockAPI
-      const createResponse = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newUser),
+      // Use API hook to create user
+      createUserMutation.mutate(newUser, {
+        onSuccess: () => {
+          // Không auto login sau đăng ký, yêu cầu người dùng login
+
+          toast.success("Đăng ký thành công! Vui lòng hoàn thành hồ sơ cá nhân.", {
+            position: 'bottom-right',
+          });
+          navigate("/login");
+        },
+        onError: (error) => {
+          console.error("Register error:", error);
+          toast.error("Lỗi khi đăng ký. Vui lòng thử lại!", {
+            position: 'bottom-right',
+          });
+        },
       });
-
-      if (createResponse.ok) {
-        const createdUser = await createResponse.json();
-        
-        // Auto login
-        loginStore({
-          id: createdUser.id,
-          name: createdUser.name,
-          email: createdUser.email,
-          role: 'user',
-          avatar: createdUser.avatar,
-          createdAt: createdUser.createdAt,
-        }, 'user-token');
-
-        alert("Đăng ký thành công! Vui lòng hoàn thành hồ sơ cá nhân.");
-        navigate("/login");
-      } else {
-        alert("Lỗi khi đăng ký. Vui lòng thử lại!");
-      }
     } catch (error) {
       console.error("Register error:", error);
-      alert("Lỗi khi đăng ký. Vui lòng thử lại!");
+      toast.error("Lỗi khi đăng ký. Vui lòng thử lại!", {
+        position: 'bottom-right',
+      });
     }
   };
 

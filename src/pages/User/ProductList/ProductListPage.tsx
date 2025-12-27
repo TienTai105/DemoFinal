@@ -31,7 +31,7 @@ const ProductListPage = () => {
     if (state?.from) return state.from;
     const prevPage = sessionStorage.getItem('previousPage');
     if (prevPage) return JSON.parse(prevPage);
-    return { name: 'Home', path: '/' };
+    return { name: 'Trang Chủ', path: '/' };
   };
 
   const previousPage = getPreviousPage();

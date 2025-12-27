@@ -1,42 +1,18 @@
 import React from "react";
 import { X, Phone, Mail, Calendar, Shield, Lock, User } from "lucide-react";
+import { User as UserType } from "../../../types";
 import "./UserDetailModal.scss";
-
-type Address = {
-  id: string;
-  receiverName: string;
-  phone: string;
-  addressLine: string;
-  ward: string;
-  district: string;
-  city: string;
-  isDefault: boolean;
-};
-
-type User = {
-  id: string;
-  username: string;
-  password: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  avatar: string;
-  role: "admin" | "user";
-  status: "active" | "inactive";
-  createdAt: string;
-  addresses: Address[];
-};
 
 interface UserDetailModalProps {
   isOpen: boolean;
-  user: User | null;
+  user: UserType | null;
   onClose: () => void;
 }
 
 const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, user, onClose }) => {
   if (!isOpen || !user) return null;
 
-  const createdDate = new Date(user.createdAt).toLocaleDateString("vi-VN");
+  const createdDate = new Date(user.createdAt || Date.now()).toLocaleDateString("vi-VN");
   const defaultAddress = user.addresses && Array.isArray(user.addresses) 
     ? user.addresses.find((addr) => addr.isDefault) 
     : undefined;
@@ -55,14 +31,14 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, user, onClose
         <div className="modal-content">
           {/* User Header Card */}
           <div className="user-header-card">
-            <img src={user.avatar} alt={user.fullName} className="user-avatar-large" />
+            <img src={user.avatar || ""} alt={user.fullName || "User"} className="user-avatar-large" />
             <div className="user-header-content">
-              <h2>{user.fullName}</h2>
-              <p className="username">@{user.username}</p>
+              <h2>{user.fullName || "N/A"}</h2>
+              <p className="username">@{user.username || "N/A"}</p>
               <div className="badges-row">
                 <span className={`badge badge-role ${user.role}`}>
                   <Shield size={14} />
-                  {user.role === "admin" ? "👑 Admin" : "👤 User"}
+                  {user.role === "admin" ? "Admin" : "User"}
                 </span>
                 <span className={`badge badge-status ${user.status}`}>
                   <span className="dot"></span>
@@ -85,14 +61,14 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, user, onClose
 
           {/* Section: Tài khoản */}
           <div className="detail-section">
-            <h4 className="section-title">🔐 Tài khoản</h4>
+            <h4 className="section-title">Tài khoản</h4>
             <div className="section-content">
               <div className="info-row">
                 <div className="info-label">
                   <User size={16} />
                   <span>Tên đăng nhập</span>
                 </div>
-                <p className="info-value">{user.username}</p>
+                <p className="info-value">{user.username || "N/A"}</p>
               </div>
               <div className="info-row">
                 <div className="info-label">
@@ -106,7 +82,7 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, user, onClose
 
           {/* Section: Thông tin liên hệ */}
           <div className="detail-section">
-            <h4 className="section-title">📞 Thông tin liên hệ</h4>
+            <h4 className="section-title">Thông tin liên hệ</h4>
             <div className="section-content">
               <div className="info-row">
                 <div className="info-label">
@@ -128,7 +104,7 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, user, onClose
           {/* Section: Địa chỉ mặc định */}
           {defaultAddress && (
             <div className="detail-section">
-              <h4 className="section-title">📍 Địa chỉ mặc định</h4>
+              <h4 className="section-title">Địa chỉ mặc định</h4>
               <div className="address-card default">
                 <div className="address-badge">Mặc định</div>
                 <div className="address-details">
@@ -150,7 +126,7 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({ isOpen, user, onClose
           {/* Section: Tất cả địa chỉ */}
           {user.addresses && Array.isArray(user.addresses) && user.addresses.length > 0 && (
             <div className="detail-section">
-              <h4 className="section-title">🏠 Tất cả địa chỉ ({user.addresses.length})</h4>
+              <h4 className="section-title">Tất cả địa chỉ ({user.addresses.length})</h4>
               <div className="addresses-grid">
                 {user.addresses.map((addr) => (
                   <div key={addr.id} className={`address-card ${addr.isDefault ? "default" : ""}`}>
