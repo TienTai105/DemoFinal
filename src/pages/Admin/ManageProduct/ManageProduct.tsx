@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchProducts, deleteProduct } from "../../../api/index";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/UI/ConfirmModal/ConfirmModal";
 import { Edit2, Trash2, Plus, Search, Filter } from "lucide-react";
@@ -10,6 +11,7 @@ import './ManageProduct.scss';
 
 const ManageProduct: React.FC = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [sortBy, setSortBy] = useState("name");
@@ -187,20 +189,22 @@ const ManageProduct: React.FC = () => {
                     </span>
                   </div>
                   <div className="table-cell actions-cell">
-                    <Link
-                      to={`/admin/edit-product/${product.id}`}
-                      className="action-btn edit-btn"
-                      title="Chỉnh sửa"
-                    >
-                      <Edit2 size={16} />
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(product.id, product.name)}
-                      className="action-btn delete-btn"
-                      title="Xóa"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <div>
+                      <button
+                        onClick={() => navigate(`/admin/edit-product/${product.id}`)}
+                        className="action-btn edit-btn"
+                        title="Chỉnh sửa"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(product.id, product.name)}
+                        className="action-btn delete-btn"
+                        title="Xóa"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

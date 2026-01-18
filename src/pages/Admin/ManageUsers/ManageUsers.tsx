@@ -195,28 +195,28 @@ const ManageUsers: React.FC = () => {
                     title="Xem chi tiết"
                     onClick={() => openDetailModal(user)}
                   >
-                    <Eye size={18} />
+                    <Eye size={16} />
                   </button>
                   <button
                     className="action-btn action-btn-role"
                     title="Đổi role"
                     onClick={() => toggleRole(user.id)}
                   >
-                    <Shield size={18} />
+                    <Shield size={16} />
                   </button>
                   <button
                     className="action-btn action-btn-status"
                     title="Đổi trạng thái"
                     onClick={() => toggleStatus(user.id)}
                   >
-                    <Edit2 size={18} />
+                    <Edit2 size={16} />
                   </button>
                   <button
                     className="action-btn action-btn-delete"
                     title="Xóa"
                     onClick={() => setPendingDelete(user.id)}
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={16} />
                   </button>
                 </div>
               </div>

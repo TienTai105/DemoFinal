@@ -388,6 +388,7 @@
 .action-btn {
   width: 36px;
   height: 36px;
+  padding: 0;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -396,6 +397,7 @@
   justify-content: center;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  background: none;
 
   svg {
     width: 16px;
